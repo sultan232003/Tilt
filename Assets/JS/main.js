@@ -33,7 +33,7 @@ class Tilt {
     this.startY = startY || 0
     this.reverse = reverse || 'false'
     this.page = page || 'false'
-    this.reset = reset || 'false'
+    this.reset = reset || 'true'
     this.card_data = tilt_card.getBoundingClientRect()
   }
   
@@ -88,7 +88,7 @@ class Tilt {
     }
 
     this.tilt_card.addEventListener("mouseleave", () => {
-      if (this.reset === "false") {
+      if (this.reset === "true") {
         this.tilt_card.style.cssText = `transition: all 200ms ease ; transform: perspective(500px) rotateY(${this.startY}deg) rotateX(${this.startX}deg);`
       }
     })
