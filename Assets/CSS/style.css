@@ -118,6 +118,15 @@ body {
   box-shadow: var(--shadow_2);
   position: relative;
   z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tilt > img
+{
+  width: 50%;
+  aspect-ratio: 1/1;
 }
 
 .tilt_data {
@@ -186,17 +195,15 @@ body {
   color: var(--Russian_violet);
 }
 
-.code_snippet span:nth-child(1),
-.code_snippet span:nth-child(4),
-.code_snippet span:last-child {
+.code_snippet .Separate {
   color: var(--Majorelle_Blue);
 }
 
-.code_snippet span:nth-child(3) {
+.code_snippet .Attribute {
   color: var(--Violet);
 }
 
-.code_snippet span:nth-child(5) {
+.code_snippet .Value {
   color: var(--Mint);
 }
 
