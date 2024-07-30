@@ -102,7 +102,10 @@ class Tilt {
 }
 
 Array.from(tilt).forEach(tilts => {
-  console.log(tilts.getBoundingClientRect().y)
+  
+  tilts.addEventListener("click",(e)=>{
+     navigator.clipboard.writeText()
+  })
   cards_tilt_strength = tilts.getAttribute("tilt_strength")
   cards_tilt_x = tilts.getAttribute("tilt_x")
   cards_tilt_y = tilts.getAttribute("tilt_y")
@@ -116,3 +119,14 @@ Array.from(tilt).forEach(tilts => {
   tilts = new Tilt(tilts, cards_tilt_strength, cards_tilt_x, cards_tilt_y, cards_tilt_float, cards_tilt_scale, cards_tilt_StartX, cards_tilt_StartY, cards_tilt_reverse, cards_tilt_page, cards_tilt_reset)
   tilts.update()
 });
+
+
+
+const Copy_btn = document.getElementsByClassName("copy_btn")
+Array.from(Copy_btn).forEach(Copy_btns => {
+  Copy_btns.addEventListener("click",(e)=>{
+    default_tilt_data = Copy_btns.getAttribute("default_tilt_data")
+    second_tilt_data = Copy_btns.getAttribute("second_tilt_data")
+    navigator.clipboard.writeText(default_tilt_data +" "+ second_tilt_data)
+  })
+})
