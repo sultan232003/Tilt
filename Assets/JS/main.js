@@ -129,7 +129,7 @@ class Tilt {
       })
 
       if (this.reset === "true") {
-        this.tilt_card.style.cssText = `overflow:${this.overflow}; transition: all 200ms ease ; transform: perspective(500px) rotateY(${this.startY}deg) rotateX(${this.startX}deg);`
+        this.tilt_card.style.cssText = `overflow:${this.overflow}; transform-style: preserve-3d; transition: all 200ms ease ; transform: perspective(500px) rotateY(${this.startY}deg) rotateX(${this.startX}deg);`
       }
     })
   }
