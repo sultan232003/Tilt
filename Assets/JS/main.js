@@ -55,7 +55,7 @@ class Tilt {
       this.card_data = this.tilt_card.getBoundingClientRect()
     })
 
-    if(this.float <= 360){
+    if(this.float <= 360 && this.float > 0){
       this.final_float = this.float
     }
 
