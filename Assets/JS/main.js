@@ -42,7 +42,7 @@ class Tilt {
     this.reverse = reverse || 'false'
     this.page = page || 'false'
     this.reset = reset || 'true'
-    this.infinity = infinity || 'false'
+    this.infinity = infinity  || 'false'
     this.infinity_data = this.infinity.split(/\s+/).map(Number)
     this.card_data = tilt_card.getBoundingClientRect()
     this.tilt_card_half_width = this.card_data.width / 2
@@ -55,7 +55,23 @@ class Tilt {
       this.card_data = this.tilt_card.getBoundingClientRect()
     })
 
-    this.tilt_card.style.cssText = `transform-style: preserve-3d; transition: all 200ms ease ; transform: perspective(500px) rotateY(${this.startY}deg) rotateX(${this.startX}deg);`
+    if(this.float <= 360){
+      this.final_float = this.float
+    }
+
+    if(this.scale <= 2 && this.scale>= 0.5){
+      this.final_scale = this.scale
+    } else {this.final_scale = 1}
+
+    if(this.startX != 90 && this.startX != 180){
+      this.final_startX = this.startX
+    }
+
+    if(this.startY != 90 && this.startY != 180){
+      this.final_startY = this.startY
+    }
+
+    this.tilt_card.style.cssText = `transform-style: preserve-3d; transition: all 200ms ease ; transform: perspective(500px) rotateY(${this.final_startY}deg) rotateX(${this.final_startX}deg);`
 
     if (this.infinity_data[0] > 0) {
       nest(this.tilt_card, this.infinity_data[0])
@@ -66,7 +82,7 @@ class Tilt {
 
     this.child = this.tilt_card.children
     Array.from(this.child).forEach(childs => {
-      childs.style.cssText = `transform: translateZ(${this.float}px);`
+      childs.style.cssText = `transform: translateZ(${this.final_float}px);`
     });
 
     this.tilt = (e) => {
@@ -104,7 +120,7 @@ class Tilt {
         this.overflow = "visible"
       }
 
-      this.tilt_card.style.cssText = `overflow:${this.overflow}; transform-style: preserve-3d; transform: scale(${this.scale})perspective(500px) rotateY(${this.final_rotateY}deg) rotateX(${this.final_rotateX}deg);`
+      this.tilt_card.style.cssText = `overflow:${this.overflow}; transform-style: preserve-3d; transform: scale(${this.final_scale})perspective(500px) rotateY(${this.final_rotateY}deg) rotateX(${this.final_rotateX}deg);`
 
       if (this.infinity_data[0] > 0) {
         Array.from(this.tilt_infinity_child).forEach(tilt_infinity_childs => {
@@ -124,12 +140,14 @@ class Tilt {
     }
 
     this.tilt_card.addEventListener("mouseleave", () => {
-      Array.from(this.tilt_infinity_child).forEach(tilt_infinity_childs => {
-        tilt_infinity_childs.style.cssText = `width:${this.tilt_infinity_child_size}% ; height:${this.tilt_infinity_child_size}% ; transition: all 200ms ease ;transform: perspective(500px) translateY(0%) translateX(0%);`
-      })
+      if (this.infinity_data[0] > 0){
+        Array.from(this.tilt_infinity_child).forEach(tilt_infinity_childs => {
+          tilt_infinity_childs.style.cssText = `width:${this.tilt_infinity_child_size}% ; height:${this.tilt_infinity_child_size}% ; transition: all 200ms ease ;transform: perspective(500px) translateY(0%) translateX(0%);`
+        })
+      }
 
       if (this.reset === "true") {
-        this.tilt_card.style.cssText = `overflow:${this.overflow}; transform-style: preserve-3d; transition: all 200ms ease ; transform: perspective(500px) rotateY(${this.startY}deg) rotateX(${this.startX}deg);`
+        this.tilt_card.style.cssText = `overflow:${this.overflow}; transform-style: preserve-3d; transition: all 200ms ease ; transform: perspective(500px) rotateY(${this.final_startY}deg) rotateX(${this.final_startX}deg);`
       }
     })
   }
