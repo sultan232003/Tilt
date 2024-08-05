@@ -29,6 +29,7 @@
   --shadow_2: 0px 99px 28px rgba(85, 70, 255, 0.01), 0px 64px 25px rgba(85, 70, 255, 0.06), 0px 36px 21px rgba(85, 70, 255, 0.2), 0px 16px 16px rgba(85, 70, 255, 0.34), 0px 4px 9px rgba(85, 70, 255, 0.39);
   --shadow_3: 40px 27px 13px rgba(85, 70, 255, 0), 26px 17px 12px rgba(85, 70, 255, 0.01), 14px 10px 10px rgba(85, 70, 255, 0.04), 6px 4px 8px rgba(85, 70, 255, 0.06), 2px 1px 4px rgba(85, 70, 255, 0.07);
   --shadow_4: 0px 81.78px 23.17px rgba(85, 70, 255, 0), 0px 51.79px 20.44px rgba(85, 70, 255, 0.01), 0px 29.99px 17.72px rgba(85, 70, 255, 0.03), 0px 13.63px 13.63px rgba(85, 70, 255, 0.04), 0px 2.73px 6.81px rgba(85, 70, 255, 0.05), inset 0px -1.36px 1.36px rgba(85, 70, 255, 0.1), inset 0px 1.36px 0px #ffffff;
+  --pointer :url(../Image/Point.png)16 16 , auto;
 }
 
 html,
@@ -206,7 +207,7 @@ body {
 }
 
 .mac_3D_btn:hover {
-  cursor: url(../Image/point.png) 16 16, auto;
+  cursor: url(../Image/Point.png)16 16 , auto;
 }
 
 
@@ -448,9 +449,9 @@ body {
   gap: 5px;
 }
 
-.button_row_top :first-child,
-.button_row_bottom :last-child {
-  width: 40px;
+.button_row_top > button:first-child,
+.button_row_bottom > button:last-child {
+  width: 50px;
   flex-shrink: 0;
 }
 
@@ -503,17 +504,35 @@ body {
   opacity: 0.1;
 }
 
-/* .shadow_box_bg_btn {
-  width: 100%;
-  height: 22px;
+.format_list{
+  position: absolute;
+  display: grid;
+  gap: 2px;
+  grid-template-columns: repeat(3, 1fr);
+  border: 0.5px solid var(--Border);
   border-radius: 4px;
   background: #ffffff;
-  border: 0.5px solid var(--Alice_blue_2);
-  box-shadow: inset 0px -3px 0px #EEEFF7;
-  padding: 6px 0px 9px 0px;
+  padding: 3px;
+  box-sizing: border-box;
   font-size: 10px;
-  text-transform: uppercase;
-  color: var(--Russian_violet);
-  font-weight: 500;
-  line-height: 0;
-} */
+    color: var(--Russian_violet);
+    font-weight: 500;
+    line-height: 0.7;
+    text-align: center;
+}
+
+.format_list > div{
+  width: 44px;
+  border: 0.5px solid transparent;
+    padding-top: 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+    height: 20px;
+}
+
+.format_list > div:hover{
+  border: 0.5px solid var(--Alice_blue_2);
+  padding-top: 4px;
+  box-shadow: inset 0px -3px 0px #EEEFF7;
+  cursor: var(--pointer);
+}
