@@ -1,23 +1,4 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// TLIT EFFECT CODE STARTS HERE
 
 const tilt = document.getElementsByClassName("tilt")
 
@@ -42,7 +23,7 @@ class Tilt {
     this.reverse = reverse || 'false'
     this.page = page || 'false'
     this.reset = reset || 'true'
-    this.infinity = infinity  || 'false'
+    this.infinity = infinity || 'false'
     this.infinity_data = this.infinity.split(/\s+/).map(Number)
     this.card_data = tilt_card.getBoundingClientRect()
     this.tilt_card_half_width = this.card_data.width / 2
@@ -55,19 +36,19 @@ class Tilt {
       this.card_data = this.tilt_card.getBoundingClientRect()
     })
 
-    if(this.float <= 360 && this.float > 0){
+    if (this.float <= 360 && this.float > 0) {
       this.final_float = this.float
     }
 
-    if(this.scale <= 2 && this.scale>= 0.5){
+    if (this.scale <= 2 && this.scale >= 0.5) {
       this.final_scale = this.scale
-    } else {this.final_scale = 1}
+    } else { this.final_scale = 1 }
 
-    if(this.startX != 90 && this.startX != 180){
+    if (this.startX != 90 && this.startX != 180) {
       this.final_startX = this.startX
     }
 
-    if(this.startY != 90 && this.startY != 180){
+    if (this.startY != 90 && this.startY != 180) {
       this.final_startY = this.startY
     }
 
@@ -140,7 +121,7 @@ class Tilt {
     }
 
     this.tilt_card.addEventListener("mouseleave", () => {
-      if (this.infinity_data[0] > 0){
+      if (this.infinity_data[0] > 0) {
         Array.from(this.tilt_infinity_child).forEach(tilt_infinity_childs => {
           tilt_infinity_childs.style.cssText = `width:${this.tilt_infinity_child_size}% ; height:${this.tilt_infinity_child_size}% ; transition: all 200ms ease ;transform: perspective(500px) translateY(0%) translateX(0%);`
         })
@@ -183,3 +164,32 @@ Array.from(Copy_btn).forEach(Copy_btns => {
     navigator.clipboard.writeText(default_tilt_data + " " + second_tilt_data)
   })
 })
+
+// TLIT EFFECT CODE ENDS HERE
+
+// SHADOW EFFECT CODE STARTS HERE
+
+const Shadow_box_color_format_btn = document.getElementsByClassName("shadow_box_color_format_btn")
+
+class Format {
+  constructor(format_btn) {
+    this.Format_btn = format_btn
+    this.Format_list = this.Format_btn.nextElementSibling
+  }
+
+Format_list_creator(){
+
+}
+}
+
+let Shadow_box_color_format_btn_final
+
+Array.from(Shadow_box_color_format_btn).forEach(Shadow_box_color_format_btns => {
+
+  console.log(Shadow_box_color_format_btns.nextElementSibling)
+
+  Shadow_box_color_format_btn_final = new Format(Shadow_box_color_format_btns)
+  Shadow_box_color_format_btn_final.Format_list_creator()
+});
+
+// SHADOW EFFECT CODE ENDS HERE
