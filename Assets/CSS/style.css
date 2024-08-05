@@ -206,7 +206,7 @@ body {
 }
 
 .mac_3D_btn:hover {
-  cursor: pointer;
+  cursor: url(../Image/point.png) 16 16, auto;
 }
 
 
