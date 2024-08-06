@@ -170,23 +170,114 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 // SHADOW EFFECT CODE STARTS HERE
 
 const Shadow_box_color_format_btn = document.getElementsByClassName("shadow_box_color_format_btn")
+const Color_format_box = document.getElementsByClassName("color_format")
+
+function hexToRgb(hex) {
+  hex = hex.replace(/^#/, '');
+  if (hex.length === 3) {
+    hex = hex.split('').map(char => char + char).join('');
+  }
+  let bigint = parseInt(hex, 16);
+  let r = (bigint >> 16) & 255;
+  let g = (bigint >> 8) & 255;
+  let b = bigint & 255;
+  return [r, g, b];
+}
 
 class Format {
   constructor(format_btn) {
     this.Format_btn = format_btn
     this.Format_list = this.Format_btn.nextElementSibling
+    this.Format_btn_child = this.Format_list.children
+    this.Color_format
+    this.Color_format_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[0]
+    this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
+    this.alpha_value = this.Format_btn.getAttribute("hex_code")
+    this.rgb_value = hexToRgb(this.hex_value)
   }
 
-Format_list_creator(){
+  Format_list_creator() {
+    console.log(this.rgb_value)
+    this.Format_btn.addEventListener("click", (e) => {
+      this.Format_list.classList.toggle("active")
+    })
+    Array.from(this.Format_btn_child).forEach(Format_btn_childs => {
+      Format_btn_childs.addEventListener("click", (e) => {
+        this.Color_format = e.target.innerHTML.slice(1, -1)
+        this.Format_btn.innerHTML = e.target.innerHTML
+        this.Format_list.classList.remove("active")
 
-}
+        if(this.Color_format === "HEX"){
+          this.Color_format_data.classList.add("gap-10","row-col")
+          this.Color_format_data.classList.remove("gap-5")
+          this.Color_format_data.innerHTML = `
+          <div class="color_format_index_value row space-between align-center text-upper">
+            <p>[</p>
+            <p>HEX</p>
+            <p>]</p>
+          </div>
+          <h3 class="text-center text-upper">#959da5</h3>
+          `
+        }
+
+        if (this.Color_format === "RGB") {
+          this.Color_format_data.classList.add("gap-5")
+          this.Color_format_data.classList.remove("gap-10", "row-col")
+          this.Color_format_data.innerHTML = `
+          <div class="row row-col gap-10 col-4">
+            <div class="color_format_index_value row space-between align-center text-upper">
+              <p>[</p>
+              <p>R</p>
+              <p>]</p>
+            </div>
+            <h3 class="text-center text-upper">${this.rgb_value[0]}</h3>
+          </div>
+          <div class="row row-col gap-10 col-4">
+            <div class="color_format_index_value row space-between align-center text-upper">
+              <p>[</p>
+              <p>G</p>
+              <p>]</p>
+            </div>
+            <h3 class="text-center text-upper">${this.rgb_value[1]}</h3>
+          </div>
+          <div class="row row-col gap-10 col-4">
+            <div class="color_format_index_value row space-between align-center text-upper">
+              <p>[</p>
+              <p>B</p>
+              <p>]</p>
+            </div>
+            <h3 class="text-center text-upper">${this.rgb_value[2]}</h3>
+          </div>`
+        }
+
+      })
+    });
+
+    // console.log(this.Format_btn.parentNode.nextElementSibling.children[0].children[0])
+    // <div class="color_format_data row row-col col-9 gap-10">
+    //               <div class="color_format_index_value row space-between align-center text-upper">
+    //                 <p>[</p>
+    //                 <p>HEX</p>
+    //                 <p>]</p>
+    //               </div>
+    //               <h3 class="text-center text-upper">#959da5</h3>
+    //             </div>
+    //             <div class="color_alpha row row-col col-3 gap-10">
+    //               <div class="color_format_index_value row space-between align-center text-upper">
+    //                 <p>[</p>
+    //                 <p>alpha</p>
+    //                 <p>]</p>
+    //               </div>
+    //               <h3 class="text-center text-upper">33</h3>
+    //             </div>
+  }
 }
 
 let Shadow_box_color_format_btn_final
 
 Array.from(Shadow_box_color_format_btn).forEach(Shadow_box_color_format_btns => {
 
-  console.log(Shadow_box_color_format_btns.nextElementSibling)
+  // console.log(Shadow_box_color_format_btns.nextElementSibling)
 
   Shadow_box_color_format_btn_final = new Format(Shadow_box_color_format_btns)
   Shadow_box_color_format_btn_final.Format_list_creator()
