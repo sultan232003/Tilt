@@ -477,7 +477,7 @@ body {
 .color_format_data h3,
 .shadow_format_data {
   color: var(--Russian_violet);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 0.78;
 }
@@ -489,7 +489,7 @@ body {
 }
 
 .shadow_format_data h3 {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .color_value {
