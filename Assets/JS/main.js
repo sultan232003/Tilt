@@ -184,6 +184,125 @@ function hexToRgb(hex) {
   return [r, g, b];
 }
 
+function rgbToHsl(r, g, b, percentage) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  let max = Math.max(r, g, b);
+  let min = Math.min(r, g, b);
+  let delta = max - min;
+  let l = (max + min) / 2;
+  let h, s;
+  if (delta === 0) {
+    s = 0;
+    h = 0;
+  } else {
+    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / delta + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / delta + 2;
+        break;
+      case b:
+        h = (r - g) / delta + 4;
+        break;
+    }
+    h /= 6;
+  }
+  if (percentage) {
+    return [Math.round(h * 360) + "%", Math.round(s * 100) + "%", Math.round(l * 100) + "%"];
+  } else {
+    return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+  }
+}
+
+function rgbToHsb(r, g, b, percentage) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  let max = Math.max(r, g, b);
+  let min = Math.min(r, g, b);
+  let delta = max - min;
+  let h, s, v;
+  v = max;
+  s = max === 0 ? 0 : delta / max;
+  if (delta === 0) {
+    h = 0;
+  } else {
+    switch (max) {
+      case r:
+        h = (g - b) / delta + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / delta + 2;
+        break;
+      case b:
+        h = (r - g) / delta + 4;
+        break;
+    }
+    h /= 6;
+  }
+  if (percentage) {
+    return [Math.round(h * 360) + "%", Math.round(s * 100) + "%", Math.round(v * 100) + "%"];
+  } else {
+    return [Math.round(h * 360), Math.round(s * 100), Math.round(v * 100)];
+  }
+}
+
+function rgbToXyz(r, g, b, percentage) {
+  function linearize(value) {
+    return value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+  }
+  r = linearize(r / 255);
+  g = linearize(g / 255);
+  b = linearize(b / 255);
+  const x = r * 0.4124564 + g * 0.3575761 + b * 0.1804375;
+  const y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750;
+  const z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041;
+  if (percentage) {
+    return [(x * 100).toFixed(1) + "%", (y * 100).toFixed(1) + "%", (z * 100).toFixed(1) + "%"];
+  } else {
+    return [x, y, z];
+  }
+}
+
+function xyzToLab(x, y, z, percentage) {
+  const Xn = 95.047;
+  const Yn = 100.000;
+  const Zn = 108.883;
+  const xNorm = x / Xn;
+  const yNorm = y / Yn;
+  const zNorm = z / Zn;
+  function f(t) {
+    return t > 0.008856 ? Math.pow(t, 1 / 3) : (t * 7.787) + (16 / 116);
+  }
+  const L = 116 * f(yNorm) - 16;
+  const a = 500 * (f(xNorm) - f(yNorm));
+  const b = 200 * (f(yNorm) - f(zNorm));
+  if (percentage) {
+    return [L.toFixed(0) + "%", a.toFixed(0) + "%", b.toFixed(0) + "%"];
+  } else {
+    return [L.toFixed(0), a.toFixed(0), b.toFixed(0)];
+  }
+}
+
+function labToLch(L, a, b, percentage) {
+  const C = Math.sqrt(a * a + b * b);
+  const H = Math.atan2(b, a) * (180 / Math.PI);
+  const hue = (H + 360) % 360;
+  if (percentage) {
+    return [L + "%", C.toFixed(0) + "%", hue.toFixed(0) + "%"];
+  } else {
+    return [L, C.toFixed(0), hue.toFixed(0)];
+  }
+}
+
+
+
+
+
 class Format {
   constructor(format_btn) {
     this.Format_btn = format_btn
@@ -191,13 +310,20 @@ class Format {
     this.Format_btn_child = this.Format_list.children
     this.Color_format
     this.Color_format_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[0]
+    this.Shadow_box_color_format_value = undefined
     this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
     this.alpha_value = this.Format_btn.getAttribute("hex_code")
     this.rgb_value = hexToRgb(this.hex_value)
+    this.css_value = this.rgb_value
+    this.hsl_value = rgbToHsl(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
+    this.hsb_value = rgbToHsb(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
+    this.xyz_value = rgbToXyz(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
+    this.lab_value = xyzToLab(this.xyz_value[0].slice(0, -1), this.xyz_value[1].slice(0, -1), this.xyz_value[2].slice(0, -1), true)
+    this.lch_value = labToLch(this.lab_value[0].slice(0, -1), this.lab_value[1].slice(0, -1), this.lab_value[2].slice(0, -1), true)
   }
 
   Format_list_creator() {
-    console.log(this.rgb_value)
+    // console.log(this.rgb_value)
     this.Format_btn.addEventListener("click", (e) => {
       this.Format_list.classList.toggle("active")
     })
@@ -207,8 +333,8 @@ class Format {
         this.Format_btn.innerHTML = e.target.innerHTML
         this.Format_list.classList.remove("active")
 
-        if(this.Color_format === "HEX"){
-          this.Color_format_data.classList.add("gap-10","row-col")
+        if (this.Color_format === "HEX") {
+          this.Color_format_data.classList.add("gap-10", "row-col")
           this.Color_format_data.classList.remove("gap-5")
           this.Color_format_data.innerHTML = `
           <div class="color_format_index_value row space-between align-center text-upper">
@@ -220,33 +346,75 @@ class Format {
           `
         }
 
-        if (this.Color_format === "RGB") {
+        switch (this.Color_format) {
+          case "RGB":
+            this.Shadow_box_color_format_value = this.rgb_value
+            break;
+
+          case "HSL":
+            this.Shadow_box_color_format_value = this.hsl_value
+            break;
+
+          case "HSB":
+            this.Shadow_box_color_format_value = this.hsb_value
+            break;
+
+          case "XYZ":
+            this.Shadow_box_color_format_value = this.xyz_value
+            break;
+
+          case "LAB":
+            this.Shadow_box_color_format_value = this.lab_value
+            break;
+
+          case "LCH":
+            this.Shadow_box_color_format_value = this.lch_value
+            break;
+
+          case "CSS":
+            this.Shadow_box_color_format_value = this.css_value
+            break;
+        }
+
+        if (this.Color_format === "RGB" || this.Color_format === "HSL" || this.Color_format === "HSB" || this.Color_format === "CSS" || this.Color_format === "LCH" || this.Color_format === "LAB" || this.Color_format === "XYZ") {
           this.Color_format_data.classList.add("gap-5")
           this.Color_format_data.classList.remove("gap-10", "row-col")
+
+
+
+          console.log(this.Shadow_box_color_format_value)
+
+
+
+
+
+
+
+
           this.Color_format_data.innerHTML = `
           <div class="row row-col gap-10 col-4">
             <div class="color_format_index_value row space-between align-center text-upper">
               <p>[</p>
-              <p>R</p>
+              <p>${this.Color_format[0]}</p>
               <p>]</p>
             </div>
-            <h3 class="text-center text-upper">${this.rgb_value[0]}</h3>
+            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[0]}</h3>
           </div>
           <div class="row row-col gap-10 col-4">
             <div class="color_format_index_value row space-between align-center text-upper">
               <p>[</p>
-              <p>G</p>
+              <p>${this.Color_format[1]}</p>
               <p>]</p>
             </div>
-            <h3 class="text-center text-upper">${this.rgb_value[1]}</h3>
+            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[1]}</h3>
           </div>
           <div class="row row-col gap-10 col-4">
             <div class="color_format_index_value row space-between align-center text-upper">
               <p>[</p>
-              <p>B</p>
+              <p>${this.Color_format[2]}</p>
               <p>]</p>
             </div>
-            <h3 class="text-center text-upper">${this.rgb_value[2]}</h3>
+            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[2]}</h3>
           </div>`
         }
 
