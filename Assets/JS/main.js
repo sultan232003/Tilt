@@ -172,30 +172,32 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 const Shadow_box_color_format_btn = document.getElementsByClassName("shadow_box_color_format_btn")
 const Color_format_box = document.getElementsByClassName("color_format")
 
-function hexToRgb(hex) {
+function hexToRgba(hex, alpha = 'FF') {
   hex = hex.replace(/^#/, '');
-  if (hex.length === 3) {
-    hex = hex.split('').map(char => char + char).join('');
+  let r, g, b, a = 1;
+  if (hex.length === 6 || hex.length === 8) {
+    r = parseInt(hex.substring(0, 2), 16);
+    g = parseInt(hex.substring(2, 4), 16);
+    b = parseInt(hex.substring(4, 6), 16);
+    a = parseInt(alpha, 16) / 255;
+  } else {
+    throw new Error('Invalid HEX color.');
   }
-  let bigint = parseInt(hex, 16);
-  let r = (bigint >> 16) & 255;
-  let g = (bigint >> 8) & 255;
-  let b = bigint & 255;
-  return [r, g, b];
+  return [r, g, b, a.toFixed(2)];
 }
 
-function rgbToHsl(r, g, b, percentage) {
+function rgbaToHsla(r, g, b, a, percentage) {
   r /= 255;
   g /= 255;
   b /= 255;
-  let max = Math.max(r, g, b);
-  let min = Math.min(r, g, b);
-  let delta = max - min;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
   let l = (max + min) / 2;
   let h, s;
   if (delta === 0) {
-    s = 0;
     h = 0;
+    s = 0;
   } else {
     s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
     switch (max) {
@@ -209,12 +211,13 @@ function rgbToHsl(r, g, b, percentage) {
         h = (r - g) / delta + 4;
         break;
     }
-    h /= 6;
+    h *= 60;
   }
+  a = Math.max(0, Math.min(1, a));
   if (percentage) {
-    return [Math.round(h * 360) + "%", Math.round(s * 100) + "%", Math.round(l * 100) + "%"];
+    return [Math.round(h) + "%", Math.round(s * 100) + "%", Math.round(l * 100) + "%", a.toFixed(2)];
   } else {
-    return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+    return [Math.round(h).toFixed(2), Math.round(s * 100).toFixed(2), Math.round(l * 100).toFixed(2), a.toFixed(2)];
   }
 }
 
@@ -299,9 +302,22 @@ function labToLch(L, a, b, percentage) {
   }
 }
 
-
-
-
+function rgbToCmyk(r, g, b) {
+  let c = 1 - (r / 255);
+  let m = 1 - (g / 255);
+  let y = 1 - (b / 255);
+  let k = Math.min(c, m, y);
+  if (k === 1) {
+    c = 0;
+    m = 0;
+    y = 0;
+  } else {
+    c = (c - k) / (1 - k);
+    m = (m - k) / (1 - k);
+    y = (y - k) / (1 - k);
+  }
+  return [(c * 100).toFixed(1), (m * 100).toFixed(1), (y * 100).toFixed(1), (k * 100).toFixed(1)];
+}
 
 class Format {
   constructor(format_btn) {
@@ -310,22 +326,28 @@ class Format {
     this.Format_btn_child = this.Format_list.children
     this.Color_format
     this.Color_format_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[0]
+    this.Color_alpha_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[1]
     this.Shadow_box_color_format_value = undefined
     this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
-    this.alpha_value = this.Format_btn.getAttribute("hex_code")
-    this.rgb_value = hexToRgb(this.hex_value)
+    this.alpha_value = this.Format_btn.getAttribute("alpha_value")
+    this.rgb_value = hexToRgba(this.hex_value, this.alpha_value)
     this.css_value = this.rgb_value
-    this.hsl_value = rgbToHsl(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
+    this.hsl_value = rgbaToHsla(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], this.rgb_value[3], true)
     this.hsb_value = rgbToHsb(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
     this.xyz_value = rgbToXyz(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
     this.lab_value = xyzToLab(this.xyz_value[0].slice(0, -1), this.xyz_value[1].slice(0, -1), this.xyz_value[2].slice(0, -1), true)
     this.lch_value = labToLch(this.lab_value[0].slice(0, -1), this.lab_value[1].slice(0, -1), this.lab_value[2].slice(0, -1), true)
+    this.cmyk_value = rgbToCmyk(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2])
   }
 
   Format_list_creator() {
-    // console.log(this.rgb_value)
     this.Format_btn.addEventListener("click", (e) => {
       this.Format_list.classList.toggle("active")
+    })
+    document.addEventListener("click",(e)=>{
+      if(e.target !== this.Format_btn){
+        this.Format_list.classList.remove("active")
+      }
     })
     Array.from(this.Format_btn_child).forEach(Format_btn_childs => {
       Format_btn_childs.addEventListener("click", (e) => {
@@ -342,17 +364,24 @@ class Format {
             <p>HEX</p>
             <p>]</p>
           </div>
-          <h3 class="text-center text-upper">#959da5</h3>
+          <h3 class="text-center text-upper">${"#" + this.hex_value}</h3>
           `
         }
 
         switch (this.Color_format) {
+          case "HEX":
+            this.Shadow_box_color_format_value = this.hex_value
+            this.Shadow_box_alpha_value = this.alpha_value
+            break;
+
           case "RGB":
             this.Shadow_box_color_format_value = this.rgb_value
+            this.Shadow_box_alpha_value = this.rgb_value[3]
             break;
 
           case "HSL":
             this.Shadow_box_color_format_value = this.hsl_value
+            this.Shadow_box_alpha_value = this.hsl_value[3]
             break;
 
           case "HSB":
@@ -373,24 +402,17 @@ class Format {
 
           case "CSS":
             this.Shadow_box_color_format_value = this.css_value
+            this.Shadow_box_alpha_value = this.css_value[3]
+            break;
+
+          case "CMYK":
+            this.Shadow_box_color_format_value = this.cmyk_value
             break;
         }
 
         if (this.Color_format === "RGB" || this.Color_format === "HSL" || this.Color_format === "HSB" || this.Color_format === "CSS" || this.Color_format === "LCH" || this.Color_format === "LAB" || this.Color_format === "XYZ") {
           this.Color_format_data.classList.add("gap-5")
           this.Color_format_data.classList.remove("gap-10", "row-col")
-
-
-
-          console.log(this.Shadow_box_color_format_value)
-
-
-
-
-
-
-
-
           this.Color_format_data.innerHTML = `
           <div class="row row-col gap-10 col-4">
             <div class="color_format_index_value row space-between align-center text-upper">
@@ -418,35 +440,70 @@ class Format {
           </div>`
         }
 
+        if (this.Color_format === "HEX" || this.Color_format === "RGB" || this.Color_format === "HSL" || this.Color_format === "HSB" || this.Color_format === "CSS") {
+          this.Color_alpha_data.classList.add("col-3")
+          this.Color_alpha_data.innerHTML = `
+          <div class="color_format_index_value row space-between align-center text-upper">
+            <p>[</p>
+            <p>alpha</p>
+            <p>]</p>
+          </div>
+          <h3 class="text-center text-upper">${this.Shadow_box_alpha_value}</h3>
+          `
+        }
+
+        if (this.Color_format === "HSB" || this.Color_format === "LCH" || this.Color_format === "LAB" || this.Color_format === "XYZ") {
+          this.Color_alpha_data.classList.remove("col-3")
+          this.Color_alpha_data.innerHTML = ``
+        }
+
+        if (this.Color_format === "CMYK") {
+          this.Color_format_data.classList.add("gap-5")
+          this.Color_format_data.classList.remove("gap-10", "row-col")
+          this.Color_alpha_data.classList.remove("col-3")
+          this.Color_alpha_data.innerHTML = ``
+          this.Color_format_data.innerHTML = `
+          <div class="row row-col gap-10 col-3">
+            <div class="color_format_index_value row space-between align-center text-upper">
+              <p>[</p>
+              <p>${this.Color_format[0]}</p>
+              <p>]</p>
+            </div>
+            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[0]}</h3>
+          </div>
+          <div class="row row-col gap-10 col-3">
+            <div class="color_format_index_value row space-between align-center text-upper">
+              <p>[</p>
+              <p>${this.Color_format[1]}</p>
+              <p>]</p>
+            </div>
+            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[1]}</h3>
+          </div>
+          <div class="row row-col gap-10 col-3">
+            <div class="color_format_index_value row space-between align-center text-upper">
+              <p>[</p>
+              <p>${this.Color_format[2]}</p>
+              <p>]</p>
+            </div>
+            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[2]}</h3>
+          </div>
+          <div class="row row-col gap-10 col-3">
+            <div class="color_format_index_value row space-between align-center text-upper">
+              <p>[</p>
+              <p>${this.Color_format[3]}</p>
+              <p>]</p>
+            </div>
+            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[3]}</h3>
+          </div>`
+        }
       })
     });
-
-    // console.log(this.Format_btn.parentNode.nextElementSibling.children[0].children[0])
-    // <div class="color_format_data row row-col col-9 gap-10">
-    //               <div class="color_format_index_value row space-between align-center text-upper">
-    //                 <p>[</p>
-    //                 <p>HEX</p>
-    //                 <p>]</p>
-    //               </div>
-    //               <h3 class="text-center text-upper">#959da5</h3>
-    //             </div>
-    //             <div class="color_alpha row row-col col-3 gap-10">
-    //               <div class="color_format_index_value row space-between align-center text-upper">
-    //                 <p>[</p>
-    //                 <p>alpha</p>
-    //                 <p>]</p>
-    //               </div>
-    //               <h3 class="text-center text-upper">33</h3>
-    //             </div>
   }
 }
 
 let Shadow_box_color_format_btn_final
 
 Array.from(Shadow_box_color_format_btn).forEach(Shadow_box_color_format_btns => {
-
-  // console.log(Shadow_box_color_format_btns.nextElementSibling)
-
   Shadow_box_color_format_btn_final = new Format(Shadow_box_color_format_btns)
   Shadow_box_color_format_btn_final.Format_list_creator()
 });
