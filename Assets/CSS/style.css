@@ -202,9 +202,11 @@ body {
   font-weight: 500;
   line-height: 0;
   text-align: center;
-  /* -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none; */
+}
+
+.mac_3D_btn:active{
+  padding-bottom: 0px;
+  box-shadow: inset 0px -1px 0px #EEEFF7;
 }
 
 .mac_3D_btn:hover {
@@ -458,9 +460,14 @@ body {
 
 .shadow_box_copy_btn {
   background: var(--Majorelle_Blue);
-  box-shadow: inset 0px -3px 0px var(--Palatinate_blue);
+  box-shadow: inset 0px -4px 0px var(--Palatinate_blue);
   color: var(--White);
   border: none;
+}
+
+.shadow_box_copy_btn:active{
+  padding-bottom: 0px;
+  box-shadow: inset 0px -1px 0px var(--Palatinate_blue);
 }
 
 .color_format_index_value {
@@ -525,6 +532,7 @@ body {
   transform: translateY(calc(var(--mac_btn) - 2px));
   opacity: 0;
   visibility: hidden;
+  box-shadow: 0px 221px 62px rgba(80, 70, 255, 0), 0px 142px 57px rgba(80, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05);
 }
 
 .format_list>div {
