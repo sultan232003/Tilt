@@ -204,13 +204,17 @@ body {
   text-align: center;
 }
 
-.mac_3D_btn:active{
+.mac_3D_btn:active {
   padding-bottom: 0px;
   box-shadow: inset 0px -1px 0px #EEEFF7;
 }
 
 .mac_3D_btn:hover {
   cursor: url(../Image/Point.png)16 16, auto;
+}
+
+.pos-rel{
+  position: relative;
 }
 
 
@@ -465,7 +469,7 @@ body {
   border: none;
 }
 
-.shadow_box_copy_btn:active{
+.shadow_box_copy_btn:active {
   padding-bottom: 0px;
   box-shadow: inset 0px -1px 0px var(--Palatinate_blue);
 }
@@ -533,6 +537,7 @@ body {
   opacity: 0;
   visibility: hidden;
   box-shadow: 0px 221px 62px rgba(80, 70, 255, 0), 0px 142px 57px rgba(80, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05);
+  z-index: 1;
 }
 
 .format_list>div {
@@ -559,3 +564,85 @@ body {
   opacity: 1;
   visibility: visible;
 }
+
+/* ////////////////////// */
+
+.shadow_box_shadow_color_btn{
+  display: block;
+}
+
+.color_option_list {
+  position: absolute;
+  display: flex;
+  gap: 2px;
+  border: 0.5px solid var(--Border);
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 5px 3px 3px 3px;
+  box-sizing: border-box;
+  font-size: 10px;
+  color: var(--Russian_violet);
+  font-weight: 500;
+  line-height: 0.7;
+  text-align: center;
+  overflow: hidden;
+  transition: all 0.1s ease-in-out;
+  flex-direction: column;
+  transform: translateY(-2px);
+  z-index: 1;
+  height: 170px;
+  overflow-y: scroll;
+  user-select: none;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0px 221px 62px rgba(80, 70, 255, 0), 0px 142px 57px rgba(80, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05);
+}
+
+.color_option_list.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.color_option_list > input{
+  background: var(--White);
+  border: 0.5px solid var(--Border);
+  box-shadow: inset 2px 3px 1px #EEEFF7;
+  border-radius: 4px;
+  font-size: 10px;
+  color: var(--Russian_violet);
+  font-weight: 500;
+  line-height: 0.7;
+  height: 20px;
+  flex-shrink: 0;
+  padding: 0px 6px;
+  outline: none;
+}
+
+.color_option_list > div > div{
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color_view_bg);
+  aspect-ratio: 1 / 1;
+}
+
+.color_option_list > div {
+  border: 0.5px solid transparent;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0px 6px;
+  flex-shrink: 0;
+}
+
+.color_option_list > div:hover {
+  border: 0.5px solid var(--Alice_blue_2);
+  padding-bottom: 3px;
+  box-shadow: inset 0px -3px 0px #EEEFF7;
+  /* cursor: var(--pointer); */
+}
+
+/* CODE ABOUT SHADOW AREA END HERE */
