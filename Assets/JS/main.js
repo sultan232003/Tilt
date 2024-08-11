@@ -167,157 +167,10 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 
 // TLIT EFFECT CODE ENDS HERE
 
-// SHADOW EFFECT CODE STARTS HERE
+// SHADOW EFFECT COLOR FORMAT CODE STARTS HERE
 
 const Shadow_box_color_format_btn = document.getElementsByClassName("shadow_box_color_format_btn")
 const Color_format_box = document.getElementsByClassName("color_format")
-
-function hexToRgba(hex, alpha = 'FF') {
-  hex = hex.replace(/^#/, '');
-  let r, g, b, a = 1;
-  if (hex.length === 6 || hex.length === 8) {
-    r = parseInt(hex.substring(0, 2), 16);
-    g = parseInt(hex.substring(2, 4), 16);
-    b = parseInt(hex.substring(4, 6), 16);
-    a = parseInt(alpha, 16) / 255;
-  } else {
-    throw new Error('Invalid HEX color.');
-  }
-  return [r, g, b, a.toFixed(2)];
-}
-
-function rgbaToHsla(r, g, b, a, percentage) {
-  r /= 255;
-  g /= 255;
-  b /= 255;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const delta = max - min;
-  let l = (max + min) / 2;
-  let h, s;
-  if (delta === 0) {
-    h = 0;
-    s = 0;
-  } else {
-    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
-    switch (max) {
-      case r:
-        h = (g - b) / delta + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / delta + 2;
-        break;
-      case b:
-        h = (r - g) / delta + 4;
-        break;
-    }
-    h *= 60;
-  }
-  a = Math.max(0, Math.min(1, a));
-  if (percentage) {
-    return [Math.round(h) + "%", Math.round(s * 100) + "%", Math.round(l * 100) + "%", a.toFixed(2)];
-  } else {
-    return [Math.round(h).toFixed(2), Math.round(s * 100).toFixed(2), Math.round(l * 100).toFixed(2), a.toFixed(2)];
-  }
-}
-
-function rgbToHsb(r, g, b, percentage) {
-  r /= 255;
-  g /= 255;
-  b /= 255;
-  let max = Math.max(r, g, b);
-  let min = Math.min(r, g, b);
-  let delta = max - min;
-  let h, s, v;
-  v = max;
-  s = max === 0 ? 0 : delta / max;
-  if (delta === 0) {
-    h = 0;
-  } else {
-    switch (max) {
-      case r:
-        h = (g - b) / delta + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / delta + 2;
-        break;
-      case b:
-        h = (r - g) / delta + 4;
-        break;
-    }
-    h /= 6;
-  }
-  if (percentage) {
-    return [Math.round(h * 360) + "%", Math.round(s * 100) + "%", Math.round(v * 100) + "%"];
-  } else {
-    return [Math.round(h * 360), Math.round(s * 100), Math.round(v * 100)];
-  }
-}
-
-function rgbToXyz(r, g, b, percentage) {
-  function linearize(value) {
-    return value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
-  }
-  r = linearize(r / 255);
-  g = linearize(g / 255);
-  b = linearize(b / 255);
-  const x = r * 0.4124564 + g * 0.3575761 + b * 0.1804375;
-  const y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750;
-  const z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041;
-  if (percentage) {
-    return [(x * 100).toFixed(1) + "%", (y * 100).toFixed(1) + "%", (z * 100).toFixed(1) + "%"];
-  } else {
-    return [x, y, z];
-  }
-}
-
-function xyzToLab(x, y, z, percentage) {
-  const Xn = 95.047;
-  const Yn = 100.000;
-  const Zn = 108.883;
-  const xNorm = x / Xn;
-  const yNorm = y / Yn;
-  const zNorm = z / Zn;
-  function f(t) {
-    return t > 0.008856 ? Math.pow(t, 1 / 3) : (t * 7.787) + (16 / 116);
-  }
-  const L = 116 * f(yNorm) - 16;
-  const a = 500 * (f(xNorm) - f(yNorm));
-  const b = 200 * (f(yNorm) - f(zNorm));
-  if (percentage) {
-    return [L.toFixed(0) + "%", a.toFixed(0) + "%", b.toFixed(0) + "%"];
-  } else {
-    return [L.toFixed(0), a.toFixed(0), b.toFixed(0)];
-  }
-}
-
-function labToLch(L, a, b, percentage) {
-  const C = Math.sqrt(a * a + b * b);
-  const H = Math.atan2(b, a) * (180 / Math.PI);
-  const hue = (H + 360) % 360;
-  if (percentage) {
-    return [L + "%", C.toFixed(0) + "%", hue.toFixed(0) + "%"];
-  } else {
-    return [L, C.toFixed(0), hue.toFixed(0)];
-  }
-}
-
-function rgbToCmyk(r, g, b) {
-  let c = 1 - (r / 255);
-  let m = 1 - (g / 255);
-  let y = 1 - (b / 255);
-  let k = Math.min(c, m, y);
-  if (k === 1) {
-    c = 0;
-    m = 0;
-    y = 0;
-  } else {
-    c = (c - k) / (1 - k);
-    m = (m - k) / (1 - k);
-    y = (y - k) / (1 - k);
-  }
-  return [(c * 100).toFixed(1), (m * 100).toFixed(1), (y * 100).toFixed(1), (k * 100).toFixed(1)];
-}
 
 class Format {
   constructor(format_btn) {
@@ -344,8 +197,8 @@ class Format {
     this.Format_btn.addEventListener("click", (e) => {
       this.Format_list.classList.toggle("active")
     })
-    document.addEventListener("click",(e)=>{
-      if(e.target !== this.Format_btn){
+    document.addEventListener("click", (e) => {
+      if (e.target !== this.Format_btn) {
         this.Format_list.classList.remove("active")
       }
     })
@@ -508,4 +361,112 @@ Array.from(Shadow_box_color_format_btn).forEach(Shadow_box_color_format_btns => 
   Shadow_box_color_format_btn_final.Format_list_creator()
 });
 
-// SHADOW EFFECT CODE ENDS HERE
+// SHADOW EFFECT COLOR FORMAT CODE ENDS HERE
+
+// SHADOW EFFECT SHADOW COLOR CODE STARTS HERE
+
+const Color_option_list = document.getElementsByClassName("color_option_list")
+const shadowColors = [
+  { name: "Charcoal", hex: "#36454F" },
+  { name: "Majorelle Blue", hex: "#5546FF" },
+  { name: "Cadet gray", hex: "#959DA5" },
+  { name: "Dim gray", hex: "#64646F" },
+  { name: "UCLA Blue", hex: "#50749D" },
+  { name: "Slate Gray", hex: "#708090" },
+  { name: "Lavender (web)", hex: "#EBE9FF" },
+  { name: "Dark Slate Gray", hex: "#2F4F4F" },
+  { name: "Ghost white", hex: "#EEEFF7" },
+  { name: "Gunmetal", hex: "#2A3439" },
+  { name: "Dim Gray", hex: "#696969" },
+  { name: "Gray", hex: "#808080" },
+  { name: "Light Slate Gray", hex: "#778899" },
+  { name: "Steel Blue", hex: "#4682B4" },
+  { name: "Jordy Blue", hex: "#90AEF4" },
+  { name: "Royal Blue", hex: "#4169E1" },
+  { name: "Medium Slate Blue", hex: "#7B68EE" },
+  { name: "Dark Olive Green", hex: "#556B2F" },
+  { name: "Forest Green", hex: "#228B22" },
+  { name: "Dark Green", hex: "#006400" },
+  { name: "Dark Khaki", hex: "#BDB76B" },
+  { name: "Saddle Brown", hex: "#8B4513" },
+  { name: "Sienna", hex: "#A0522D" },
+  { name: "Peru", hex: "#CD853F" },
+  { name: "Chocolate", hex: "#D2691E" },
+  { name: "Rosy Brown", hex: "#BC8F8F" },
+  { name: "Indian Red", hex: "#CD5C5C" },
+  { name: "Firebrick", hex: "#B22222" },
+  { name: "Maroon", hex: "#800000" },
+  { name: "Dark Red", hex: "#8B0000" },
+  { name: "Crimson", hex: "#DC143C" },
+  { name: "Medium Violet Red", hex: "#C71585" },
+  { name: "Deep Pink", hex: "#FF1493" },
+  { name: "Dark Orchid", hex: "#9932CC" },
+  { name: "Purple", hex: "#800080" },
+  { name: "Rebecca Purple", hex: "#663399" },
+  { name: "Medium Purple", hex: "#9370DB" },
+  { name: "Thistle", hex: "#D8BFD8" },
+  { name: "Plum", hex: "#DDA0DD" },
+  { name: "Lavender", hex: "#E6E6FA" },
+  { name: "Lavender Blush", hex: "#FFF0F5" },
+  { name: "Light Pink", hex: "#FFB6C1" },
+  { name: "Hot Pink", hex: "#FF69B4" },
+  { name: "Light Coral", hex: "#F08080" },
+  { name: "Salmon", hex: "#FA8072" },
+  { name: "Coral", hex: "#FF7F50" },
+  { name: "Orange Red", hex: "#FF4500" },
+  { name: "Dark Orange", hex: "#FF8C00" },
+  { name: "Orange", hex: "#FFA500" },
+  { name: "Goldenrod", hex: "#DAA520" },
+  { name: "Dark Goldenrod", hex: "#B8860B" },
+  { name: "Cornsilk", hex: "#FFF8DC" },
+  { name: "Beige", hex: "#F5F5DC" },
+  { name: "Antique White", hex: "#FAEBD7" },
+  { name: "White Smoke", hex: "#F5F5F5" },
+  { name: "Gainsboro", hex: "#DCDCDC" }
+];
+
+class Shadow_color {
+  constructor(Color_option_list) {
+    this.Color_option_list = Color_option_list
+    this.Shadow_box_shadow_color_btn = this.Color_option_list.previousElementSibling
+    this.color_view_box
+    this.color_view
+    this.color_name
+  }
+  
+  Color_Update(){
+    for(let i = 0; i < shadowColors.length; i++){
+      this.color_view_box = document.createElement("div")
+      this.color_view = document.createElement("div")
+      this.color_name = document.createElement("p")
+      this.Color_option_list.appendChild(this.color_view_box)
+      this.color_view_box.appendChild(this.color_view)
+      this.color_view_box.appendChild(this.color_name)
+      this.color_view.classList.add("color_view")
+      this.color_view.setAttribute("style",`--color_view_bg:${shadowColors[i].hex};`)
+      this.color_name.classList.add("color_value")
+      this.color_name.innerHTML = shadowColors[i].name
+    }
+
+    this.Shadow_box_shadow_color_btn.addEventListener("click",()=>{
+      this.Color_option_list.classList.toggle("active")
+    })
+
+    document.addEventListener("click", (e) => {
+      if (e.target !== this.Shadow_box_shadow_color_btn) {
+        this.Color_option_list.classList.remove("active")
+      }
+    })
+
+    console.log(this.Shadow_box_shadow_color_btn)
+  }
+}
+
+let Final_Shadow_Color
+
+Array.from(Color_option_list).forEach(Color_option_lists => {
+  Final_Shadow_Color = new Shadow_color(Color_option_lists)
+  Final_Shadow_Color.Color_Update()
+});
+
+// SHADOW EFFECT SHADOW COLOR CODE ENDS HERE
