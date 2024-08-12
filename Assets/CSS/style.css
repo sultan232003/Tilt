@@ -645,4 +645,21 @@ body {
   /* cursor: var(--pointer); */
 }
 
+.shadow_box_shadow_color_btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  line-height: 0.7;
+  padding-bottom: 4px;
+}
+
+.shadow_box_shadow_color_btn > div{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color_view_bg);
+  aspect-ratio: 1 / 1;
+}
+
 /* CODE ABOUT SHADOW AREA END HERE */
