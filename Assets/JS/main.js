@@ -368,6 +368,13 @@ Array.from(Shadow_box_color_format_btn).forEach(Shadow_box_color_format_btns => 
 const Color_option_list = document.getElementsByClassName("color_option_list")
 const shadowColors = [
   { name: "Charcoal", hex: "#36454F" },
+  { name: "Cadet gray", hex: "#959da5" },
+  { name: "Dim gray", hex: "#64646f" },
+  { name: "Black", hex: "#000000" },
+  { name: "Dark purple", hex: "#110c2e" },
+  { name: "Dim gray", hex: "#636363" },
+  { name: "Raisin black", hex: "#1F2632" },
+  { name: "Tea green", hex: "#CBEFBE" },
   { name: "Majorelle Blue", hex: "#5546FF" },
   { name: "Cadet gray", hex: "#959DA5" },
   { name: "Dim gray", hex: "#64646F" },
@@ -377,16 +384,21 @@ const shadowColors = [
   { name: "Dark Slate Gray", hex: "#2F4F4F" },
   { name: "Ghost white", hex: "#EEEFF7" },
   { name: "Gunmetal", hex: "#2A3439" },
+  { name: "Jasmine", hex: "#FFDC7C" },
   { name: "Dim Gray", hex: "#696969" },
   { name: "Gray", hex: "#808080" },
   { name: "Light Slate Gray", hex: "#778899" },
   { name: "Steel Blue", hex: "#4682B4" },
   { name: "Jordy Blue", hex: "#90AEF4" },
   { name: "Royal Blue", hex: "#4169E1" },
+  { name: "Palatinate blue", hex: "#402FFF" },
   { name: "Medium Slate Blue", hex: "#7B68EE" },
+  { name: "Violet", hex: "#7D23FF" },
   { name: "Dark Olive Green", hex: "#556B2F" },
   { name: "Forest Green", hex: "#228B22" },
+  { name: "Red (Crayola)", hex: "#EA495F" },
   { name: "Dark Green", hex: "#006400" },
+  { name: "Jordy Blue", hex: "#88BEF4" },
   { name: "Dark Khaki", hex: "#BDB76B" },
   { name: "Saddle Brown", hex: "#8B4513" },
   { name: "Sienna", hex: "#A0522D" },
@@ -444,6 +456,7 @@ class Shadow_color {
       this.color_view_box.appendChild(this.color_name)
       this.color_view.classList.add("color_view")
       this.color_view.setAttribute("style",`--color_view_bg:${shadowColors[i].hex};`)
+      this.color_view.setAttribute("hex_value",shadowColors[i].hex)
       this.color_name.classList.add("color_value")
       this.color_name.innerHTML = shadowColors[i].name
     }
@@ -452,13 +465,18 @@ class Shadow_color {
       this.Color_option_list.classList.toggle("active")
     })
 
+    Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
+      color_view_boxes.addEventListener("click",(e)=>{
+        this.Shadow_box_shadow_color_btn.children[0].setAttribute("style",`--color_view_bg:${color_view_boxes.children[0].getAttribute("hex_value")};`)
+        this.Shadow_box_shadow_color_btn.children[1].innerHTML = color_view_boxes.children[1].innerHTML
+      })
+    })
+
     document.addEventListener("click", (e) => {
-      if (e.target !== this.Shadow_box_shadow_color_btn) {
+      if (e.target !== this.Shadow_box_shadow_color_btn && e.target !== this.Color_option_list.children[0]) {
         this.Color_option_list.classList.remove("active")
       }
     })
-
-    console.log(this.Shadow_box_shadow_color_btn)
   }
 }
 
