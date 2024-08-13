@@ -167,205 +167,8 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 
 // TLIT EFFECT CODE ENDS HERE
 
-// SHADOW EFFECT COLOR FORMAT CODE STARTS HERE
+// SHADOW EFFECT CODE STARTS HERE
 
-const Shadow_box_color_format_btn = document.getElementsByClassName("shadow_box_color_format_btn")
-const Color_format_box = document.getElementsByClassName("color_format")
-
-class Format {
-  constructor(format_btn) {
-    this.Format_btn = format_btn
-    this.Format_list = this.Format_btn.nextElementSibling
-    this.Format_btn_child = this.Format_list.children
-    this.Color_format
-    this.Color_format_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[0]
-    this.Color_alpha_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[1]
-    this.Shadow_box_color_format_value = undefined
-    this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
-    this.alpha_value = this.Format_btn.getAttribute("alpha_value")
-    this.rgb_value = hexToRgba(this.hex_value, this.alpha_value)
-    this.css_value = this.rgb_value
-    this.hsl_value = rgbaToHsla(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], this.rgb_value[3], true)
-    this.hsb_value = rgbToHsb(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
-    this.xyz_value = rgbToXyz(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
-    this.lab_value = xyzToLab(this.xyz_value[0].slice(0, -1), this.xyz_value[1].slice(0, -1), this.xyz_value[2].slice(0, -1), true)
-    this.lch_value = labToLch(this.lab_value[0].slice(0, -1), this.lab_value[1].slice(0, -1), this.lab_value[2].slice(0, -1), true)
-    this.cmyk_value = rgbToCmyk(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2])
-  }
-
-  Format_list_creator() {
-    this.Format_btn.addEventListener("click", (e) => {
-      this.Format_list.classList.toggle("active")
-    })
-    document.addEventListener("click", (e) => {
-      if (e.target !== this.Format_btn) {
-        this.Format_list.classList.remove("active")
-      }
-    })
-    Array.from(this.Format_btn_child).forEach(Format_btn_childs => {
-      Format_btn_childs.addEventListener("click", (e) => {
-        this.Color_format = e.target.innerHTML.slice(1, -1)
-        this.Format_btn.innerHTML = e.target.innerHTML
-        this.Format_list.classList.remove("active")
-
-        if (this.Color_format === "HEX") {
-          this.Color_format_data.classList.add("gap-10", "row-col")
-          this.Color_format_data.classList.remove("gap-5")
-          this.Color_format_data.innerHTML = `
-          <div class="color_format_index_value row space-between align-center text-upper">
-            <p>[</p>
-            <p>HEX</p>
-            <p>]</p>
-          </div>
-          <h3 class="text-center text-upper">${"#" + this.hex_value}</h3>
-          `
-        }
-
-        switch (this.Color_format) {
-          case "HEX":
-            this.Shadow_box_color_format_value = this.hex_value
-            this.Shadow_box_alpha_value = this.alpha_value
-            break;
-
-          case "RGB":
-            this.Shadow_box_color_format_value = this.rgb_value
-            this.Shadow_box_alpha_value = this.rgb_value[3]
-            break;
-
-          case "HSL":
-            this.Shadow_box_color_format_value = this.hsl_value
-            this.Shadow_box_alpha_value = this.hsl_value[3]
-            break;
-
-          case "HSB":
-            this.Shadow_box_color_format_value = this.hsb_value
-            break;
-
-          case "XYZ":
-            this.Shadow_box_color_format_value = this.xyz_value
-            break;
-
-          case "LAB":
-            this.Shadow_box_color_format_value = this.lab_value
-            break;
-
-          case "LCH":
-            this.Shadow_box_color_format_value = this.lch_value
-            break;
-
-          case "CSS":
-            this.Shadow_box_color_format_value = this.css_value
-            this.Shadow_box_alpha_value = this.css_value[3]
-            break;
-
-          case "CMYK":
-            this.Shadow_box_color_format_value = this.cmyk_value
-            break;
-        }
-
-        if (this.Color_format === "RGB" || this.Color_format === "HSL" || this.Color_format === "HSB" || this.Color_format === "CSS" || this.Color_format === "LCH" || this.Color_format === "LAB" || this.Color_format === "XYZ") {
-          this.Color_format_data.classList.add("gap-5")
-          this.Color_format_data.classList.remove("gap-10", "row-col")
-          this.Color_format_data.innerHTML = `
-          <div class="row row-col gap-10 col-4">
-            <div class="color_format_index_value row space-between align-center text-upper">
-              <p>[</p>
-              <p>${this.Color_format[0]}</p>
-              <p>]</p>
-            </div>
-            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[0]}</h3>
-          </div>
-          <div class="row row-col gap-10 col-4">
-            <div class="color_format_index_value row space-between align-center text-upper">
-              <p>[</p>
-              <p>${this.Color_format[1]}</p>
-              <p>]</p>
-            </div>
-            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[1]}</h3>
-          </div>
-          <div class="row row-col gap-10 col-4">
-            <div class="color_format_index_value row space-between align-center text-upper">
-              <p>[</p>
-              <p>${this.Color_format[2]}</p>
-              <p>]</p>
-            </div>
-            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[2]}</h3>
-          </div>`
-        }
-
-        if (this.Color_format === "HEX" || this.Color_format === "RGB" || this.Color_format === "HSL" || this.Color_format === "HSB" || this.Color_format === "CSS") {
-          this.Color_alpha_data.classList.add("col-3")
-          this.Color_alpha_data.innerHTML = `
-          <div class="color_format_index_value row space-between align-center text-upper">
-            <p>[</p>
-            <p>alpha</p>
-            <p>]</p>
-          </div>
-          <h3 class="text-center text-upper">${this.Shadow_box_alpha_value}</h3>
-          `
-        }
-
-        if (this.Color_format === "HSB" || this.Color_format === "LCH" || this.Color_format === "LAB" || this.Color_format === "XYZ") {
-          this.Color_alpha_data.classList.remove("col-3")
-          this.Color_alpha_data.innerHTML = ``
-        }
-
-        if (this.Color_format === "CMYK") {
-          this.Color_format_data.classList.add("gap-5")
-          this.Color_format_data.classList.remove("gap-10", "row-col")
-          this.Color_alpha_data.classList.remove("col-3")
-          this.Color_alpha_data.innerHTML = ``
-          this.Color_format_data.innerHTML = `
-          <div class="row row-col gap-10 col-3">
-            <div class="color_format_index_value row space-between align-center text-upper">
-              <p>[</p>
-              <p>${this.Color_format[0]}</p>
-              <p>]</p>
-            </div>
-            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[0]}</h3>
-          </div>
-          <div class="row row-col gap-10 col-3">
-            <div class="color_format_index_value row space-between align-center text-upper">
-              <p>[</p>
-              <p>${this.Color_format[1]}</p>
-              <p>]</p>
-            </div>
-            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[1]}</h3>
-          </div>
-          <div class="row row-col gap-10 col-3">
-            <div class="color_format_index_value row space-between align-center text-upper">
-              <p>[</p>
-              <p>${this.Color_format[2]}</p>
-              <p>]</p>
-            </div>
-            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[2]}</h3>
-          </div>
-          <div class="row row-col gap-10 col-3">
-            <div class="color_format_index_value row space-between align-center text-upper">
-              <p>[</p>
-              <p>${this.Color_format[3]}</p>
-              <p>]</p>
-            </div>
-            <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[3]}</h3>
-          </div>`
-        }
-      })
-    });
-  }
-}
-
-let Shadow_box_color_format_btn_final
-
-Array.from(Shadow_box_color_format_btn).forEach(Shadow_box_color_format_btns => {
-  Shadow_box_color_format_btn_final = new Format(Shadow_box_color_format_btns)
-  Shadow_box_color_format_btn_final.Format_list_creator()
-});
-
-// SHADOW EFFECT COLOR FORMAT CODE ENDS HERE
-
-// SHADOW EFFECT SHADOW COLOR CODE STARTS HERE
-
-const Color_option_list = document.getElementsByClassName("color_option_list")
 const shadowColors = [
   { name: "Charcoal", hex: "#36454F" },
   { name: "Cadet gray", hex: "#959da5" },
@@ -437,17 +240,225 @@ const shadowColors = [
   { name: "Gainsboro", hex: "#DCDCDC" }
 ];
 
-class Shadow_color {
-  constructor(Color_option_list) {
-    this.Color_option_list = Color_option_list
-    this.Shadow_box_shadow_color_btn = this.Color_option_list.previousElementSibling
+const Shadow_box = document.getElementsByClassName("shadow_box")
+
+class Shadow {
+  constructor(Shadow_box) {
+    this.Shadow_box = Shadow_box
+
+    this.Format_btn = this.Shadow_box.children[0].children[0]
+    this.Format_list = this.Format_btn.nextElementSibling
+    this.Format_btn_child = this.Format_list.children
+    this.Color_format
+    this.Color_format_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[0]
+    this.Color_alpha_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[1]
+    this.Shadow_box_color_format_value = undefined
+    this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
+    this.alpha_value = this.Format_btn.getAttribute("alpha_value")
+
+    this.Color_option_list = this.Shadow_box.children[0].children[2].children[1]
+    this.Shadow_box_shadow_color_btn = this.Shadow_box.children[0].children[2].children[0]
     this.color_view_box
     this.color_view
     this.color_name
   }
-  
-  Color_Update(){
-    for(let i = 0; i < shadowColors.length; i++){
+
+  color_format_update() {
+    this.rgb_value = hexToRgba(this.hex_value, this.alpha_value)
+    this.css_value = this.rgb_value
+    this.hsl_value = rgbaToHsla(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], this.rgb_value[3], true)
+    this.hsb_value = rgbToHsb(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
+    this.xyz_value = rgbToXyz(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2], true)
+    this.lab_value = xyzToLab(this.xyz_value[0].slice(0, -1), this.xyz_value[1].slice(0, -1), this.xyz_value[2].slice(0, -1), true)
+    this.lch_value = labToLch(this.lab_value[0].slice(0, -1), this.lab_value[1].slice(0, -1), this.lab_value[2].slice(0, -1), true)
+    this.cmyk_value = rgbToCmyk(this.rgb_value[0], this.rgb_value[1], this.rgb_value[2])
+  }
+
+  hex_update() {
+    if (this.Color_format === "HEX") {
+      this.Color_format_data.classList.add("gap-10", "row-col")
+      this.Color_format_data.classList.remove("gap-5")
+      this.Color_format_data.innerHTML = `
+      <div class="color_format_index_value row space-between align-center text-upper">
+      <p>[</p>
+      <p>HEX</p>
+      <p>]</p>
+      </div>
+      <h3 class="text-center text-upper">${"#" + this.hex_value}</h3>
+      `
+    }
+  }
+
+  other_color_update() {
+    if (this.Color_format === "RGB" || this.Color_format === "HSL" || this.Color_format === "HSB" || this.Color_format === "CSS" || this.Color_format === "LCH" || this.Color_format === "LAB" || this.Color_format === "XYZ") {
+      this.Color_format_data.classList.add("gap-5")
+      this.Color_format_data.classList.remove("gap-10", "row-col")
+      this.Color_format_data.innerHTML = `
+    <div class="row row-col gap-10 col-4">
+      <div class="color_format_index_value row space-between align-center text-upper">
+        <p>[</p>
+        <p>${this.Color_format[0]}</p>
+        <p>]</p>
+      </div>
+      <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[0]}</h3>
+    </div>
+    <div class="row row-col gap-10 col-4">
+      <div class="color_format_index_value row space-between align-center text-upper">
+        <p>[</p>
+        <p>${this.Color_format[1]}</p>
+        <p>]</p>
+      </div>
+      <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[1]}</h3>
+    </div>
+    <div class="row row-col gap-10 col-4">
+      <div class="color_format_index_value row space-between align-center text-upper">
+        <p>[</p>
+        <p>${this.Color_format[2]}</p>
+        <p>]</p>
+      </div>
+      <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[2]}</h3>
+    </div>`
+    }
+  }
+
+  color_alpha_update() {
+    if (this.Color_format === "HEX" || this.Color_format === "RGB" || this.Color_format === "HSL" || this.Color_format === "HSB" || this.Color_format === "CSS") {
+      this.Color_alpha_data.classList.add("col-3")
+      this.Color_alpha_data.innerHTML = `
+      <div class="color_format_index_value row space-between align-center text-upper">
+      <p>[</p>
+      <p>alpha</p>
+      <p>]</p>
+      </div>
+      <h3 class="text-center text-upper">${this.Shadow_box_alpha_value}</h3>
+      `
+    }
+  }
+
+  cmyk_update() {
+    if (this.Color_format === "CMYK") {
+
+      this.Color_format_data.classList.add("gap-5")
+      this.Color_format_data.classList.remove("gap-10", "row-col")
+      this.Color_alpha_data.classList.remove("col-3")
+      this.Color_alpha_data.innerHTML = ``
+      this.Color_format_data.innerHTML = `
+      <div class="row row-col gap-10 col-3">
+      <div class="color_format_index_value row space-between align-center text-upper">
+      <p>[</p>
+      <p>${this.Color_format[0]}</p>
+      <p>]</p>
+      </div>
+      <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[0]}</h3>
+      </div>
+      <div class="row row-col gap-10 col-3">
+      <div class="color_format_index_value row space-between align-center text-upper">
+      <p>[</p>
+        <p>${this.Color_format[1]}</p>
+        <p>]</p>
+        </div>
+      <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[1]}</h3>
+      </div>
+      <div class="row row-col gap-10 col-3">
+      <div class="color_format_index_value row space-between align-center text-upper">
+        <p>[</p>
+        <p>${this.Color_format[2]}</p>
+        <p>]</p>
+        </div>
+        <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[2]}</h3>
+        </div>
+    <div class="row row-col gap-10 col-3">
+      <div class="color_format_index_value row space-between align-center text-upper">
+        <p>[</p>
+        <p>${this.Color_format[3]}</p>
+        <p>]</p>
+        </div>
+        <h3 class="text-center text-upper">${this.Shadow_box_color_format_value[3]}</h3>
+        </div>`
+    }
+  }
+
+  color_format_changer(){
+    switch (this.Color_format) {
+      case "HEX":
+        this.Shadow_box_color_format_value = this.hex_value
+        this.Shadow_box_alpha_value = this.alpha_value
+        break;
+
+      case "RGB":
+        this.Shadow_box_color_format_value = this.rgb_value
+        this.Shadow_box_alpha_value = this.rgb_value[3]
+        break;
+
+      case "HSL":
+        this.Shadow_box_color_format_value = this.hsl_value
+        this.Shadow_box_alpha_value = this.hsl_value[3]
+        break;
+
+      case "HSB":
+        this.Shadow_box_color_format_value = this.hsb_value
+        break;
+
+      case "XYZ":
+        this.Shadow_box_color_format_value = this.xyz_value
+        break;
+
+      case "LAB":
+        this.Shadow_box_color_format_value = this.lab_value
+        break;
+
+      case "LCH":
+        this.Shadow_box_color_format_value = this.lch_value
+        break;
+
+      case "CSS":
+        this.Shadow_box_color_format_value = this.css_value
+        this.Shadow_box_alpha_value = this.css_value[3]
+        break;
+
+      case "CMYK":
+        this.Shadow_box_color_format_value = this.cmyk_value
+        break;
+    }
+  }
+
+  Format_list_creator() {
+    this.color_format_update()
+    this.Format_btn.addEventListener("click", (e) => {
+      this.Format_list.classList.toggle("active")
+    })
+    document.addEventListener("click", (e) => {
+      if (e.target !== this.Format_btn) {
+        this.Format_list.classList.remove("active")
+      }
+    })
+    Array.from(this.Format_btn_child).forEach(Format_btn_childs => {
+      Format_btn_childs.addEventListener("click", (e) => {
+        this.Color_format = e.target.innerHTML.slice(1, -1)
+        this.Format_btn.innerHTML = e.target.innerHTML
+        this.Format_list.classList.remove("active")
+
+        this.color_format_changer()
+
+        this.hex_update()
+
+        this.other_color_update()
+
+        this.color_alpha_update()
+
+        if (this.Color_format === "HSB" || this.Color_format === "LCH" || this.Color_format === "LAB" || this.Color_format === "XYZ") {
+          this.Color_alpha_data.classList.remove("col-3")
+          this.Color_alpha_data.innerHTML = ``
+        }
+
+        this.cmyk_update()
+      })
+    });
+  }
+
+  Color_Update() {
+    console.log(this.Shadow_box.children[1].children[0].children[0].children[1])
+    for (let i = 0; i < shadowColors.length; i++) {
       this.color_view_box = document.createElement("div")
       this.color_view = document.createElement("div")
       this.color_name = document.createElement("p")
@@ -455,20 +466,34 @@ class Shadow_color {
       this.color_view_box.appendChild(this.color_view)
       this.color_view_box.appendChild(this.color_name)
       this.color_view.classList.add("color_view")
-      this.color_view.setAttribute("style",`--color_view_bg:${shadowColors[i].hex};`)
-      this.color_view.setAttribute("hex_value",shadowColors[i].hex)
+      this.color_view.setAttribute("style", `--color_view_bg:${shadowColors[i].hex};`)
+      this.color_view.setAttribute("hex_value", shadowColors[i].hex)
       this.color_name.classList.add("color_value")
       this.color_name.innerHTML = shadowColors[i].name
     }
 
-    this.Shadow_box_shadow_color_btn.addEventListener("click",()=>{
+    this.Shadow_box_shadow_color_btn.addEventListener("click", () => {
       this.Color_option_list.classList.toggle("active")
     })
 
     Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
-      color_view_boxes.addEventListener("click",(e)=>{
-        this.Shadow_box_shadow_color_btn.children[0].setAttribute("style",`--color_view_bg:${color_view_boxes.children[0].getAttribute("hex_value")};`)
+      color_view_boxes.addEventListener("click", (e) => {
+        this.Shadow_box_shadow_color_btn.children[0].setAttribute("style", `--color_view_bg:${color_view_boxes.children[0].getAttribute("hex_value")};`)
         this.Shadow_box_shadow_color_btn.children[1].innerHTML = color_view_boxes.children[1].innerHTML
+        this.Format_btn.setAttribute("hex_code", color_view_boxes.children[0].getAttribute("hex_value"))
+        this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
+        if(this.Color_format === "HEX"){
+          console.log("working")
+          this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
+
+          // fix the issue of hex not chnging on color updte 
+        }
+        this.color_format_update()
+        this.color_format_changer()
+        this.hex_update()
+        this.other_color_update()
+        this.cmyk_update()
+        this.color_alpha_update()
       })
     })
 
@@ -478,13 +503,15 @@ class Shadow_color {
       }
     })
   }
+
 }
 
-let Final_Shadow_Color
+let Shadow_box_final
 
-Array.from(Color_option_list).forEach(Color_option_lists => {
-  Final_Shadow_Color = new Shadow_color(Color_option_lists)
-  Final_Shadow_Color.Color_Update()
+Array.from(Shadow_box).forEach(Shadow_boxs => {
+  Shadow_box_final = new Shadow(Shadow_boxs)
+  Shadow_box_final.Format_list_creator()
+  Shadow_box_final.Color_Update()
 });
 
-// SHADOW EFFECT SHADOW COLOR CODE ENDS HERE
+// SHADOW EFFECT CODE ENDS HERE
