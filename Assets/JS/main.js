@@ -245,17 +245,17 @@ const Shadow_box = document.getElementsByClassName("shadow_box")
 class Shadow {
   constructor(Shadow_box) {
     this.Shadow_box = Shadow_box
-
+    this.Shadow_box_css = this.Shadow_box.getAttribute("style")
     this.Format_btn = this.Shadow_box.children[0].children[0]
+    this.Shadow_css_code = this.Format_btn.getAttribute("shadow_code")
     this.Format_list = this.Format_btn.nextElementSibling
     this.Format_btn_child = this.Format_list.children
-    this.Color_format
+    this.Color_format = this.Shadow_box.children[0].children[0].innerHTML.slice(1, -1)
     this.Color_format_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[0]
     this.Color_alpha_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[1]
     this.Shadow_box_color_format_value = undefined
     this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
     this.alpha_value = this.Format_btn.getAttribute("alpha_value")
-
     this.Color_option_list = this.Shadow_box.children[0].children[2].children[1]
     this.Shadow_box_shadow_color_btn = this.Shadow_box.children[0].children[2].children[0]
     this.color_view_box
@@ -457,7 +457,6 @@ class Shadow {
   }
 
   Color_Update() {
-    console.log(this.Shadow_box.children[1].children[0].children[0].children[1])
     for (let i = 0; i < shadowColors.length; i++) {
       this.color_view_box = document.createElement("div")
       this.color_view = document.createElement("div")
@@ -485,8 +484,6 @@ class Shadow {
         if(this.Color_format === "HEX"){
           console.log("working")
           this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
-
-          // fix the issue of hex not chnging on color updte 
         }
         this.color_format_update()
         this.color_format_changer()
@@ -494,6 +491,7 @@ class Shadow {
         this.other_color_update()
         this.cmyk_update()
         this.color_alpha_update()
+        this.Shadow_box.setAttribute("style", "--shadow_box:"+ this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
       })
     })
 
@@ -503,7 +501,6 @@ class Shadow {
       }
     })
   }
-
 }
 
 let Shadow_box_final
