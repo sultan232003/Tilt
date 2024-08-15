@@ -378,7 +378,7 @@ class Shadow {
     }
   }
 
-  color_format_changer(){
+  color_format_changer() {
     switch (this.Color_format) {
       case "HEX":
         this.Shadow_box_color_format_value = this.hex_value
@@ -437,20 +437,14 @@ class Shadow {
         this.Color_format = e.target.innerHTML.slice(1, -1)
         this.Format_btn.innerHTML = e.target.innerHTML
         this.Format_list.classList.remove("active")
-
         this.color_format_changer()
-
         this.hex_update()
-
         this.other_color_update()
-
         this.color_alpha_update()
-
         if (this.Color_format === "HSB" || this.Color_format === "LCH" || this.Color_format === "LAB" || this.Color_format === "XYZ") {
           this.Color_alpha_data.classList.remove("col-3")
           this.Color_alpha_data.innerHTML = ``
         }
-
         this.cmyk_update()
       })
     });
@@ -475,29 +469,55 @@ class Shadow {
       this.Color_option_list.classList.toggle("active")
     })
 
+    this.Color_option_list.children[0].addEventListener("keydown", (e) => {
+      if (e.key === 'Enter') {
+        if (this.Color_option_list.children[0].value.length == 6) {
+          this.hex_value = this.Color_option_list.children[0].value
+          this.Format_btn.setAttribute("hex_code", this.Color_option_list.children[0].value)
+          this.color_format_update()
+          this.color_format_changer()
+          this.hex_update()
+          this.other_color_update()
+          this.cmyk_update()
+          this.color_alpha_update()
+          this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
+          this.Shadow_box_shadow_color_btn.children[0].setAttribute("style", `--color_view_bg:${"#" + this.hex_value};`)
+          this.Shadow_box_shadow_color_btn.children[1].innerHTML = "Custom"
+          this.Color_option_list.children[0].value = ""
+          this.Color_option_list.classList.remove("active")
+        } else { console.log("minimum 6") }
+      }
+      this.input = this.Color_option_list.children[0].value
+      console.log(shadowColors.filter(item => item.hex.toLowerCase().includes(this.input)))
+
+      // fix the issue of serch
+    })
+
     Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
       color_view_boxes.addEventListener("click", (e) => {
-        this.Shadow_box_shadow_color_btn.children[0].setAttribute("style", `--color_view_bg:${color_view_boxes.children[0].getAttribute("hex_value")};`)
-        this.Shadow_box_shadow_color_btn.children[1].innerHTML = color_view_boxes.children[1].innerHTML
-        this.Format_btn.setAttribute("hex_code", color_view_boxes.children[0].getAttribute("hex_value"))
-        this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
-        if(this.Color_format === "HEX"){
-          console.log("working")
-          this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
+        if (e.target !== this.Color_option_list.children[0]) {
+          this.Shadow_box_shadow_color_btn.children[0].setAttribute("style", `--color_view_bg:${color_view_boxes.children[0].getAttribute("hex_value")};`)
+          this.Shadow_box_shadow_color_btn.children[1].innerHTML = color_view_boxes.children[1].innerHTML
+          this.Format_btn.setAttribute("hex_code", color_view_boxes.children[0].getAttribute("hex_value"))
+          this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
+          if (this.Color_format === "HEX") {
+            this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
+          }
+          this.color_format_update()
+          this.color_format_changer()
+          this.hex_update()
+          this.other_color_update()
+          this.cmyk_update()
+          this.color_alpha_update()
+          this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
         }
-        this.color_format_update()
-        this.color_format_changer()
-        this.hex_update()
-        this.other_color_update()
-        this.cmyk_update()
-        this.color_alpha_update()
-        this.Shadow_box.setAttribute("style", "--shadow_box:"+ this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
       })
     })
 
     document.addEventListener("click", (e) => {
       if (e.target !== this.Shadow_box_shadow_color_btn && e.target !== this.Color_option_list.children[0]) {
         this.Color_option_list.classList.remove("active")
+        this.Color_option_list.children[0].value = ""
       }
     })
   }
