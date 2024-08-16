@@ -25,6 +25,7 @@
   --Russian_violet: #0E0B3D;
   --Mint: #15CC95;
   --Alice_blue_2: #D5DCE7;
+  --Aquamarine: #9FF4DB;
   --shadow_1: -137px 131px 53px rgba(85, 70, 255, 0), -88px 84px 49px rgba(85, 70, 255, 0.01), -49px 47px 41px rgba(85, 70, 255, 0.03), -22px 21px 30px rgba(85, 70, 255, 0.04), -5px 5px 17px rgba(85, 70, 255, 0.05);
   --shadow_2: 0px 99px 28px rgba(85, 70, 255, 0.01), 0px 64px 25px rgba(85, 70, 255, 0.06), 0px 36px 21px rgba(85, 70, 255, 0.2), 0px 16px 16px rgba(85, 70, 255, 0.34), 0px 4px 9px rgba(85, 70, 255, 0.39);
   --shadow_3: 40px 27px 13px rgba(85, 70, 255, 0), 26px 17px 12px rgba(85, 70, 255, 0.01), 14px 10px 10px rgba(85, 70, 255, 0.04), 6px 4px 8px rgba(85, 70, 255, 0.06), 2px 1px 4px rgba(85, 70, 255, 0.07);
@@ -88,6 +89,10 @@ body {
 
 .gap-20 {
   gap: 20px;
+}
+
+.gap-18{
+  gap: 18px;
 }
 
 .gap-15 {
@@ -454,6 +459,7 @@ body {
   padding-top: 150px;
 }
 
+
 .shadow_box {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -465,6 +471,7 @@ body {
   box-sizing: border-box;
   justify-content: space-between;
   box-shadow: var(--shadow_box);
+  opacity: 1;
 }
 
 .button_row_top {
@@ -702,6 +709,11 @@ body {
   gap: 18px;
 }
 
+.custom_shadow_panel hr{
+  border: 1px dashed var(--Alice_blue_2);
+  stroke-dasharray: 2;
+}
+
 .input_label {
   font-size: 14px;
   font-weight: 600;
@@ -778,6 +790,41 @@ body {
   border-radius: 50%;
   background: var(--color_view_bg);
   aspect-ratio: 1 / 1;
+}
+
+.border_toggle{
+  padding-top: 14px;
+}
+
+.fa-circle-question{
+  font-size: 14px;
+  color: var(--Alice_blue_2);
+}
+
+.inset_toggle{
+  padding-top: 4px;
+}
+
+.radius_toggle{
+  padding-top: 3px;
+}
+
+.toggle{
+  width: 45px;
+  height: 26px;
+  border-radius: 13px;
+  background: var(--Aquamarine);
+  box-shadow: 0px 0.41px 0px #ffffff, 0px 0.81px 1.63px rgba(0, 0, 0, 0.04), inset 0px 0px 3.25px rgba(0, 0, 0, 0.02),inset 0px 0px 0px 0.2px rgba(0, 0, 0, 0.06),inset 0px 0.81px 1.63px rgba(0, 0, 0, 0.04), inset 0px 0.41px 0.41px rgba(0, 0, 0, 0.04);
+padding: 2px;
+}
+
+.toggle_button{
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #ffffff;
+  background-image: linear-gradient(360deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.08) 100%);
+  box-shadow: inset 0px 0px 0.81px 0.41px #ffffff, inset 0px 0.41px 0px #ffffff, 0px 0px 0px 0.2px rgba(0, 0, 0, 0.02), 0px 2.03px 1.63px rgba(0, 0, 0, 0.02), 0px 1.22px 1.22px rgba(0, 0, 0, 0.04), 0px 0.41px 0.81px rgba(0, 0, 0, 0.12), 0px 0px 0.41px rgba(0, 0, 0, 0.08);
 }
 
 /* CODE ABOUT SHADOW AREA END HERE */
