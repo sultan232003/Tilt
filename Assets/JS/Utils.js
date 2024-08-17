@@ -144,3 +144,36 @@ function rgbToCmyk(r, g, b) {
     }
     return [(c * 100).toFixed(1), (m * 100).toFixed(1), (y * 100).toFixed(1), (k * 100).toFixed(1)];
 }
+
+
+class Slider {
+    constructor(slider) {
+        this.slider = slider
+        this.slider_max = slider.getAttribute("max")
+        this.slider_min = slider.getAttribute("min")
+    }
+
+    update() {
+        this.slider_width = (this.slider.value / this.slider_max) * 100
+        this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%")
+        this.slider.addEventListener("mousedown", () => {
+            this.slider.addEventListener("mousemove", (e) => {
+                this.slider_width = (this.slider.value / this.slider_max) * 100
+                this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%")
+            })
+        })
+    }
+}
+
+
+class Toggle {
+    constructor(toggle_btn) {
+        this.Toggle_btn = toggle_btn
+    }
+
+    update() {
+        this.Toggle_btn.addEventListener("click", (e) => {
+            this.Toggle_btn.classList.toggle("active")
+        })
+    }
+}
