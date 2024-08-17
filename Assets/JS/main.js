@@ -532,3 +532,16 @@ Array.from(Shadow_box).forEach(Shadow_boxs => {
 });
 
 // SHADOW EFFECT CODE ENDS HERE
+
+const toggle = document.getElementsByClassName("toggle")
+Array.from(toggle).forEach(toggles => {
+  toggle_final = new Toggle(toggles)
+  toggle_final.update()
+})
+
+const slider_style = document.getElementsByClassName("slider_style")
+Array.from(slider_style).forEach(sliders=>{
+  final_slider = new Slider(sliders)
+  final_slider.update()
+})
+const horizontal_length = document.getElementById("horizontal_length")
