@@ -707,6 +707,7 @@ body {
   width: 380px;
   padding: 20px;
   gap: 18px;
+  flex-shrink: 0;
 }
 
 .custom_shadow_panel hr{
@@ -756,6 +757,8 @@ body {
   height: 6px;
   background: var(--Border);
   border-radius: 3px;
+  position: relative;
+  z-index: 0;
 }
 
 .slider_style::-webkit-slider-thumb {
@@ -772,6 +775,17 @@ body {
   border-radius: 4px;
   box-shadow: inset 0px -2px 0px #EEEFF7;
   border: 0.5px solid var(--Alice_blue_2);
+  z-index: 10;
+}
+
+.slider_style::before{
+  content: '';
+  position: absolute;
+  width: var(--slide_width);
+  height: 100%;
+  border-radius: 3px 0px 0px 3px;
+  background: var(--Aquamarine);
+  z-index: -1;
 }
 
 .custom_shadow_panel_button {
@@ -813,9 +827,10 @@ body {
   width: 45px;
   height: 26px;
   border-radius: 13px;
-  background: var(--Aquamarine);
+  background: var(--Border);
   box-shadow: 0px 0.41px 0px #ffffff, 0px 0.81px 1.63px rgba(0, 0, 0, 0.04), inset 0px 0px 3.25px rgba(0, 0, 0, 0.02),inset 0px 0px 0px 0.2px rgba(0, 0, 0, 0.06),inset 0px 0.81px 1.63px rgba(0, 0, 0, 0.04), inset 0px 0.41px 0.41px rgba(0, 0, 0, 0.04);
 padding: 2px;
+transition: all 100ms ease;
 }
 
 .toggle_button{
@@ -825,6 +840,25 @@ padding: 2px;
   background: #ffffff;
   background-image: linear-gradient(360deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.08) 100%);
   box-shadow: inset 0px 0px 0.81px 0.41px #ffffff, inset 0px 0.41px 0px #ffffff, 0px 0px 0px 0.2px rgba(0, 0, 0, 0.02), 0px 2.03px 1.63px rgba(0, 0, 0, 0.02), 0px 1.22px 1.22px rgba(0, 0, 0, 0.04), 0px 0.41px 0.81px rgba(0, 0, 0, 0.12), 0px 0px 0.41px rgba(0, 0, 0, 0.08);
+  transition: all 100ms ease;
+}
+
+.toggle.active{
+  background: var(--Aquamarine);
+  transition: all 100ms ease;
+}
+
+.toggle.active .toggle_button{
+  transform: translateX(19px) ;
+  transition: all 100ms ease;
+}
+
+.custom_shadow_sandbox{
+  width: 100%;
+  border-radius: 10px;
+  background: var(--White);
+  border: 1px solid var(--Border);
+  box-shadow: inset 3px 3px 5px #EBE9FF;
 }
 
 /* CODE ABOUT SHADOW AREA END HERE */
