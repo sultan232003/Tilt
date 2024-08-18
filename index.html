@@ -1841,7 +1841,8 @@
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
-                    <input type="range" min="0" max="250" class="slider_style" id="horizontal_length" style="--slide_width: 100%">
+                    <input type="range" min="0" max="250" value="0" class="slider_style" id="horizontal_length"
+                      style="--slide_width: 100%">
                     <div class="row space-between">
                       <p class="mini_label">0</p>
                       <p class="mini_label">250</p>
@@ -1857,7 +1858,8 @@
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
-                    <input type="range" min="0" max="250" class="slider_style" id="vertical_length" style="--slide_width: 100%">
+                    <input type="range" min="0" max="250" value="0" class="slider_style" id="vertical_length"
+                      style="--slide_width: 100%">
                     <div class="row space-between">
                       <p class="mini_label">0</p>
                       <p class="mini_label">250</p>
@@ -1876,7 +1878,8 @@
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
-                    <input type="range" min="0" max="250" class="slider_style" id="blur_radius" style="--slide_width: 100%">
+                    <input type="range" min="0" max="250" value="10" class="slider_style" id="blur_radius"
+                      style="--slide_width: 100%">
                     <div class="row space-between">
                       <p class="mini_label">0</p>
                       <p class="mini_label">250</p>
@@ -1892,7 +1895,8 @@
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
-                    <input type="range" min="0" max="250" class="slider_style" id="spread_radius" style="--slide_width: 100%">
+                    <input type="range" min="0" max="250" value="0" class="slider_style" id="spread_radius"
+                      style="--slide_width: 100%">
                     <div class="row space-between">
                       <p class="mini_label">0</p>
                       <p class="mini_label">250</p>
@@ -1924,7 +1928,7 @@
                     <p>%</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
-                    <input type="range" min="0" max="100" class="slider_style" id="opacity" style="--slide_width: 100%">
+                    <input type="range" min="0" max="100" value="10" class="slider_style" id="opacity" style="--slide_width: 100%">
                     <div class="row space-between">
                       <p class="mini_label">0</p>
                       <p class="mini_label">100</p>
@@ -1943,7 +1947,8 @@
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
-                    <input type="range" min="0" max="250" class="slider_style" id="distance" style="--slide_width: 100%">
+                    <input type="range" min="0" max="250" class="slider_style" id="distance"
+                      style="--slide_width: 100%">
                     <div class="row space-between">
                       <p class="mini_label">0</p>
                       <p class="mini_label">250</p>
@@ -1954,7 +1959,7 @@
               <div class="row space-between inset_toggle">
                 <div class="row gap-8 align-center">
                   <h5 class="input_label">Inset</h5>
-                  <div class="toggle active">
+                  <div class="toggle active" id="inset_toggle">
                     <div class="toggle_button"></div>
                   </div>
                   <h5 class="input_label">Outline</h5>
@@ -1976,7 +1981,8 @@
                       <p>px</p>
                     </div>
                     <div class="row row-col width-100 gap-8">
-                      <input type="range" min="0" max="105" class="slider_style" id="Radius" style="--slide_width: 100%">
+                      <input type="range" min="0" max="105" value="10" class="slider_style" id="Radius"
+                        style="--slide_width: 100%">
                       <div class="row space-between">
                         <p class="mini_label">0</p>
                         <p class="mini_label">105</p>
@@ -1987,7 +1993,7 @@
                 <div class="border_toggle">
                   <div class="row gap-8 align-center">
                     <h5 class="input_label">Border</h5>
-                    <div class="toggle active">
+                    <div class="toggle active" id="border_toggle">
                       <div class="toggle_button"></div>
                     </div>
                   </div>
@@ -1995,7 +2001,22 @@
               </div>
             </div>
           </div>
-          <div class="custom_shadow_sandbox"></div>
+          <div id="custom_shadow_sandbox_area" class="pos-rel row row-col gap-10">
+            <div id="custom_shadow_sandbox" class="pos-rel">
+              <div id="custom_shadow_sandbox_box" style="--horizontal_length: 0px; --vertical_length: 0px; --blur_radius: 10px; --spread_radius: 0px; --radius: 10px; --opacity:10" class="box_outline box_border"></div>
+              <div id="custom_shadow_sandbox_inset"></div>
+            </div>
+            <div id="shadow_controller" class="pos-abs"></div>
+            <div class="code_snippet">
+              <p>
+                <span class="Separate">
+                  << /span><span>div</span> <span class="Attribute">class</span><span class="Separate">=”</span><span
+                      class="Value">tilt</span><span class="Separate">”></span>
+              </p>
+              <button class="copy_btn" default_tilt_data=class="tilt" second_tilt_data=""><i
+                  class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
