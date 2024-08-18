@@ -145,12 +145,15 @@ function rgbToCmyk(r, g, b) {
     return [(c * 100).toFixed(1), (m * 100).toFixed(1), (y * 100).toFixed(1), (k * 100).toFixed(1)];
 }
 
-
 class Slider {
-    constructor(slider) {
+    constructor(slider, custom_attr , set_to_custom_attr, output_unit) {
         this.slider = slider
         this.slider_max = slider.getAttribute("max")
         this.slider_min = slider.getAttribute("min")
+        this.slider_value = 0
+        this.Custom_attr = custom_attr
+        this.Set_to_custom_attr = set_to_custom_attr
+        this.output_unit = output_unit
     }
 
     update() {
@@ -159,21 +162,74 @@ class Slider {
         this.slider.addEventListener("mousedown", () => {
             this.slider.addEventListener("mousemove", (e) => {
                 this.slider_width = (this.slider.value / this.slider_max) * 100
-                this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%")
+                this.slider_value = this.slider.value
+                this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%;")
+                this.Set_to_custom_attr.style.setProperty("--" + this.Custom_attr , this.slider_value + this.output_unit)
             })
         })
     }
 }
 
-
 class Toggle {
-    constructor(toggle_btn) {
+    constructor(toggle_btn , custom_attr , set_to_custom_attr) {
         this.Toggle_btn = toggle_btn
+        this.Custom_attr = custom_attr
+        this.Set_to_custom_attr = set_to_custom_attr
     }
 
     update() {
         this.Toggle_btn.addEventListener("click", (e) => {
             this.Toggle_btn.classList.toggle("active")
+            if(this.Toggle_btn.classList.contains("active")){
+                this.Set_to_custom_attr.classList.add(this.Custom_attr)
+            } else{
+                this.Set_to_custom_attr.classList.remove(this.Custom_attr)
+            }
         })
     }
+}
+
+const radsToDegrees = (radians) => {
+    return radians * 180 / Math.PI;
+}
+
+let centerX = document.clientWidth / 2
+let centerY = document.clientHeight / 2
+let mouseX
+let mouseY
+let mouse_down = false
+document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX
+    mouseY = e.clientY
+})
+
+let revolution_degree = 0
+const revolution = (fromX, fromY, toX, toY, want_degree) => {
+    let b = (toX - centerX) - fromX
+    let p = (toY - centerY) - fromY
+    if ((mouseX - centerX) < 0 && (mouseY - centerY) < 0) {
+        revolution_degree = radsToDegrees(Math.abs(Math.atan(p / b)))
+    } else if ((mouseX - centerX) > 0 && (mouseY - centerY) < 0) {
+        revolution_degree = 90 + (90 - radsToDegrees(Math.abs(Math.atan(p / b))))
+    } else if ((mouseX - centerX) > 0 && (mouseY - centerY) > 0) {
+        revolution_degree = radsToDegrees(Math.abs(Math.atan(p / b))) + 180
+    } else if ((mouseX - centerX) < 0 && (mouseY - centerY) > 0) {
+        revolution_degree = 270 + (90 - radsToDegrees(Math.abs(Math.atan(p / b))))
+    }
+    if (want_degree == true) {
+        return revolution_degree
+    } else {
+        return degreesToRads(revolution_degree);
+    }
+}
+
+function calculateAngle(from_x, from_y, to_x, to_y) {
+    const diffX = to_x - from_x;
+    const diffY = to_y - from_y;
+    const angleRadians = Math.atan2(diffY, diffX);
+    let angleDegrees = angleRadians * (180 / Math.PI);
+    if (angleDegrees < 0) {
+        angleDegrees += 360;
+    }
+    return angleDegrees;
 }
