@@ -169,6 +169,8 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 
 // SHADOW EFFECT CODE STARTS HERE
 
+// SHADOW BOX EFFECT CODE STARTS HERE
+
 const shadowColors = [
   { name: "Charcoal", hex: "#36454F" },
   { name: "Cadet gray", hex: "#959da5" },
@@ -531,17 +533,108 @@ Array.from(Shadow_box).forEach(Shadow_boxs => {
   Shadow_box_final.Color_Update()
 });
 
+// SHADOW BOX EFFECT CODE ENDS HERE
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
+// CUSTOM SHADOW SANDBOX CODE STARTS HERE
+
+const Shadow_controller = document.getElementById("shadow_controller")
+const Custom_shadow_sandbox = document.getElementById("custom_shadow_sandbox")
+const Custom_shadow_sandbox_inset = document.getElementById("custom_shadow_sandbox_inset")
+const Custom_shadow_sandbox_box = document.getElementById("custom_shadow_sandbox_box")
+let box_enter = false
+let drag = false
+let offset = { x: 0, y: 0 }
+let angle = 0
+let Custom_shadow_sandbox_box_center_x = Custom_shadow_sandbox_box.getBoundingClientRect().x + Custom_shadow_sandbox_box.clientWidth / 2
+let Custom_shadow_sandbox_box_center_y = Custom_shadow_sandbox_box.getBoundingClientRect().y + Custom_shadow_sandbox_box.clientHeight / 2
+document.addEventListener("scroll", (e) => {
+  Custom_shadow_sandbox_box_center_y = Custom_shadow_sandbox_box.getBoundingClientRect().y + Custom_shadow_sandbox_box.clientHeight / 2
+})
+
+Custom_shadow_sandbox_inset.addEventListener("mouseenter", (e) => {
+  box_enter = true
+})
+
+Shadow_controller.addEventListener("mousedown", (e) => {
+  drag = true
+  offset.x = e.clientX - Shadow_controller.getBoundingClientRect().x
+  offset.y = e.clientY - Shadow_controller.getBoundingClientRect().y
+})
+
+Custom_shadow_sandbox_inset.addEventListener("mouseleave", (e) => {
+  box_enter = false
+})
+
+document.addEventListener("mouseup", (e) => {
+  drag = false
+  offset.x = e.clientX - Shadow_controller.getBoundingClientRect().x
+  offset.y = e.clientY - Shadow_controller.getBoundingClientRect().y
+  Shadow_controller.style.cssText = `left:${e.clientX - Custom_shadow_sandbox.getBoundingClientRect().x - offset.x}px;
+  top:${e.clientY - Custom_shadow_sandbox.getBoundingClientRect().y - offset.y}px`
+})
+
+document.addEventListener("mousemove", (e) => {
+  document.addEventListener("mouseup", (e) => {
+    drag = false
+  })
+  if (box_enter && drag) {
+    Shadow_controller.style.cssText = `left:${e.clientX - Custom_shadow_sandbox.getBoundingClientRect().x - offset.x}px;
+    top:${e.clientY - Custom_shadow_sandbox.getBoundingClientRect().y - offset.y}px`
+  }
+})
+
+const Horizontal_length = document.getElementById("horizontal_length")
+let Horizontal_length_final = new Slider(Horizontal_length, "horizontal_length", Custom_shadow_sandbox_box, "px")
+Horizontal_length_final.update()
+const Vertical_length = document.getElementById("vertical_length")
+let Vertical_length_final = new Slider(Vertical_length, "vertical_length", Custom_shadow_sandbox_box, "px")
+Vertical_length_final.update()
+const Blur_radius = document.getElementById("blur_radius")
+let Blur_radius_final = new Slider(Blur_radius, "blur_radius", Custom_shadow_sandbox_box, "px")
+Blur_radius_final.update()
+const Spread_radius = document.getElementById("spread_radius")
+let Spread_radius_final = new Slider(Spread_radius, "spread_radius", Custom_shadow_sandbox_box, "px")
+Spread_radius_final.update()
+const Radius = document.getElementById("Radius")
+let Radius_final = new Slider(Radius, "radius", Custom_shadow_sandbox_box, "px")
+Radius_final.update()
+const Opacity = document.getElementById("opacity")
+let Opacity_final = new Slider(Opacity, "opacity", Custom_shadow_sandbox_box, "%")
+Opacity_final.update()
+
+// CUSTOM SHADOW SANDBOX CODE ENDS HERE
+
 // SHADOW EFFECT CODE ENDS HERE
 
-const toggle = document.getElementsByClassName("toggle")
-Array.from(toggle).forEach(toggles => {
-  toggle_final = new Toggle(toggles)
-  toggle_final.update()
-})
+const Inset_toggle = document.getElementById("inset_toggle")
+let Inset_toggle_final = new Toggle(Inset_toggle, "box_outline", Custom_shadow_sandbox_box)
+Inset_toggle_final.update()
 
-const slider_style = document.getElementsByClassName("slider_style")
-Array.from(slider_style).forEach(sliders=>{
-  final_slider = new Slider(sliders)
-  final_slider.update()
-})
-const horizontal_length = document.getElementById("horizontal_length")
+const Border_toggle = document.getElementById("border_toggle")
+let Border_toggle_final = new Toggle(Border_toggle, "box_border", Custom_shadow_sandbox_box)
+Border_toggle_final.update()
+
+function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle) {
+  let shadows = [];
+  let radianAngle = angle * (Math.PI / 180);
+  for (let i = 1; i <= layers; i++) {
+      let distance = baseDistance * i;
+      let offsetX = Math.round(distance * Math.cos(radianAngle));
+      let offsetY = Math.round(distance * Math.sin(radianAngle));
+      let blur = baseBlur * i;
+      let spread = baseSpread * i;
+      let opacity = baseOpacity / i;
+      shadows.push(`${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(0, 0, 0, ${opacity})`);
+  }
+  element.style.boxShadow = shadows.join(', ');
+}
+
+// function test(){
+//   calculateRealisticShadow(Custom_shadow_sandbox_box, 5, 20, Blur_radius_final.slider_value, Spread_radius_final.slider_value,Opacity_final.slider_value/100, 45);
+// requestAnimationFrame(test)
+// }
+// test()
+
+// add multilayer toggle , code to convert x y to distance and angle 
