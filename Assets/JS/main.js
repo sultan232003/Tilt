@@ -616,25 +616,54 @@ const Border_toggle = document.getElementById("border_toggle")
 let Border_toggle_final = new Toggle(Border_toggle, "box_border", Custom_shadow_sandbox_box)
 Border_toggle_final.update()
 
-function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle) {
+const Multiple_layers = document.getElementById("multiple_layers")
+let Multiple_layers_final = new Toggle(Multiple_layers, "box_multiple", Custom_shadow_sandbox_box)
+Multiple_layers_final.update()
+
+function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
   let shadows = [];
   let radianAngle = angle * (Math.PI / 180);
   for (let i = 1; i <= layers; i++) {
-      let distance = baseDistance * i;
-      let offsetX = Math.round(distance * Math.cos(radianAngle));
-      let offsetY = Math.round(distance * Math.sin(radianAngle));
-      let blur = baseBlur * i;
-      let spread = baseSpread * i;
-      let opacity = baseOpacity / i;
-      shadows.push(`${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(0, 0, 0, ${opacity})`);
+    let distance = baseDistance * i;
+    let offsetX = Math.round(distance * Math.cos(radianAngle));
+    let offsetY = Math.round(distance * Math.sin(radianAngle));
+    let blur = baseBlur * i;
+    let spread = baseSpread * i;
+    let opacity = baseOpacity / (i * 0.8);
+    let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(0, 0, 0, ${opacity})`;
+    shadows.push(shadow);
   }
   element.style.boxShadow = shadows.join(', ');
 }
 
-// function test(){
-//   calculateRealisticShadow(Custom_shadow_sandbox_box, 5, 20, Blur_radius_final.slider_value, Spread_radius_final.slider_value,Opacity_final.slider_value/100, 45);
-// requestAnimationFrame(test)
-// }
-// test()
+const Slider_style = document.getElementsByClassName("slider_style")
 
-// add multilayer toggle , code to convert x y to distance and angle 
+let inset_toggle_status = false
+
+function applyShadow() {
+  if (Multiple_layers.classList.contains("active")) {
+    calculateRealisticShadow(
+      Custom_shadow_sandbox_box, 5, 20, Blur_radius_final.slider_value, Spread_radius_final.slider_value, Opacity_final.slider_value / 100, 45, inset_toggle_status
+    );
+  } else {
+    Custom_shadow_sandbox_box.style.removeProperty("box-shadow");
+    Custom_shadow_sandbox_box.style.setProperty(
+      "box-shadow", `inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(0, 0, 0, var(--opacity));`
+    );
+  }
+}
+
+Multiple_layers.addEventListener("click", applyShadow);
+
+Array.from(Slider_style).forEach((Slider_styles) => {
+  Slider_styles.addEventListener("mousedown", () => {
+    Slider_styles.addEventListener("mousemove", applyShadow);
+  });
+});
+
+Inset_toggle.addEventListener("click", () => {
+  inset_toggle_status = !Inset_toggle_final.toggle_status;
+  applyShadow();
+});
+
+// code to convert x y to distance and angle 
