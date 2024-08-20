@@ -150,7 +150,7 @@ class Slider {
         this.slider = slider
         this.slider_max = slider.getAttribute("max")
         this.slider_min = slider.getAttribute("min")
-        this.slider_value = 0
+        this.slider_value = this.slider.getAttribute("value")
         this.Custom_attr = custom_attr
         this.Set_to_custom_attr = set_to_custom_attr
         this.output_unit = output_unit
@@ -175,6 +175,7 @@ class Toggle {
         this.Toggle_btn = toggle_btn
         this.Custom_attr = custom_attr
         this.Set_to_custom_attr = set_to_custom_attr
+        this.toggle_status = false
     }
 
     update() {
@@ -182,8 +183,10 @@ class Toggle {
             this.Toggle_btn.classList.toggle("active")
             if(this.Toggle_btn.classList.contains("active")){
                 this.Set_to_custom_attr.classList.add(this.Custom_attr)
+                this.toggle_status = true
             } else{
                 this.Set_to_custom_attr.classList.remove(this.Custom_attr)
+                this.toggle_status = false
             }
         })
     }
