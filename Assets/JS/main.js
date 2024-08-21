@@ -624,31 +624,51 @@ function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseS
   let shadows = [];
   let radianAngle = angle * (Math.PI / 180);
   for (let i = 1; i <= layers; i++) {
-    let distance = baseDistance * i;
-    let offsetX = Math.round(distance * Math.cos(radianAngle));
-    let offsetY = Math.round(distance * Math.sin(radianAngle));
-    let blur = baseBlur * i;
+    baseDistance /= 3;
+    baseDistance *= 2;
+    let offsetX = Math.round(baseDistance * Math.cos(radianAngle));
+    let offsetY = Math.round(baseDistance * Math.sin(radianAngle));
+    baseBlur *= 3;
+    let blur = baseBlur /= 2;
     let spread = baseSpread * i;
-    let opacity = baseOpacity / (i * 0.8);
-    let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(0, 0, 0, ${opacity})`;
+    let opacity = baseOpacity - (baseOpacity / (i * 0.6));
+    opacity = Math.max(opacity, 0);
+    let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(4, 47, 255, ${opacity})`;
     shadows.push(shadow);
   }
   element.style.boxShadow = shadows.join(', ');
 }
 
-const Slider_style = document.getElementsByClassName("slider_style")
+// function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
+//   let shadows = [];
+//   let radianAngle = angle * (Math.PI / 180);
+//   for (let i = 1; i <= layers; i++) {
+//     let distance = baseDistance * i;
+//     let offsetX = Math.round(distance * Math.cos(radianAngle));
+//     let offsetY = Math.round(distance * Math.sin(radianAngle));
+//     let blur = baseBlur * i;
+//     let spread = baseSpread * i;
+//     let opacity = baseOpacity / (i * 0.8);
+//     let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(0, 0, 0, ${opacity})`;
+//     shadows.push(shadow);
+//   }
+//   element.style.boxShadow = shadows.join(', ');
+// }
 
+const Slider_style = document.getElementsByClassName("slider_style")
 let inset_toggle_status = false
+let shadow_distance = 0
+let shadow_angle = 0
 
 function applyShadow() {
   if (Multiple_layers.classList.contains("active")) {
     calculateRealisticShadow(
-      Custom_shadow_sandbox_box, 5, 20, Blur_radius_final.slider_value, Spread_radius_final.slider_value, Opacity_final.slider_value / 100, 45, inset_toggle_status
+      Custom_shadow_sandbox_box, 5, shadow_distance, Blur_radius_final.slider_value, Spread_radius_final.slider_value, Opacity_final.slider_value / 100, shadow_angle, inset_toggle_status
     );
   } else {
     Custom_shadow_sandbox_box.style.removeProperty("box-shadow");
     Custom_shadow_sandbox_box.style.setProperty(
-      "box-shadow", `inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(0, 0, 0, var(--opacity));`
+      "box-shadow", `inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(64, 47, 255, var(--opacity));`
     );
   }
 }
@@ -657,7 +677,12 @@ Multiple_layers.addEventListener("click", applyShadow);
 
 Array.from(Slider_style).forEach((Slider_styles) => {
   Slider_styles.addEventListener("mousedown", () => {
-    Slider_styles.addEventListener("mousemove", applyShadow);
+    Slider_styles.addEventListener("mousemove",(e)=>{
+      shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x , Custom_shadow_sandbox_box_center_y)
+      shadow_angle = calculateAngle(Custom_shadow_sandbox_box_center_x , Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
+      applyShadow()
+      console.log(shadow_angle)
+    });
   });
 });
 
