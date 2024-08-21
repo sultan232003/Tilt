@@ -236,3 +236,9 @@ function calculateAngle(from_x, from_y, to_x, to_y) {
     }
     return angleDegrees;
 }
+
+function calculateDistanceFromCenter(x, y, from_x, from_y) {
+    const deltaX = x - from_x;
+    const deltaY = y - from_y;
+    return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+}
