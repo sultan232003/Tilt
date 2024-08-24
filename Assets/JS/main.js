@@ -549,41 +549,54 @@ let offset = { x: 0, y: 0 }
 let angle = 0
 let Custom_shadow_sandbox_box_center_x = Custom_shadow_sandbox_box.getBoundingClientRect().x + Custom_shadow_sandbox_box.clientWidth / 2
 let Custom_shadow_sandbox_box_center_y = Custom_shadow_sandbox_box.getBoundingClientRect().y + Custom_shadow_sandbox_box.clientHeight / 2
+
+
+let sandbox_inset = Custom_shadow_sandbox_inset.getBoundingClientRect()
 document.addEventListener("scroll", (e) => {
+  sandbox_inset = Custom_shadow_sandbox_inset.getBoundingClientRect()
   Custom_shadow_sandbox_box_center_y = Custom_shadow_sandbox_box.getBoundingClientRect().y + Custom_shadow_sandbox_box.clientHeight / 2
 })
 
-Custom_shadow_sandbox_inset.addEventListener("mouseenter", (e) => {
-  box_enter = true
-})
+// CODE FOR CONTROLLER MOVE HERE
 
-Shadow_controller.addEventListener("mousedown", (e) => {
-  drag = true
-  offset.x = e.clientX - Shadow_controller.getBoundingClientRect().x
-  offset.y = e.clientY - Shadow_controller.getBoundingClientRect().y
-})
+let offset_x = 0, offset_y = 0, shadow_X_distance = 0 , shadow_Y_distance = 0;
 
-Custom_shadow_sandbox_inset.addEventListener("mouseleave", (e) => {
-  box_enter = false
-})
+Shadow_controller.addEventListener('mousedown', mouseDown)
 
-document.addEventListener("mouseup", (e) => {
-  drag = false
-  offset.x = e.clientX - Shadow_controller.getBoundingClientRect().x
-  offset.y = e.clientY - Shadow_controller.getBoundingClientRect().y
-  Shadow_controller.style.cssText = `left:${e.clientX - Custom_shadow_sandbox.getBoundingClientRect().x - offset.x}px;
-  top:${e.clientY - Custom_shadow_sandbox.getBoundingClientRect().y - offset.y}px`
-})
+function mouseDown(e) {
+  offset_x = e.clientX - Shadow_controller.getBoundingClientRect().x
+  offset_y = e.clientY - Shadow_controller.getBoundingClientRect().y
+  document.addEventListener('mousemove', mouseMove)
+  document.addEventListener('mouseup', mouseUp)
+}
 
-document.addEventListener("mousemove", (e) => {
-  document.addEventListener("mouseup", (e) => {
-    drag = false
-  })
-  if (box_enter && drag) {
-    Shadow_controller.style.cssText = `left:${e.clientX - Custom_shadow_sandbox.getBoundingClientRect().x - offset.x}px;
-    top:${e.clientY - Custom_shadow_sandbox.getBoundingClientRect().y - offset.y}px`
-  }
-})
+function mouseMove(e) {
+  const { left, right, top, bottom, width, height } = sandbox_inset;
+  const sandboxRect = Custom_shadow_sandbox.getBoundingClientRect();
+  const x = e.clientX - sandboxRect.x;
+  const y = e.clientY - sandboxRect.y;
+  let newX = x - offset_x;
+  let newY = y - offset_y;
+  const left_touch = e.clientX <= left;
+  const right_touch = e.clientX >= right;
+  const top_touch = e.clientY <= top;
+  const bottom_touch = e.clientY >= bottom;
+  if (left_touch) newX = 0;
+  if (right_touch) newX = width;
+  if (top_touch) newY = 0;
+  if (bottom_touch) newY = height;
+  Shadow_controller.style.left = `${newX}px`;
+  Shadow_controller.style.top = `${newY}px`;
+
+  // shadow_X_distance = Custom_shadow_sandbox_box_center_x - (Shadow_controller.getBoundingClientRect().x - (Shadow_controller.offsetWidth/2))
+  // console.log(shadow_X_distance)
+}
+
+function mouseUp(e) {
+  document.removeEventListener('mousemove', mouseMove)
+}
+
+// CODE FOR CONTROLLER MOVE HERE
 
 const Horizontal_length = document.getElementById("horizontal_length")
 let Horizontal_length_final = new Slider(Horizontal_length, "horizontal_length", Custom_shadow_sandbox_box, "px")
@@ -677,9 +690,9 @@ Multiple_layers.addEventListener("click", applyShadow);
 
 Array.from(Slider_style).forEach((Slider_styles) => {
   Slider_styles.addEventListener("mousedown", () => {
-    Slider_styles.addEventListener("mousemove",(e)=>{
-      shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x , Custom_shadow_sandbox_box_center_y)
-      shadow_angle = calculateAngle(Custom_shadow_sandbox_box_center_x , Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
+    Slider_styles.addEventListener("mousemove", (e) => {
+      shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
+      shadow_angle = calculateAngle(Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
       applyShadow()
       console.log(shadow_angle)
     });
