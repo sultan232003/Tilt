@@ -574,6 +574,27 @@ Radius_final.update()
 const Opacity = document.getElementById("opacity")
 let Opacity_final = new Slider(Opacity, "opacity", Custom_shadow_sandbox_box, "%")
 Opacity_final.update()
+const Shadow_controller_opacity_ring = document.getElementById("shadow_controller_opacity_ring")
+let Shadow_controller_opacity_ring_final = new Slider(Shadow_controller_opacity_ring, "opacity", Custom_shadow_sandbox_box, "%")
+Shadow_controller_opacity_ring_final.update()
+
+Shadow_controller_opacity_ring.addEventListener("mousedown",()=>{
+  // Opacity_ring_val.classList.add("show")
+  Shadow_controller_opacity_ring.addEventListener("mousemove",()=>{
+    Opacity.value = Shadow_controller_opacity_ring.value
+    Opacity_final.slider_value = Number(Shadow_controller_opacity_ring.value)
+    Opacity_final.slider_drag(Number(Shadow_controller_opacity_ring.value))
+    Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
+  })
+})
+
+Opacity.addEventListener("mousedown",()=>{
+  Opacity.addEventListener("mousemove",()=>{
+    Shadow_controller_opacity_ring.value = Opacity.value
+    Shadow_controller_opacity_ring_final.slider_value = Number(Opacity_final.slider_value)
+    Shadow_controller_opacity_ring_final.slider_drag(Number(Opacity_final.slider_value))
+  })
+})
 
 // CUSTOM SHADOW SANDBOX CODE ENDS HERE
 
@@ -627,8 +648,8 @@ function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseS
 // }
 
 const Slider_style = document.getElementsByClassName("slider_style")
-const Blur_ring = document.getElementById("blur_ring")
-let Blur_val = document.getElementById("Blur_val")
+const Opacity_ring = document.getElementById("opacity_ring")
+let Opacity_ring_val = document.getElementById("opacity_ring_val")
 let inset_toggle_status = false
 let shadow_distance = 0
 let shadow_angle = 0
@@ -648,18 +669,19 @@ function applyShadow() {
 
 Multiple_layers.addEventListener("click", applyShadow);
 
-function slider_upadte(element) {
+function slider_upadte() {
   shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
   shadow_angle = calculateAngle(Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
   applyShadow()
   newX = (Custom_shadow_sandbox.offsetWidth/2 - Shadow_controller.offsetWidth/2) - Horizontal_length_final.slider_value
   newY = (Custom_shadow_sandbox.offsetHeight/2 - Shadow_controller.offsetHeight/2) - Vertical_length_final.slider_value
   update_controller(newX,newY)
-  Blur_val.innerHTML = Blur_radius_final.slider_value
+  Opacity_ring_val.innerHTML = Opacity_final.slider_value
 }
 
-Blur_radius.addEventListener("mousedown",()=>{
-  Blur_ring.classList.add("show")
+Opacity.addEventListener("mousedown",()=>{
+  Opacity_ring.classList.add("show")
+  Opacity_ring_val.classList.add("show")
 })
 
 Array.from(Slider_style).forEach((Slider_styles) => {
@@ -668,7 +690,8 @@ Array.from(Slider_style).forEach((Slider_styles) => {
   });
   document.addEventListener("mouseup", () => {
     Slider_styles.removeEventListener("mousemove", slider_upadte)
-    Blur_ring.classList.remove("show")
+    Opacity_ring.classList.remove("show")
+    Opacity_ring_val.classList.remove("show")
   })
 });
 
