@@ -146,7 +146,7 @@ function rgbToCmyk(r, g, b) {
 }
 
 class Slider {
-    constructor(slider, custom_attr , set_to_custom_attr, output_unit) {
+    constructor(slider, custom_attr, set_to_custom_attr, output_unit) {
         this.slider = slider
         this.slider_max = slider.getAttribute("max")
         this.slider_min = slider.getAttribute("min")
@@ -156,22 +156,39 @@ class Slider {
         this.output_unit = output_unit
     }
 
+    slider_calc(val) {
+        this.slider_width = (val / this.slider_max) * 100
+        this.slider_value = val
+        this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%;")
+        this.Set_to_custom_attr.style.setProperty("--" + this.Custom_attr, this.slider_value + this.output_unit)
+    }
+
+    slider_drag(val) {
+        if (val >= this.slider_min && val <= this.slider_max) {
+            this.slider_width = (val / this.slider_max) * 100
+        } else if (val > this.slider_max) {
+            this.slider_width = 100
+        } else if (val < this.slider_min) {
+            this.slider_width = 0
+        }
+        this.slider_value = val
+        this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%;")
+        this.Set_to_custom_attr.style.setProperty("--" + this.Custom_attr, this.slider_value + this.output_unit)
+    }
+
     update() {
         this.slider_width = (this.slider.value / this.slider_max) * 100
         this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%")
         this.slider.addEventListener("mousedown", () => {
             this.slider.addEventListener("mousemove", (e) => {
-                this.slider_width = (this.slider.value / this.slider_max) * 100
-                this.slider_value = this.slider.value
-                this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%;")
-                this.Set_to_custom_attr.style.setProperty("--" + this.Custom_attr , this.slider_value + this.output_unit)
+                this.slider_calc(this.slider.value)
             })
         })
     }
 }
 
 class Toggle {
-    constructor(toggle_btn , custom_attr , set_to_custom_attr) {
+    constructor(toggle_btn, custom_attr, set_to_custom_attr) {
         this.Toggle_btn = toggle_btn
         this.Custom_attr = custom_attr
         this.Set_to_custom_attr = set_to_custom_attr
@@ -181,10 +198,10 @@ class Toggle {
     update() {
         this.Toggle_btn.addEventListener("click", (e) => {
             this.Toggle_btn.classList.toggle("active")
-            if(this.Toggle_btn.classList.contains("active")){
+            if (this.Toggle_btn.classList.contains("active")) {
                 this.Set_to_custom_attr.classList.add(this.Custom_attr)
                 this.toggle_status = true
-            } else{
+            } else {
                 this.Set_to_custom_attr.classList.remove(this.Custom_attr)
                 this.toggle_status = false
             }
