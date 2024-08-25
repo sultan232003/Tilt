@@ -30,7 +30,9 @@
   --shadow_2: 0px 99px 28px rgba(85, 70, 255, 0.01), 0px 64px 25px rgba(85, 70, 255, 0.06), 0px 36px 21px rgba(85, 70, 255, 0.2), 0px 16px 16px rgba(85, 70, 255, 0.34), 0px 4px 9px rgba(85, 70, 255, 0.39);
   --shadow_3: 40px 27px 13px rgba(85, 70, 255, 0), 26px 17px 12px rgba(85, 70, 255, 0.01), 14px 10px 10px rgba(85, 70, 255, 0.04), 6px 4px 8px rgba(85, 70, 255, 0.06), 2px 1px 4px rgba(85, 70, 255, 0.07);
   --shadow_4: 0px 81.78px 23.17px rgba(85, 70, 255, 0), 0px 51.79px 20.44px rgba(85, 70, 255, 0.01), 0px 29.99px 17.72px rgba(85, 70, 255, 0.03), 0px 13.63px 13.63px rgba(85, 70, 255, 0.04), 0px 2.73px 6.81px rgba(85, 70, 255, 0.05), inset 0px -1.36px 1.36px rgba(85, 70, 255, 0.1), inset 0px 1.36px 0px #ffffff;
-  --pointer: url(../Image/Point.png)16 16, auto;
+  --pointer: url(../Image/Point.png)16 6, auto;
+  --grab: url(../Image/Grab.png)16 6, auto;
+  --palm: url(../Image/Open.png)16 6, auto;
   --mac_btn: 22px;
 }
 
@@ -231,7 +233,7 @@ body {
 }
 
 .mac_3D_btn:hover {
-  cursor: url(../Image/Point.png)16 16, auto;
+  cursor: var(--pointer);
 }
 
 .pos-rel {
@@ -890,7 +892,71 @@ body {
   border-radius: 50%;
   background: #ffffff;
   border: 1px solid var(--Border);
+  z-index: 1;
   /* box-shadow: 0px 221px 62px rgba(85, 70, 255, 0), 0px 142px 57px rgba(85, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05); */
+}
+
+#shadow_controller:hover {
+  cursor: var(--palm);
+}
+
+#shadow_controller.grab {
+  cursor: var(--grab);
+}
+
+#blur_ring {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid var(--Palatinate_blue);
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  transition: all ease 100ms;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 0.7;
+  font-size: 12px;
+  color: var(--Russian_violet);
+  font-weight: 700;
+  text-align: center;
+}
+
+#blur_ring>input {
+  position: absolute;
+  width: 80px;
+  left: calc(100% - 7px);
+  top: 50%;
+  transform: translateY(-50%);
+  -webkit-appearance: none;
+  height: 6px;
+  background: transparent;
+}
+
+#blur_ring>input::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  appearance: none;
+  background: #ffffff;
+  border: 1px solid var(--Palatinate_blue);
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+}
+
+/* #shadow_controller:hover+#blur_ring {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: all ease 100ms;
+} */
+
+#blur_ring.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: all ease 100ms;
 }
 
 #custom_shadow_sandbox_box {
@@ -907,11 +973,11 @@ body {
   box-shadow: inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(0, 0, 0, var(--opacity));
 }
 
-#custom_shadow_sandbox_box.box_outline{
+#custom_shadow_sandbox_box.box_outline {
   box-shadow: var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(0, 0, 0, var(--opacity));
 }
 
-#custom_shadow_sandbox_box.box_border{
+#custom_shadow_sandbox_box.box_border {
   border: 1px solid var(--Border);
 }
 
