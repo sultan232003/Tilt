@@ -893,7 +893,31 @@ body {
   background: #ffffff;
   border: 1px solid var(--Border);
   z-index: 1;
+  anchor-name: --controller;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 0.7;
+  font-size: 12px;
+  color: var(--Russian_violet);
+  font-weight: 700;
+  text-align: center;
   /* box-shadow: 0px 221px 62px rgba(85, 70, 255, 0), 0px 142px 57px rgba(85, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05); */
+}
+
+#opacity_ring_val{
+  opacity: 0;
+  transition: all ease 100ms;
+}
+
+#opacity_ring_val.show{
+  opacity: 1;
+  transition: all ease 100ms;
+}
+
+#shadow_controller:hover #opacity_ring_val{
+  opacity: 1;
+  transition: all ease 100ms;
 }
 
 #shadow_controller:hover {
@@ -904,20 +928,18 @@ body {
   cursor: var(--grab);
 }
 
-#blur_ring {
+#opacity_ring {
   position: absolute;
-  width: 60px;
+  width: 140px;
   height: 60px;
   border-radius: 50%;
-  border: 1px solid var(--Palatinate_blue);
   z-index: 0;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
+  position-anchor: --controller;
+  left: calc(anchor(left) - 10px);
+  top: anchor(center);
+  transform: translateY(-50%);
   opacity: 0;
-  transition: all ease 100ms;
   display: flex;
-  justify-content: center;
   align-items: center;
   line-height: 0.7;
   font-size: 12px;
@@ -926,18 +948,18 @@ body {
   text-align: center;
 }
 
-#blur_ring>input {
+#opacity_ring>input {
   position: absolute;
   width: 80px;
-  left: calc(100% - 7px);
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
   -webkit-appearance: none;
-  height: 6px;
+  height: 20px;
   background: transparent;
 }
 
-#blur_ring>input::-webkit-slider-thumb{
+#opacity_ring>input::-webkit-slider-thumb{
   -webkit-appearance: none;
   appearance: none;
   background: #ffffff;
@@ -947,16 +969,23 @@ body {
   border-radius: 50%;
 }
 
-/* #shadow_controller:hover+#blur_ring {
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-  transition: all ease 100ms;
-} */
+#inner_ring{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid var(--Palatinate_blue);
+}
 
-#blur_ring.show {
-  transform: translate(-50%, -50%) scale(1);
+#shadow_controller:hover+#opacity_ring {
   opacity: 1;
-  transition: all ease 100ms;
+}
+
+#opacity_ring:hover {
+  opacity: 1;
+}
+
+#opacity_ring.show {
+  opacity: 1;
 }
 
 #custom_shadow_sandbox_box {
