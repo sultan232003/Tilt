@@ -1,3 +1,7 @@
+function print(val) {
+    console.log(val)
+}
+
 function hexToRgba(hex, alpha = 'FF') {
     hex = hex.replace(/^#/, '');
     let r, g, b, a = 1;
@@ -258,4 +262,21 @@ function calculateDistanceFromCenter(x, y, from_x, from_y) {
     const deltaX = x - from_x;
     const deltaY = y - from_y;
     return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+}
+
+function convertToPercentage(value, min, max) {
+    if (min === max) {
+        throw new Error("Minimum and maximum values must be different.");
+    }
+    value = Math.max(min, Math.min(max, value));
+    const percentage = ((value - min) / (max - min)) * 100;
+    return percentage;
+}
+
+function convertRange(value, minIn, maxIn, minOut, maxOut) {
+    if (minIn === maxIn) {
+        throw new Error("Input minimum and maximum values must be different.");
+    }
+    const convertedValue = ((value - minIn) / (maxIn - minIn)) * (maxOut - minOut) + minOut;
+    return Math.max(minOut, Math.min(maxOut, convertedValue));
 }
