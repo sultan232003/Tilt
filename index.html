@@ -2003,8 +2003,14 @@
           </div>
           <div id="custom_shadow_sandbox_area" class="pos-rel row row-col gap-10">
             <div id="custom_shadow_sandbox" class="pos-rel">
-              <div id="custom_shadow_sandbox_box" style="--horizontal_length: 0px; --vertical_length: 0px; --blur_radius: 10px; --spread_radius: 0px; --radius: 10px; --opacity:10%" class="box_outline box_border"></div>
               <div id="custom_shadow_sandbox_inset"></div>
+              <div id="custom_shadow_sandbox_box" style="--horizontal_length: 0px; --vertical_length: 0px; --blur_radius: 10px; --spread_radius: 0px; --radius: 10px; --opacity:10%" class="box_outline box_border"></div>
+              <div id="blur_ring" class="pos-abs">
+                <div id="left_stretch" class="blur_stretch pos-abs left width-5 height-100"></div>
+                <div id="top_stretch" class="blur_stretch pos-abs top width-100 height-5"></div>
+                <div id="right_stretch" class="blur_stretch pos-abs right width-5 height-100"></div>
+                <div id="bottom_stretch" class="blur_stretch pos-abs bottom width-100 height-5"></div>
+              </div>
             </div>
               <div id="shadow_controller" class="pos-abs">
                 <p id="opacity_ring_val">10</p>
