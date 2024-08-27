@@ -578,18 +578,19 @@ const Shadow_controller_opacity_ring = document.getElementById("shadow_controlle
 let Shadow_controller_opacity_ring_final = new Slider(Shadow_controller_opacity_ring, "opacity", Custom_shadow_sandbox_box, "%")
 Shadow_controller_opacity_ring_final.update()
 
-Shadow_controller_opacity_ring.addEventListener("mousedown",()=>{
+Shadow_controller_opacity_ring.addEventListener("mousedown", () => {
   // Opacity_ring_val.classList.add("show")
-  Shadow_controller_opacity_ring.addEventListener("mousemove",()=>{
+  Shadow_controller_opacity_ring.addEventListener("mousemove", () => {
     Opacity.value = Shadow_controller_opacity_ring.value
     Opacity_final.slider_value = Number(Shadow_controller_opacity_ring.value)
     Opacity_final.slider_drag(Number(Shadow_controller_opacity_ring.value))
     Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
+    applyShadow()
   })
 })
 
-Opacity.addEventListener("mousedown",()=>{
-  Opacity.addEventListener("mousemove",()=>{
+Opacity.addEventListener("mousedown", () => {
+  Opacity.addEventListener("mousemove", () => {
     Shadow_controller_opacity_ring.value = Opacity.value
     Shadow_controller_opacity_ring_final.slider_value = Number(Opacity_final.slider_value)
     Shadow_controller_opacity_ring_final.slider_drag(Number(Opacity_final.slider_value))
@@ -673,13 +674,13 @@ function slider_upadte() {
   shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
   shadow_angle = calculateAngle(Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
   applyShadow()
-  newX = (Custom_shadow_sandbox.offsetWidth/2 - Shadow_controller.offsetWidth/2) - Horizontal_length_final.slider_value
-  newY = (Custom_shadow_sandbox.offsetHeight/2 - Shadow_controller.offsetHeight/2) - Vertical_length_final.slider_value
-  update_controller(newX,newY)
+  newX = (Custom_shadow_sandbox.offsetWidth / 2 - Shadow_controller.offsetWidth / 2) - Horizontal_length_final.slider_value
+  newY = (Custom_shadow_sandbox.offsetHeight / 2 - Shadow_controller.offsetHeight / 2) - Vertical_length_final.slider_value
+  update_controller(newX, newY)
   Opacity_ring_val.innerHTML = Opacity_final.slider_value
 }
 
-Opacity.addEventListener("mousedown",()=>{
+Opacity.addEventListener("mousedown", () => {
   Opacity_ring.classList.add("show")
   Opacity_ring_val.classList.add("show")
 })
@@ -714,7 +715,7 @@ function mouseDown(e) {
   document.addEventListener('mouseup', mouseUp)
 }
 
-function update_controller (x,y){
+function update_controller(x, y) {
   Shadow_controller.style.left = `${x}px`;
   Shadow_controller.style.top = `${y}px`;
 }
@@ -734,7 +735,7 @@ function mouseMove(e) {
   if (right_touch) newX = width;
   if (top_touch) newY = 0;
   if (bottom_touch) newY = height;
-  update_controller(newX,newY)
+  update_controller(newX, newY)
   shadow_X_distance = Custom_shadow_sandbox_box_center_x - (Shadow_controller.getBoundingClientRect().x + (Shadow_controller.offsetWidth / 2))
   shadow_Y_distance = Math.round(Custom_shadow_sandbox_box_center_y - (Shadow_controller.getBoundingClientRect().y + (Shadow_controller.offsetHeight / 2)))
   Custom_shadow_sandbox_box.style.setProperty("--horizontal_length", shadow_X_distance + "px")
@@ -754,5 +755,77 @@ function mouseUp(e) {
   Shadow_controller.classList.remove("grab")
   document.removeEventListener('mousemove', mouseMove)
 }
+
+// BLUR RING CODE STARTS HERE ///////////////////////////////////////////////////////////////////////////////////////
+
+let blur_ring_offset_x = 0, blur_ring_offset_y = 0, blur_drag = false, blur_ring_width_min = 230, blur_ring_width_max = 430, blur_ring_width = 230, blur_ring_radius = 20
+let Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
+const Left_stretch = document.getElementById("left_stretch")
+Left_stretch.addEventListener("mousedown", () => {
+  Resize_left = true;
+  Left_stretch.classList.add("show")
+})
+const Top_stretch = document.getElementById("top_stretch")
+Top_stretch.addEventListener("mousedown", () => {
+  Resize_top = true
+  Top_stretch.classList.add("show")
+})
+const Right_stretch = document.getElementById("right_stretch")
+Right_stretch.addEventListener("mousedown", () => {
+  Resize_right = true
+  Right_stretch.classList.add("show")
+})
+const Bottom_stretch = document.getElementById("bottom_stretch")
+Bottom_stretch.addEventListener("mousedown", () => {
+  Resize_bottom = true
+  Bottom_stretch.classList.add("show")
+})
+document.addEventListener("mouseup", () => {
+  Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
+  Left_stretch.classList.remove("show")
+  Top_stretch.classList.remove("show")
+  Right_stretch.classList.remove("show")
+  Bottom_stretch.classList.remove("show")
+  Blur_ring.classList.remove("show")
+})
+const Blur_ring = document.getElementById("blur_ring")
+
+function blur_ring_update(e) {
+  if (blur_drag) {
+    if (Resize_right) {
+      blur_ring_width = Math.round(e.clientX - Blur_ring.getBoundingClientRect().x)
+      Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
+    }
+    if (Resize_bottom) {
+      blur_ring_width = Math.round(e.clientY - Blur_ring.getBoundingClientRect().y)
+      Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
+    }
+    if (Resize_left) {
+      blur_ring_width = Math.round(Blur_ring.getBoundingClientRect().right - e.clientX)
+      Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
+    }
+    if (Resize_top) {
+      blur_ring_width = Math.round(Blur_ring.getBoundingClientRect().bottom - e.clientY)
+      Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
+    }
+    const percentage = Math.round(convertRange(blur_ring_width, blur_ring_width_min, blur_ring_width_max, 0, 250));
+    Blur_radius.value = percentage
+    Blur_radius_final.slider_value = percentage
+    Blur_radius_final.slider_drag(percentage)
+  }
+}
+Blur_ring.addEventListener("mousedown", (e) => {
+  blur_drag = true
+  blur_ring_offset_x = e.clientX
+  blur_ring_offset_y = e.clientY
+  Blur_ring.classList.add("show")
+  document.addEventListener('mousemove', (e) => blur_ring_update(e));
+})
+
+document.addEventListener("mouseup", () => {
+  blur_drag = false
+})
+
+// BLUR RING CODE ENDS HERE ///////////////////////////////////////////////////////////////////////////////////////
 
 // CODE FOR CONTROLLER MOVE HERE
