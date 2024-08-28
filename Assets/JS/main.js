@@ -761,6 +761,15 @@ function mouseUp(e) {
 let blur_ring_offset_x = 0, blur_ring_offset_y = 0, blur_drag = false, blur_ring_width_min = 230, blur_ring_width_max = 430, blur_ring_width = 230, blur_ring_radius = 20
 let Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
 const Left_stretch = document.getElementById("left_stretch")
+
+Blur_radius.addEventListener("mousedown", () => {
+  Blur_ring.classList.add("show")
+  Blur_radius.addEventListener("mousemove", () => {
+    blur_ring_width = Math.round(convertRange(Blur_radius_final.slider_value, 0, 250, blur_ring_width_min, blur_ring_width_max))
+    Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
+  })
+})
+
 Left_stretch.addEventListener("mousedown", () => {
   Resize_left = true;
   Left_stretch.classList.add("show")
@@ -812,8 +821,10 @@ function blur_ring_update(e) {
     Blur_radius.value = percentage
     Blur_radius_final.slider_value = percentage
     Blur_radius_final.slider_drag(percentage)
+    applyShadow()
   }
 }
+
 Blur_ring.addEventListener("mousedown", (e) => {
   blur_drag = true
   blur_ring_offset_x = e.clientX
