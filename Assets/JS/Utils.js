@@ -161,7 +161,7 @@ class Slider {
     }
 
     slider_calc(val) {
-        this.slider_width = (val / this.slider_max) * 100
+        this.slider_width = Math.round(convertRange(val,this.slider_min , this.slider_max ,0 , 100))
         this.slider_value = val
         this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%;")
         this.Set_to_custom_attr.style.setProperty("--" + this.Custom_attr, this.slider_value + this.output_unit)
@@ -169,7 +169,7 @@ class Slider {
 
     slider_drag(val) {
         if (val >= this.slider_min && val <= this.slider_max) {
-            this.slider_width = (val / this.slider_max) * 100
+            this.slider_width = Math.round(convertRange(val,this.slider_min , this.slider_max ,0 , 100))
         } else if (val > this.slider_max) {
             this.slider_width = 100
         } else if (val < this.slider_min) {
@@ -181,7 +181,7 @@ class Slider {
     }
 
     update() {
-        this.slider_width = (this.slider.value / this.slider_max) * 100
+        this.slider_width = Math.round(convertRange(this.slider.value,this.slider_min , this.slider_max ,0 , 100))
         this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%")
         this.slider.addEventListener("mousedown", () => {
             this.slider.addEventListener("mousemove", (e) => {
