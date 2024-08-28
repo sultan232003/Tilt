@@ -931,6 +931,10 @@ body {
   color: var(--Russian_violet);
   font-weight: 700;
   text-align: center;
+
+  position-anchor: --shadow_box;
+  left: calc(anchor(left) - 20px);
+  top: calc(anchor(top) - 20px);
   /* box-shadow: 0px 221px 62px rgba(85, 70, 255, 0), 0px 142px 57px rgba(85, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05); */
 }
 
@@ -1020,7 +1024,6 @@ body {
 #blur_ring{
   height: clamp(230px, 230px, 430px);
   width: clamp(230px, 230px, 430px);
-  resize: horizontal;
   border-radius: clamp(20px, 20px, 110px);
   border: 1px solid var(--Palatinate_blue);
   left: 50%;
@@ -1059,6 +1062,7 @@ body {
   height: 210px;
   aspect-ratio: 1 / 1;
   position: relative;
+  anchor-name: --shadow_box;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
