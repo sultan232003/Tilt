@@ -789,14 +789,7 @@ Bottom_stretch.addEventListener("mousedown", () => {
   Resize_bottom = true
   Bottom_stretch.classList.add("show")
 })
-document.addEventListener("mouseup", () => {
-  Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
-  Left_stretch.classList.remove("show")
-  Top_stretch.classList.remove("show")
-  Right_stretch.classList.remove("show")
-  Bottom_stretch.classList.remove("show")
-  Blur_ring.classList.remove("show")
-})
+
 const Blur_ring = document.getElementById("blur_ring")
 
 function blur_ring_update(e) {
@@ -835,8 +828,50 @@ Blur_ring.addEventListener("mousedown", (e) => {
 
 document.addEventListener("mouseup", () => {
   blur_drag = false
+  Spread_level_resize = false
+  Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
+  Left_stretch.classList.remove("show")
+  Top_stretch.classList.remove("show")
+  Right_stretch.classList.remove("show")
+  Bottom_stretch.classList.remove("show")
+  Blur_ring.classList.remove("show")
+  Spread_level_stretch.classList.remove("show")
+  Spread_level_box.classList.remove("show")
 })
 
 // BLUR RING CODE ENDS HERE ///////////////////////////////////////////////////////////////////////////////////////
+
+// SPREAD LEVEL CODE STARTS HERE ///////////////////////////////////////////////////////////////////////////////////
+
+const Spread_level_box = document.getElementById("spread_level_box")
+const Spread_level = document.getElementById("spread_level")
+const Spread_level_stretch = document.getElementById("spread_level_stretch")
+let Spread_level_resize = false, Spread_level_height = 207, Spread_level_height_min = 3, Spread_level_height_max = 207
+
+Spread_level_stretch.addEventListener("mousedown", () => {
+  Spread_level_resize = true
+  Spread_level_stretch.classList.add("show")
+  Spread_level_box.classList.add("show")
+  document.addEventListener("mousemove",(e)=>{
+    if (Spread_level_resize) {
+      Spread_level_height = Math.round(Spread_level.getBoundingClientRect().bottom - e.clientY)
+      Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
+      let Spread_level_height_val = Math.round(convertRange(Spread_level_height,Spread_level_height_min, Spread_level_height_max,-50,50))
+      Spread_radius.value = Spread_level_height_val
+      Spread_radius_final.slider_value = Spread_level_height_val
+      Spread_radius_final.slider_drag(Spread_level_height_val)
+    }
+  })
+})
+
+Spread_radius.addEventListener("mousedown", () => {
+  Spread_level_box.classList.add("show")
+  Spread_radius.addEventListener("mousemove", () => {
+    Spread_level_height = Math.round(convertRange(Spread_radius_final.slider_value, -50, 50, Spread_level_height_min, Spread_level_height_max))
+    Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
+  })
+})
+
+// SPREAD LEVEL CODE ENDS HERE ///////////////////////////////////////////////////////////////////////////////////
 
 // CODE FOR CONTROLLER MOVE HERE
