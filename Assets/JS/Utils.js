@@ -161,7 +161,7 @@ class Slider {
     }
 
     slider_calc(val) {
-        this.slider_width = Math.round(convertRange(val,this.slider_min , this.slider_max ,0 , 100))
+        this.slider_width = Math.round(convertRange(val, this.slider_min, this.slider_max, 0, 100))
         this.slider_value = val
         this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%;")
         this.Set_to_custom_attr.style.setProperty("--" + this.Custom_attr, this.slider_value + this.output_unit)
@@ -169,7 +169,7 @@ class Slider {
 
     slider_drag(val) {
         if (val >= this.slider_min && val <= this.slider_max) {
-            this.slider_width = Math.round(convertRange(val,this.slider_min , this.slider_max ,0 , 100))
+            this.slider_width = Math.round(convertRange(val, this.slider_min, this.slider_max, 0, 100))
         } else if (val > this.slider_max) {
             this.slider_width = 100
         } else if (val < this.slider_min) {
@@ -180,8 +180,14 @@ class Slider {
         this.Set_to_custom_attr.style.setProperty("--" + this.Custom_attr, this.slider_value + this.output_unit)
     }
 
+    slider_customize(val) {
+        this.slider.value = val
+        this.slider_value = val
+        this.slider_drag(val)
+    }
+
     update() {
-        this.slider_width = Math.round(convertRange(this.slider.value,this.slider_min , this.slider_max ,0 , 100))
+        this.slider_width = Math.round(convertRange(this.slider.value, this.slider_min, this.slider_max, 0, 100))
         this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%")
         this.slider.addEventListener("mousedown", () => {
             this.slider.addEventListener("mousemove", (e) => {
@@ -215,6 +221,10 @@ class Toggle {
 
 const radsToDegrees = (radians) => {
     return radians * 180 / Math.PI;
+}
+
+const degreesToRads = (angle) => {
+    return angle * (Math.PI / 180);
 }
 
 let centerX = document.clientWidth / 2
@@ -279,4 +289,11 @@ function convertRange(value, minIn, maxIn, minOut, maxOut) {
     }
     const convertedValue = ((value - minIn) / (maxIn - minIn)) * (maxOut - minOut) + minOut;
     return Math.max(minOut, Math.min(maxOut, convertedValue));
+}
+
+function getCoordinates(angle, originX, originY, distance) {
+    let radians = degreesToRads(angle)
+    let x = originX - distance * Math.cos(radians);
+    let y = originY - distance * Math.sin(radians);
+    return { x: x, y: y };
 }
