@@ -543,10 +543,7 @@ const Shadow_controller = document.getElementById("shadow_controller")
 const Custom_shadow_sandbox = document.getElementById("custom_shadow_sandbox")
 const Custom_shadow_sandbox_inset = document.getElementById("custom_shadow_sandbox_inset")
 const Custom_shadow_sandbox_box = document.getElementById("custom_shadow_sandbox_box")
-let box_enter = false
-let drag = false
-let offset = { x: 0, y: 0 }
-let angle = 0
+let box_enter = false, drag = false, angle = 0
 let Custom_shadow_sandbox_box_center_x = Custom_shadow_sandbox_box.getBoundingClientRect().x + Custom_shadow_sandbox_box.clientWidth / 2
 let Custom_shadow_sandbox_box_center_y = Custom_shadow_sandbox_box.getBoundingClientRect().y + Custom_shadow_sandbox_box.clientHeight / 2
 
@@ -559,21 +556,31 @@ document.addEventListener("scroll", (e) => {
 const Horizontal_length = document.getElementById("horizontal_length")
 let Horizontal_length_final = new Slider(Horizontal_length, "horizontal_length", Custom_shadow_sandbox_box, "px")
 Horizontal_length_final.update()
+
 const Vertical_length = document.getElementById("vertical_length")
 let Vertical_length_final = new Slider(Vertical_length, "vertical_length", Custom_shadow_sandbox_box, "px")
 Vertical_length_final.update()
+
 const Blur_radius = document.getElementById("blur_radius")
 let Blur_radius_final = new Slider(Blur_radius, "blur_radius", Custom_shadow_sandbox_box, "px")
 Blur_radius_final.update()
+
 const Spread_radius = document.getElementById("spread_radius")
 let Spread_radius_final = new Slider(Spread_radius, "spread_radius", Custom_shadow_sandbox_box, "px")
 Spread_radius_final.update()
+
 const Radius = document.getElementById("Radius")
 let Radius_final = new Slider(Radius, "radius", Custom_shadow_sandbox_box, "px")
 Radius_final.update()
+
 const Opacity = document.getElementById("opacity")
 let Opacity_final = new Slider(Opacity, "opacity", Custom_shadow_sandbox_box, "%")
 Opacity_final.update()
+
+const Distance = document.getElementById("distance")
+let Distance_final = new Slider(Distance, "distance", Custom_shadow_sandbox_box, "px")
+Distance_final.update()
+
 const Shadow_controller_opacity_ring = document.getElementById("shadow_controller_opacity_ring")
 let Shadow_controller_opacity_ring_final = new Slider(Shadow_controller_opacity_ring, "opacity", Custom_shadow_sandbox_box, "%")
 Shadow_controller_opacity_ring_final.update()
@@ -581,9 +588,7 @@ Shadow_controller_opacity_ring_final.update()
 Shadow_controller_opacity_ring.addEventListener("mousedown", () => {
   // Opacity_ring_val.classList.add("show")
   Shadow_controller_opacity_ring.addEventListener("mousemove", () => {
-    Opacity.value = Shadow_controller_opacity_ring.value
-    Opacity_final.slider_value = Number(Shadow_controller_opacity_ring.value)
-    Opacity_final.slider_drag(Number(Shadow_controller_opacity_ring.value))
+    Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
     Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
     applyShadow()
   })
@@ -591,9 +596,7 @@ Shadow_controller_opacity_ring.addEventListener("mousedown", () => {
 
 Opacity.addEventListener("mousedown", () => {
   Opacity.addEventListener("mousemove", () => {
-    Shadow_controller_opacity_ring.value = Opacity.value
-    Shadow_controller_opacity_ring_final.slider_value = Number(Opacity_final.slider_value)
-    Shadow_controller_opacity_ring_final.slider_drag(Number(Opacity_final.slider_value))
+    Shadow_controller_opacity_ring_final.slider_customize(Number(Opacity_final.slider_value))
   })
 })
 
@@ -691,8 +694,6 @@ Array.from(Slider_style).forEach((Slider_styles) => {
   });
   document.addEventListener("mouseup", () => {
     Slider_styles.removeEventListener("mousemove", slider_upadte)
-    Opacity_ring.classList.remove("show")
-    Opacity_ring_val.classList.remove("show")
   })
 });
 
@@ -743,13 +744,22 @@ function mouseMove(e) {
   shadow_angle = calculateAngle(Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
   shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
   applyShadow()
-  Horizontal_length.value = shadow_X_distance
-  Horizontal_length_final.slider_value = shadow_X_distance
-  Horizontal_length_final.slider_drag(shadow_X_distance)
-  Vertical_length.value = shadow_Y_distance
-  Vertical_length_final.slider_value = shadow_Y_distance
-  Vertical_length_final.slider_drag(shadow_Y_distance)
+  Horizontal_length_final.slider_customize(shadow_X_distance)
+  Vertical_length_final.slider_customize(shadow_Y_distance)
+  Distance_final.slider_customize(shadow_distance)
 }
+
+Horizontal_length.addEventListener("mousedown", () => {
+  Horizontal_length.addEventListener("mousemove", () => {
+    Distance_final.slider_customize(shadow_distance)
+  })
+})
+
+Vertical_length.addEventListener("mousedown", () => {
+  Vertical_length.addEventListener("mousemove", () => {
+    Distance_final.slider_customize(shadow_distance)
+  })
+})
 
 function mouseUp(e) {
   Shadow_controller.classList.remove("grab")
@@ -761,6 +771,9 @@ function mouseUp(e) {
 let blur_ring_offset_x = 0, blur_ring_offset_y = 0, blur_drag = false, blur_ring_width_min = 230, blur_ring_width_max = 430, blur_ring_width = 230, blur_ring_radius = 20
 let Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
 const Left_stretch = document.getElementById("left_stretch")
+const Top_stretch = document.getElementById("top_stretch")
+const Right_stretch = document.getElementById("right_stretch")
+const Bottom_stretch = document.getElementById("bottom_stretch")
 
 Blur_radius.addEventListener("mousedown", () => {
   Blur_ring.classList.add("show")
@@ -770,24 +783,23 @@ Blur_radius.addEventListener("mousedown", () => {
   })
 })
 
-Left_stretch.addEventListener("mousedown", () => {
-  Resize_left = true;
-  Left_stretch.classList.add("show")
-})
-const Top_stretch = document.getElementById("top_stretch")
-Top_stretch.addEventListener("mousedown", () => {
-  Resize_top = true
-  Top_stretch.classList.add("show")
-})
-const Right_stretch = document.getElementById("right_stretch")
-Right_stretch.addEventListener("mousedown", () => {
-  Resize_right = true
-  Right_stretch.classList.add("show")
-})
-const Bottom_stretch = document.getElementById("bottom_stretch")
-Bottom_stretch.addEventListener("mousedown", () => {
-  Resize_bottom = true
-  Bottom_stretch.classList.add("show")
+document.addEventListener("mousedown", (e) => {
+  if (e.target == Left_stretch) {
+    Resize_left = true;
+    Left_stretch.classList.add("show")
+  }
+  if (e.target == Right_stretch) {
+    Resize_right = true
+    Right_stretch.classList.add("show")
+  }
+  if (e.target == Top_stretch) {
+    Resize_top = true
+    Top_stretch.classList.add("show")
+  }
+  if (e.target == Bottom_stretch) {
+    Resize_bottom = true
+    Bottom_stretch.classList.add("show")
+  }
 })
 
 const Blur_ring = document.getElementById("blur_ring")
@@ -796,24 +808,19 @@ function blur_ring_update(e) {
   if (blur_drag) {
     if (Resize_right) {
       blur_ring_width = Math.round(e.clientX - Blur_ring.getBoundingClientRect().x)
-      Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
     }
     if (Resize_bottom) {
       blur_ring_width = Math.round(e.clientY - Blur_ring.getBoundingClientRect().y)
-      Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
     }
     if (Resize_left) {
       blur_ring_width = Math.round(Blur_ring.getBoundingClientRect().right - e.clientX)
-      Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
     }
     if (Resize_top) {
       blur_ring_width = Math.round(Blur_ring.getBoundingClientRect().bottom - e.clientY)
-      Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
     }
+    Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
     const percentage = Math.round(convertRange(blur_ring_width, blur_ring_width_min, blur_ring_width_max, 0, 250));
-    Blur_radius.value = percentage
-    Blur_radius_final.slider_value = percentage
-    Blur_radius_final.slider_drag(percentage)
+    Blur_radius_final.slider_customize(percentage)
     applyShadow()
   }
 }
@@ -824,19 +831,6 @@ Blur_ring.addEventListener("mousedown", (e) => {
   blur_ring_offset_y = e.clientY
   Blur_ring.classList.add("show")
   document.addEventListener('mousemove', (e) => blur_ring_update(e));
-})
-
-document.addEventListener("mouseup", () => {
-  blur_drag = false
-  Spread_level_resize = false
-  Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
-  Left_stretch.classList.remove("show")
-  Top_stretch.classList.remove("show")
-  Right_stretch.classList.remove("show")
-  Bottom_stretch.classList.remove("show")
-  Blur_ring.classList.remove("show")
-  Spread_level_stretch.classList.remove("show")
-  Spread_level_box.classList.remove("show")
 })
 
 // BLUR RING CODE ENDS HERE ///////////////////////////////////////////////////////////////////////////////////////
@@ -852,15 +846,15 @@ Spread_level_stretch.addEventListener("mousedown", () => {
   Spread_level_resize = true
   Spread_level_stretch.classList.add("show")
   Spread_level_box.classList.add("show")
-  document.addEventListener("mousemove",(e)=>{
+  document.addEventListener("mousemove", (e) => {
     if (Spread_level_resize) {
       Spread_level_height = Math.round(Spread_level.getBoundingClientRect().bottom - e.clientY)
       Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
-      let Spread_level_height_val = Math.round(convertRange(Spread_level_height,Spread_level_height_min, Spread_level_height_max,-50,50))
-      Spread_radius.value = Spread_level_height_val
-      Spread_radius_final.slider_value = Spread_level_height_val
-      Spread_radius_final.slider_drag(Spread_level_height_val)
+      let Spread_level_height_val = Math.round(convertRange(Spread_level_height, Spread_level_height_min, Spread_level_height_max, -50, 50))
+      Spread_radius_final.slider_customize(Spread_level_height_val)
     }
+
+    // print(getCoordinates(shadow_angle,Custom_shadow_sandbox_box_center_x,Custom_shadow_sandbox_box_center_y,shadow_distance))
   })
 })
 
@@ -869,6 +863,16 @@ Spread_radius.addEventListener("mousedown", () => {
   Spread_radius.addEventListener("mousemove", () => {
     Spread_level_height = Math.round(convertRange(Spread_radius_final.slider_value, -50, 50, Spread_level_height_min, Spread_level_height_max))
     Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
+  })
+})
+
+let remove_show_array = [Left_stretch, Top_stretch, Right_stretch, Bottom_stretch, Blur_ring, Spread_level_stretch, Spread_level_box, Opacity_ring, Opacity_ring_val]
+document.addEventListener("mouseup", () => {
+  blur_drag = false
+  Spread_level_resize = false
+  Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
+  remove_show_array.forEach(Remove_shows => {
+    Remove_shows.classList.remove("show")
   })
 })
 
