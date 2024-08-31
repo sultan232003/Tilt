@@ -585,21 +585,6 @@ const Shadow_controller_opacity_ring = document.getElementById("shadow_controlle
 let Shadow_controller_opacity_ring_final = new Slider(Shadow_controller_opacity_ring, "opacity", Custom_shadow_sandbox_box, "%")
 Shadow_controller_opacity_ring_final.update()
 
-Shadow_controller_opacity_ring.addEventListener("mousedown", () => {
-  // Opacity_ring_val.classList.add("show")
-  Shadow_controller_opacity_ring.addEventListener("mousemove", () => {
-    Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
-    Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
-    applyShadow()
-  })
-})
-
-Opacity.addEventListener("mousedown", () => {
-  Opacity.addEventListener("mousemove", () => {
-    Shadow_controller_opacity_ring_final.slider_customize(Number(Opacity_final.slider_value))
-  })
-})
-
 // CUSTOM SHADOW SANDBOX CODE ENDS HERE
 
 // SHADOW EFFECT CODE ENDS HERE
@@ -615,25 +600,6 @@ Border_toggle_final.update()
 const Multiple_layers = document.getElementById("multiple_layers")
 let Multiple_layers_final = new Toggle(Multiple_layers, "box_multiple", Custom_shadow_sandbox_box)
 Multiple_layers_final.update()
-
-function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
-  let shadows = [];
-  let radianAngle = angle * (Math.PI / 180);
-  for (let i = 1; i <= layers; i++) {
-    baseDistance /= 3;
-    baseDistance *= 2;
-    let offsetX = Math.round(baseDistance * Math.cos(radianAngle));
-    let offsetY = Math.round(baseDistance * Math.sin(radianAngle));
-    baseBlur *= 3;
-    let blur = baseBlur /= 2;
-    let spread = baseSpread * i;
-    let opacity = baseOpacity - (baseOpacity / (i * 0.6));
-    opacity = Math.max(opacity, 0);
-    let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(4, 47, 255, ${opacity})`;
-    shadows.push(shadow);
-  }
-  element.style.boxShadow = shadows.join(', ');
-}
 
 // function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
 //   let shadows = [];
@@ -704,7 +670,7 @@ Inset_toggle.addEventListener("click", () => {
 
 // CODE FOR CONTROLLER MOVE HERE
 
-let offset_x = 0, offset_y = 0, shadow_X_distance = 0, shadow_Y_distance = 0, newX = 0, newY = 0;
+let offset_x = 0, offset_y = 0, shadow_X_distance = 0, shadow_Y_distance = 0, newX = 0, newY = 0, distance_controller_pos;
 
 Shadow_controller.addEventListener('mousedown', mouseDown)
 
@@ -749,18 +715,6 @@ function mouseMove(e) {
   Distance_final.slider_customize(shadow_distance)
 }
 
-Horizontal_length.addEventListener("mousedown", () => {
-  Horizontal_length.addEventListener("mousemove", () => {
-    Distance_final.slider_customize(shadow_distance)
-  })
-})
-
-Vertical_length.addEventListener("mousedown", () => {
-  Vertical_length.addEventListener("mousemove", () => {
-    Distance_final.slider_customize(shadow_distance)
-  })
-})
-
 function mouseUp(e) {
   Shadow_controller.classList.remove("grab")
   document.removeEventListener('mousemove', mouseMove)
@@ -774,14 +728,7 @@ const Left_stretch = document.getElementById("left_stretch")
 const Top_stretch = document.getElementById("top_stretch")
 const Right_stretch = document.getElementById("right_stretch")
 const Bottom_stretch = document.getElementById("bottom_stretch")
-
-Blur_radius.addEventListener("mousedown", () => {
-  Blur_ring.classList.add("show")
-  Blur_radius.addEventListener("mousemove", () => {
-    blur_ring_width = Math.round(convertRange(Blur_radius_final.slider_value, 0, 250, blur_ring_width_min, blur_ring_width_max))
-    Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
-  })
-})
+const Blur_ring = document.getElementById("blur_ring")
 
 document.addEventListener("mousedown", (e) => {
   if (e.target == Left_stretch) {
@@ -801,8 +748,6 @@ document.addEventListener("mousedown", (e) => {
     Bottom_stretch.classList.add("show")
   }
 })
-
-const Blur_ring = document.getElementById("blur_ring")
 
 function blur_ring_update(e) {
   if (blur_drag) {
@@ -853,17 +798,57 @@ Spread_level_stretch.addEventListener("mousedown", () => {
       let Spread_level_height_val = Math.round(convertRange(Spread_level_height, Spread_level_height_min, Spread_level_height_max, -50, 50))
       Spread_radius_final.slider_customize(Spread_level_height_val)
     }
-
-    // print(getCoordinates(shadow_angle,Custom_shadow_sandbox_box_center_x,Custom_shadow_sandbox_box_center_y,shadow_distance))
   })
 })
 
-Spread_radius.addEventListener("mousedown", () => {
-  Spread_level_box.classList.add("show")
-  Spread_radius.addEventListener("mousemove", () => {
-    Spread_level_height = Math.round(convertRange(Spread_radius_final.slider_value, -50, 50, Spread_level_height_min, Spread_level_height_max))
-    Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
-  })
+document.addEventListener("mousedown", (e) => {
+  switch (e.target) {
+    case Horizontal_length:
+      Horizontal_length.addEventListener("mousemove", () => {
+        Distance_final.slider_customize(shadow_distance)
+      })
+      break;
+    case Vertical_length:
+      Vertical_length.addEventListener("mousemove", () => {
+        Distance_final.slider_customize(shadow_distance)
+      })
+      break;
+    case Blur_radius:
+      Blur_ring.classList.add("show")
+      Blur_radius.addEventListener("mousemove", () => {
+        blur_ring_width = Math.round(convertRange(Blur_radius_final.slider_value, 0, 250, blur_ring_width_min, blur_ring_width_max))
+        Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
+      })
+      break;
+    case Shadow_controller_opacity_ring:
+      Shadow_controller_opacity_ring.addEventListener("mousemove", () => {
+        Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
+        Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
+        applyShadow()
+      })
+      break;
+    case Opacity:
+      Opacity.addEventListener("mousemove", () => {
+        Shadow_controller_opacity_ring_final.slider_customize(Number(Opacity_final.slider_value))
+      })
+      break;
+    case Spread_radius:
+      Spread_level_box.classList.add("show")
+      Spread_radius.addEventListener("mousemove", () => {
+        Spread_level_height = Math.round(convertRange(Spread_radius_final.slider_value, -50, 50, Spread_level_height_min, Spread_level_height_max))
+        Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
+      })
+      break;
+    case Distance:
+      Distance.addEventListener("mousemove", () => {
+        let distance_controller_pos = getCoordinates(shadow_angle, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Distance_final.slider_value)
+        newX = distance_controller_pos.x - Custom_shadow_sandbox.getBoundingClientRect().x - Shadow_controller.offsetWidth / 2
+        newY = distance_controller_pos.y - Custom_shadow_sandbox.getBoundingClientRect().y - Shadow_controller.offsetHeight / 2
+        update_controller(newX, newY)
+        // Horizontal_length_final.slider_customize()
+      })
+      break;
+  }
 })
 
 let remove_show_array = [Left_stretch, Top_stretch, Right_stretch, Bottom_stretch, Blur_ring, Spread_level_stretch, Spread_level_box, Opacity_ring, Opacity_ring_val]
