@@ -297,3 +297,22 @@ function getCoordinates(angle, originX, originY, distance) {
     let y = originY - distance * Math.sin(radians);
     return { x: x, y: y };
 }
+
+function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
+    let shadows = [];
+    let radianAngle = angle * (Math.PI / 180);
+    for (let i = 1; i <= layers; i++) {
+      baseDistance /= 3;
+      baseDistance *= 2;
+      let offsetX = Math.round(baseDistance * Math.cos(radianAngle));
+      let offsetY = Math.round(baseDistance * Math.sin(radianAngle));
+      baseBlur *= 3;
+      let blur = baseBlur /= 2;
+      let spread = baseSpread * i;
+      let opacity = baseOpacity - (baseOpacity / (i * 0.6));
+      opacity = Math.max(opacity, 0);
+      let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(4, 47, 255, ${opacity})`;
+      shadows.push(shadow);
+    }
+    element.style.boxShadow = shadows.join(', ');
+  }
