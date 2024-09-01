@@ -641,7 +641,6 @@ Multiple_layers.addEventListener("click", applyShadow);
 
 function slider_upadte() {
   shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
-  shadow_angle = calculateAngle(Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
   applyShadow()
   newX = (Custom_shadow_sandbox.offsetWidth / 2 - Shadow_controller.offsetWidth / 2) - Horizontal_length_final.slider_value
   newY = (Custom_shadow_sandbox.offsetHeight / 2 - Shadow_controller.offsetHeight / 2) - Vertical_length_final.slider_value
@@ -674,6 +673,34 @@ let offset_x = 0, offset_y = 0, shadow_X_distance = 0, shadow_Y_distance = 0, ne
 
 Shadow_controller.addEventListener('mousedown', mouseDown)
 
+function shadowOffsetX() {
+  return Math.round(Custom_shadow_sandbox_box_center_x - (Shadow_controller.getBoundingClientRect().x + (Shadow_controller.offsetWidth / 2)))
+}
+function shadowOffsetY() {
+  return Math.round(Custom_shadow_sandbox_box_center_y - (Shadow_controller.getBoundingClientRect().y + (Shadow_controller.offsetHeight / 2)))
+}
+
+function updateShadowRangeBox(X_val, Y_val) {
+  Custom_shadow_sandbox_box.style.setProperty("--horizontal_length", X_val + "px")
+  Custom_shadow_sandbox_box.style.setProperty("--vertical_length", Y_val + "px")
+}
+
+function boxControlGapX() {
+  if (Custom_shadow_sandbox.offsetWidth / 2 === Shadow_controller.offsetLeft + Shadow_controller.offsetWidth / 2) {
+    return false
+  } else { return true }
+}
+
+function boxControlGapY() {
+  if (Custom_shadow_sandbox.offsetHeight / 2 === Shadow_controller.offsetTop + Shadow_controller.offsetHeight / 2) {
+    return false
+  } else { return true }
+}
+
+function calShadowAngle() {
+  return calculateAngle(Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
+}
+
 function mouseDown(e) {
   offset_x = e.clientX - Shadow_controller.getBoundingClientRect().x
   offset_y = e.clientY - Shadow_controller.getBoundingClientRect().y
@@ -703,16 +730,14 @@ function mouseMove(e) {
   if (top_touch) newY = 0;
   if (bottom_touch) newY = height;
   update_controller(newX, newY)
-  shadow_X_distance = Custom_shadow_sandbox_box_center_x - (Shadow_controller.getBoundingClientRect().x + (Shadow_controller.offsetWidth / 2))
-  shadow_Y_distance = Math.round(Custom_shadow_sandbox_box_center_y - (Shadow_controller.getBoundingClientRect().y + (Shadow_controller.offsetHeight / 2)))
-  Custom_shadow_sandbox_box.style.setProperty("--horizontal_length", shadow_X_distance + "px")
-  Custom_shadow_sandbox_box.style.setProperty("--vertical_length", shadow_Y_distance + "px")
-  shadow_angle = calculateAngle(Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y)
+  updateShadowRangeBox(shadowOffsetX(), shadowOffsetY())
+  shadow_angle = calShadowAngle()
   shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
   applyShadow()
-  Horizontal_length_final.slider_customize(shadow_X_distance)
-  Vertical_length_final.slider_customize(shadow_Y_distance)
+  Horizontal_length_final.slider_customize(shadowOffsetX())
+  Vertical_length_final.slider_customize(shadowOffsetY())
   Distance_final.slider_customize(shadow_distance)
+  print("check")
 }
 
 function mouseUp(e) {
@@ -723,7 +748,7 @@ function mouseUp(e) {
 // BLUR RING CODE STARTS HERE ///////////////////////////////////////////////////////////////////////////////////////
 
 let blur_ring_offset_x = 0, blur_ring_offset_y = 0, blur_drag = false, blur_ring_width_min = 230, blur_ring_width_max = 430, blur_ring_width = 230, blur_ring_radius = 20
-let Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
+let Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false, gap_X = false, gap_Y = false;
 const Left_stretch = document.getElementById("left_stretch")
 const Top_stretch = document.getElementById("top_stretch")
 const Right_stretch = document.getElementById("right_stretch")
@@ -797,6 +822,7 @@ Spread_level_stretch.addEventListener("mousedown", () => {
       Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
       let Spread_level_height_val = Math.round(convertRange(Spread_level_height, Spread_level_height_min, Spread_level_height_max, -50, 50))
       Spread_radius_final.slider_customize(Spread_level_height_val)
+      applyShadow()
     }
   })
 })
@@ -806,11 +832,13 @@ document.addEventListener("mousedown", (e) => {
     case Horizontal_length:
       Horizontal_length.addEventListener("mousemove", () => {
         Distance_final.slider_customize(shadow_distance)
+        shadow_angle = calShadowAngle()
       })
       break;
     case Vertical_length:
       Vertical_length.addEventListener("mousemove", () => {
         Distance_final.slider_customize(shadow_distance)
+        shadow_angle = calShadowAngle()
       })
       break;
     case Blur_radius:
@@ -845,7 +873,9 @@ document.addEventListener("mousedown", (e) => {
         newX = distance_controller_pos.x - Custom_shadow_sandbox.getBoundingClientRect().x - Shadow_controller.offsetWidth / 2
         newY = distance_controller_pos.y - Custom_shadow_sandbox.getBoundingClientRect().y - Shadow_controller.offsetHeight / 2
         update_controller(newX, newY)
-        // Horizontal_length_final.slider_customize()
+        updateShadowRangeBox(shadowOffsetX(), shadowOffsetY())
+        Horizontal_length_final.slider_customize(shadowOffsetX())
+        Vertical_length_final.slider_customize(shadowOffsetY())
       })
       break;
   }
