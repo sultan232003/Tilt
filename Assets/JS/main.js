@@ -555,52 +555,47 @@ document.addEventListener("scroll", (e) => {
 
 const Horizontal_length = document.getElementById("horizontal_length")
 let Horizontal_length_final = new Slider(Horizontal_length, "horizontal_length", Custom_shadow_sandbox_box, "px")
-Horizontal_length_final.update()
 
 const Vertical_length = document.getElementById("vertical_length")
 let Vertical_length_final = new Slider(Vertical_length, "vertical_length", Custom_shadow_sandbox_box, "px")
-Vertical_length_final.update()
 
 const Blur_radius = document.getElementById("blur_radius")
 let Blur_radius_final = new Slider(Blur_radius, "blur_radius", Custom_shadow_sandbox_box, "px")
-Blur_radius_final.update()
 
 const Spread_radius = document.getElementById("spread_radius")
 let Spread_radius_final = new Slider(Spread_radius, "spread_radius", Custom_shadow_sandbox_box, "px")
-Spread_radius_final.update()
 
 const Radius = document.getElementById("Radius")
 let Radius_final = new Slider(Radius, "radius", Custom_shadow_sandbox_box, "px")
-Radius_final.update()
 
 const Opacity = document.getElementById("opacity")
 let Opacity_final = new Slider(Opacity, "opacity", Custom_shadow_sandbox_box, "%")
-Opacity_final.update()
 
 const Distance = document.getElementById("distance")
 let Distance_final = new Slider(Distance, "distance", Custom_shadow_sandbox_box, "px")
-Distance_final.update()
 
 const Shadow_controller_opacity_ring = document.getElementById("shadow_controller_opacity_ring")
 let Shadow_controller_opacity_ring_final = new Slider(Shadow_controller_opacity_ring, "opacity", Custom_shadow_sandbox_box, "%")
-Shadow_controller_opacity_ring_final.update()
 
 // CUSTOM SHADOW SANDBOX CODE ENDS HERE
 
-// SHADOW EFFECT CODE ENDS HERE
-
 const Inset_toggle = document.getElementById("inset_toggle")
-let Inset_toggle_final = new Toggle(Inset_toggle, "box_outline", Custom_shadow_sandbox_box)
-Inset_toggle_final.update()
+let Inset_toggle_final = new Toggle(Inset_toggle, "box_outline", Custom_shadow_sandbox_box, true)
 
 const Border_toggle = document.getElementById("border_toggle")
-let Border_toggle_final = new Toggle(Border_toggle, "box_border", Custom_shadow_sandbox_box)
-Border_toggle_final.update()
+let Border_toggle_final = new Toggle(Border_toggle, "box_border", Custom_shadow_sandbox_box, true)
 
 const Multiple_layers = document.getElementById("multiple_layers")
-let Multiple_layers_final = new Toggle(Multiple_layers, "box_multiple", Custom_shadow_sandbox_box)
-Multiple_layers_final.update()
+let Multiple_layers_final = new Toggle(Multiple_layers, "box_multiple", Custom_shadow_sandbox_box, false)
 
+let inputUpdateSlider = [Horizontal_length_final,Vertical_length_final,Blur_radius_final,Spread_radius_final,Radius_final,Opacity_final,Distance_final,Shadow_controller_opacity_ring_final]
+let inputUpdateToggle = [Inset_toggle_final,Border_toggle_final,Multiple_layers_final]
+inputUpdateSlider.forEach(inputUpdateSliders=>{
+  inputUpdateSliders.update()
+})
+inputUpdateToggle.forEach(inputUpdateToggles=>{
+  inputUpdateToggles.update()
+})
 // function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
 //   let shadows = [];
 //   let radianAngle = angle * (Math.PI / 180);
@@ -891,6 +886,18 @@ document.addEventListener("mouseup", () => {
   })
 })
 
-// SPREAD LEVEL CODE ENDS HERE ///////////////////////////////////////////////////////////////////////////////////
+let reset_val_slider = [{ forSlider: "Horizontal_length", val: 0 },{ forSlider: "Vertical_length", val: 0 },{ forSlider: "Blur_radius", val: 10 },{ forSlider: "Spread_radius", val: 0 },{ forSlider: "Radius", val: 10 },{ forSlider: "Opacity", val: 10 },{ forSlider: "Distance", val: 0 },{ forSlider: "Opacity_ring", val: 10 }];
+let reset_val_toggle = [{forToggle: "Inset_toggle",val:true},{forToggle: "Border_toggle",val:true},{forToggle: "Multiple_layers",val:false}]
+const Reset_custom_shadow = document.getElementById("reset")
+
+Reset_custom_shadow.addEventListener("click", () => {
+  inputUpdateToggle.forEach((inputUpdateToggles,index)=>{
+    inputUpdateToggles.toggleCustomize(reset_val_toggle[index].val)
+  })
+
+  inputUpdateSlider.forEach((inputUpdateSliders,index)=>{
+    inputUpdateSliders.slider_customize(reset_val_slider[index].val)
+  })
+})
 
 // CODE FOR CONTROLLER MOVE HERE
