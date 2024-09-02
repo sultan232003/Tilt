@@ -198,24 +198,40 @@ class Slider {
 }
 
 class Toggle {
-    constructor(toggle_btn, custom_attr, set_to_custom_attr) {
+    constructor(toggle_btn, custom_attr, set_to_custom_attr, status) {
         this.Toggle_btn = toggle_btn
         this.Custom_attr = custom_attr
         this.Set_to_custom_attr = set_to_custom_attr
-        this.toggle_status = false
+        this.toggle_status = false || status
+    }
+
+    toggle_change() {
+        if (this.Toggle_btn.classList.contains("active")) {
+            this.Set_to_custom_attr.classList.add(this.Custom_attr)
+            this.toggle_status = true
+        } else {
+            this.Set_to_custom_attr.classList.remove(this.Custom_attr)
+            this.toggle_status = false
+        }
     }
 
     update() {
+        if (this.toggle_status) {
+            this.Toggle_btn.classList.toggle("active")
+            this.toggle_change()
+        }
         this.Toggle_btn.addEventListener("click", (e) => {
             this.Toggle_btn.classList.toggle("active")
-            if (this.Toggle_btn.classList.contains("active")) {
-                this.Set_to_custom_attr.classList.add(this.Custom_attr)
-                this.toggle_status = true
-            } else {
-                this.Set_to_custom_attr.classList.remove(this.Custom_attr)
-                this.toggle_status = false
-            }
+            this.toggle_change()
         })
+    }
+
+    toggleCustomize(val) {
+        if (this.toggle_status != val) {
+            this.toggle_status = val
+            this.Toggle_btn.classList.toggle("active")
+            this.toggle_change()
+        }
     }
 }
 
@@ -302,17 +318,17 @@ function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseS
     let shadows = [];
     let radianAngle = angle * (Math.PI / 180);
     for (let i = 1; i <= layers; i++) {
-      baseDistance /= 3;
-      baseDistance *= 2;
-      let offsetX = Math.round(baseDistance * Math.cos(radianAngle));
-      let offsetY = Math.round(baseDistance * Math.sin(radianAngle));
-      baseBlur *= 3;
-      let blur = baseBlur /= 2;
-      let spread = baseSpread * i;
-      let opacity = baseOpacity - (baseOpacity / (i * 0.6));
-      opacity = Math.max(opacity, 0);
-      let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(4, 47, 255, ${opacity})`;
-      shadows.push(shadow);
+        baseDistance /= 3;
+        baseDistance *= 2;
+        let offsetX = Math.round(baseDistance * Math.cos(radianAngle));
+        let offsetY = Math.round(baseDistance * Math.sin(radianAngle));
+        baseBlur *= 3;
+        let blur = baseBlur /= 2;
+        let spread = baseSpread * i;
+        let opacity = baseOpacity - (baseOpacity / (i * 0.6));
+        opacity = Math.max(opacity, 0);
+        let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(4, 47, 255, ${opacity})`;
+        shadows.push(shadow);
     }
     element.style.boxShadow = shadows.join(', ');
-  }
+}
