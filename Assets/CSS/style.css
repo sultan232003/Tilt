@@ -1049,8 +1049,8 @@ body {
 }
 
 #blur_ring {
-  height: clamp(230px, 230px, 430px);
-  width: clamp(230px, 230px, 430px);
+  height: clamp(230px, 238px, 430px);
+  width: clamp(230px, 238px, 430px);
   border-radius: clamp(20px, 20px, 110px);
   border: 1px solid var(--Palatinate_blue);
   left: 50%;
@@ -1060,7 +1060,7 @@ body {
   opacity: 0;
 }
 
-#blur_ring:hover {
+#blur_ring.show_ui:hover {
   opacity: 1;
 }
 
@@ -1097,7 +1097,7 @@ body {
   opacity: 0;
 }
 
-#spread_level_box:hover {
+#spread_level_box.show_ui:hover {
   transition: all 100ms ease;
   opacity: 1;
 }
