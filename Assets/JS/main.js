@@ -540,6 +540,7 @@ Array.from(Shadow_box).forEach(Shadow_boxs => {
 // CUSTOM SHADOW SANDBOX CODE STARTS HERE
 
 const Shadow_controller = document.getElementById("shadow_controller")
+let Shadow_controller_width = 40
 const Custom_shadow_sandbox = document.getElementById("custom_shadow_sandbox")
 const Custom_shadow_sandbox_inset = document.getElementById("custom_shadow_sandbox_inset")
 const Custom_shadow_sandbox_box = document.getElementById("custom_shadow_sandbox_box")
@@ -637,8 +638,8 @@ Multiple_layers.addEventListener("click", applyShadow);
 function slider_upadte() {
   shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
   applyShadow()
-  newX = (Custom_shadow_sandbox.offsetWidth / 2 - Shadow_controller.offsetWidth / 2) - Horizontal_length_final.slider_value
-  newY = (Custom_shadow_sandbox.offsetHeight / 2 - Shadow_controller.offsetHeight / 2) - Vertical_length_final.slider_value
+  newX = (Custom_shadow_sandbox.offsetWidth / 2 - Shadow_controller_width / 2) - Horizontal_length_final.slider_value
+  newY = (Custom_shadow_sandbox.offsetHeight / 2 - Shadow_controller_width / 2) - Vertical_length_final.slider_value
   update_controller(newX, newY)
   Opacity_ring_val.innerHTML = Opacity_final.slider_value
 }
@@ -664,10 +665,10 @@ let offset_x = 0, offset_y = 0, shadow_X_distance = 0, shadow_Y_distance = 0, ne
 Shadow_controller.addEventListener('mousedown', mouseDown)
 
 function shadowOffsetX() {
-  return Math.round(Custom_shadow_sandbox_box_center_x - (Shadow_controller.getBoundingClientRect().x + (Shadow_controller.offsetWidth / 2)))
+  return Math.round(Custom_shadow_sandbox_box_center_x - (Shadow_controller.getBoundingClientRect().x + (Shadow_controller_width / 2)))
 }
 function shadowOffsetY() {
-  return Math.round(Custom_shadow_sandbox_box_center_y - (Shadow_controller.getBoundingClientRect().y + (Shadow_controller.offsetHeight / 2)))
+  return Math.round(Custom_shadow_sandbox_box_center_y - (Shadow_controller.getBoundingClientRect().y + (Shadow_controller_width / 2)))
 }
 
 function updateShadowRangeBox(X_val, Y_val) {
@@ -676,13 +677,13 @@ function updateShadowRangeBox(X_val, Y_val) {
 }
 
 function boxControlGapX() {
-  if (Custom_shadow_sandbox.offsetWidth / 2 === Shadow_controller.offsetLeft + Shadow_controller.offsetWidth / 2) {
+  if (Custom_shadow_sandbox.offsetWidth / 2 === Shadow_controller.offsetLeft + Shadow_controller_width / 2) {
     return false
   } else { return true }
 }
 
 function boxControlGapY() {
-  if (Custom_shadow_sandbox.offsetHeight / 2 === Shadow_controller.offsetTop + Shadow_controller.offsetHeight / 2) {
+  if (Custom_shadow_sandbox.offsetHeight / 2 === Shadow_controller.offsetTop + Shadow_controller_width / 2) {
     return false
   } else { return true }
 }
@@ -694,8 +695,10 @@ function calShadowAngle() {
 function mouseDown(e) {
   offset_x = e.clientX - Shadow_controller.getBoundingClientRect().x
   offset_y = e.clientY - Shadow_controller.getBoundingClientRect().y
-  Shadow_controller.classList.add("grab")
-  document.addEventListener('mousemove', mouseMove)
+  if (Shadow_controller.classList.contains("show_ui")) {
+    Shadow_controller.classList.add("grab")
+    document.addEventListener('mousemove', mouseMove)
+  }
   document.addEventListener('mouseup', mouseUp)
 }
 
@@ -705,7 +708,7 @@ function update_controller(x, y) {
 }
 
 function center_controller() {
-  update_controller(Custom_shadow_sandbox_box.offsetLeft - Shadow_controller.offsetWidth / 2, Custom_shadow_sandbox_box.offsetTop - Shadow_controller.offsetHeight / 2)
+  update_controller(Custom_shadow_sandbox_box.offsetLeft - Shadow_controller_width / 2, Custom_shadow_sandbox_box.offsetTop - Shadow_controller_width / 2)
 }
 
 function mouseMove(e) {
@@ -832,9 +835,10 @@ document.addEventListener("mousedown", (e) => {
       break;
     case Shadow_controller_opacity_ring:
       Shadow_controller_opacity_ring.addEventListener("mousemove", () => {
-        Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
-        Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
-        applyShadow()
+          Shadow_controller_opacity_ring_final.update()
+          Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
+          Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
+          applyShadow()
       })
       break;
     case Opacity:
@@ -854,8 +858,8 @@ document.addEventListener("mousedown", (e) => {
     case Distance:
       Distance.addEventListener("mousemove", () => {
         let distance_controller_pos = getCoordinates(shadow_angle, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Distance_final.slider_value)
-        newX = distance_controller_pos.x - Custom_shadow_sandbox.getBoundingClientRect().x - Shadow_controller.offsetWidth / 2
-        newY = distance_controller_pos.y - Custom_shadow_sandbox.getBoundingClientRect().y - Shadow_controller.offsetHeight / 2
+        newX = distance_controller_pos.x - Custom_shadow_sandbox.getBoundingClientRect().x - Shadow_controller_width / 2
+        newY = distance_controller_pos.y - Custom_shadow_sandbox.getBoundingClientRect().y - Shadow_controller_width / 2
         update_controller(newX, newY)
         updateShadowRangeBox(shadowOffsetX(), shadowOffsetY())
         Horizontal_length_final.slider_customize(shadowOffsetX())
@@ -881,7 +885,7 @@ document.addEventListener("mousedown", (e) => {
 
 let remove_show_array = [Left_stretch, Top_stretch, Right_stretch, Bottom_stretch, Blur_ring, Spread_level_stretch, Spread_level_box, Opacity_ring, Opacity_ring_val]
 document.addEventListener("mouseup", () => {
-  blur_drag = false ,Spread_level_resize = false ,Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
+  blur_drag = false, Spread_level_resize = false, Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false
   remove_show_array.forEach(Remove_shows => {
     Remove_shows.classList.remove("show")
   })
@@ -906,9 +910,11 @@ Reset_custom_shadow.addEventListener("click", () => {
 })
 
 const Hide_controller = document.getElementById("hide_controller")
-Hide_controller.addEventListener("click",()=>{
-  // Blur_ring.classList.toggle("show_ui")
-  // Spread_level_box.classList.toggle("show_ui")
+let show_ui_toggle = [Hide_controller,Blur_ring,Spread_level_box,Shadow_controller,Opacity_ring]
+Hide_controller.addEventListener("click", () => {
+  show_ui_toggle.forEach(show_ui_toggles=>{
+    show_ui_toggles.classList.toggle("show_ui")
+  })
 })
 
 // CODE FOR CONTROLLER MOVE HERE
