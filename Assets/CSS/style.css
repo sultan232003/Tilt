@@ -939,6 +939,10 @@ body {
     border: none;
 }
 
+#hide_controller.show_ui{
+  color: var(--Palatinate_blue);
+}
+
 #shadow_controller {
   width: 40px;
   height: 40px;
@@ -958,11 +962,15 @@ body {
   color: var(--Russian_violet);
   font-weight: 700;
   text-align: center;
-
+  opacity: 0;
   position-anchor: --shadow_box;
   left: calc(anchor(left) - 20px);
   top: calc(anchor(top) - 20px);
   /* box-shadow: 0px 221px 62px rgba(85, 70, 255, 0), 0px 142px 57px rgba(85, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05); */
+}
+
+#shadow_controller.show_ui{
+  opacity: 1;
 }
 
 #opacity_ring_val {
@@ -975,16 +983,16 @@ body {
   transition: all ease 100ms;
 }
 
-#shadow_controller:hover #opacity_ring_val {
+#shadow_controller.show_ui:hover #opacity_ring_val {
   opacity: 1;
   transition: all ease 100ms;
 }
 
-#shadow_controller:hover {
+#shadow_controller.show_ui:hover {
   cursor: var(--palm);
 }
 
-#shadow_controller.grab {
+#shadow_controller.show_ui.grab {
   cursor: var(--grab);
 }
 
@@ -1006,6 +1014,8 @@ body {
   color: var(--Russian_violet);
   font-weight: 700;
   text-align: center;
+  opacity: 0;
+  display: none;
 }
 
 #opacity_ring>input {
@@ -1036,16 +1046,19 @@ body {
   border: 1px solid var(--Palatinate_blue);
 }
 
-#shadow_controller:hover+#opacity_ring {
+#shadow_controller.show_ui:hover+#opacity_ring {
   opacity: 1;
+  display: block;
 }
 
-#opacity_ring:hover {
+#opacity_ring.show_ui:hover {
   opacity: 1;
+  display: block;
 }
 
-#opacity_ring.show {
+#opacity_ring.show_ui.show {
   opacity: 1;
+  display: block;
 }
 
 #blur_ring {
@@ -1058,14 +1071,21 @@ body {
   transform: translate(-50%, -50%);
   overflow: hidden;
   opacity: 0;
+  display: none;
+}
+
+#blur_ring.show_ui{
+  display: block;
 }
 
 #blur_ring.show_ui:hover {
   opacity: 1;
+  display: block;
 }
 
-#blur_ring.show {
+#blur_ring.show_ui.show {
   opacity: 1;
+  display: block;
 }
 
 .blur_stretch {
@@ -1074,7 +1094,7 @@ body {
   transition: all 100ms ease;
 }
 
-.blur_stretch.show {
+.blur_stretch.show_ui.show {
   opacity: 1;
   transition: all 100ms ease;
 }
@@ -1095,16 +1115,23 @@ body {
   overflow: hidden;
   border: 1px solid var(--Palatinate_blue);
   opacity: 0;
+  display: none;
+}
+
+#spread_level_box.show_ui{
+  display: block;
 }
 
 #spread_level_box.show_ui:hover {
   transition: all 100ms ease;
   opacity: 1;
+  display: block;
 }
 
-#spread_level_box.show {
+#spread_level_box.show_ui.show {
   transition: all 100ms ease;
   opacity: 1;
+  display: block;
 }
 
 #spread_level_box::before {
