@@ -332,3 +332,14 @@ function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseS
     }
     element.style.boxShadow = shadows.join(', ');
 }
+
+let keypressed
+let keypressed_code
+document.addEventListener("keydown", (e) => {
+    keypressed = e.key
+    keypressed_code = e.keyCode
+})
+document.addEventListener("keyup", (e) => {
+    keypressed = undefined
+    keypressed_code = undefined
+})
