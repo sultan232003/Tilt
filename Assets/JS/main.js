@@ -467,9 +467,9 @@ class Shadow {
       this.color_name.innerHTML = shadowColors[i].name
     }
 
-    this.Shadow_box_shadow_color_btn.addEventListener("click", () => {
-      this.Color_option_list.classList.toggle("active")
-    })
+    this.Shadow_box_shadow_color_btn.addEventListener("click", (e) => {
+      this.Color_option_list.classList.toggle("active");
+    });
 
     this.Color_option_list.children[0].addEventListener("keydown", (e) => {
       if (e.key === 'Enter') {
@@ -660,7 +660,7 @@ Inset_toggle.addEventListener("click", () => {
 
 // CODE FOR CONTROLLER MOVE HERE
 
-let offset_x = 0, offset_y = 0, shadow_X_distance = 0, shadow_Y_distance = 0, newX = 0, newY = 0, distance_controller_pos;
+let offset_x = 0, offset_y = 0, shadow_X_distance = 0, shadow_Y_distance = 0, newX = 0, newY = 0, distance_controller_pos, snapnewX, snapnewY
 
 Shadow_controller.addEventListener('mousedown', mouseDown)
 
@@ -726,7 +726,21 @@ function mouseMove(e) {
   if (right_touch) newX = width;
   if (top_touch) newY = 0;
   if (bottom_touch) newY = height;
-  update_controller(newX, newY)
+  if (keypressed_code == undefined) {
+    update_controller(newX, newY)
+  }
+  if (keypressed_code == 16) {
+    if ((e.clientX - Custom_shadow_sandbox_box.getBoundingClientRect().x - Custom_shadow_sandbox_box.offsetWidth / 2) % 10 == 0) {
+      snapnewX = (e.clientX - Custom_shadow_sandbox.getBoundingClientRect().x) - Shadow_controller_width / 2
+      update_controller(snapnewX, snapnewY)
+    }
+    if (Math.round(((e.clientY - Custom_shadow_sandbox_box.getBoundingClientRect().y) - Custom_shadow_sandbox_box.offsetWidth / 2)) % 10 == 0) {
+      snapnewY = (e.clientY - Custom_shadow_sandbox.getBoundingClientRect().y) - Shadow_controller_width / 2
+      update_controller(snapnewX, snapnewY)
+    }
+
+    // work on the bounding box of snap move 
+  }
   updateShadowRangeBox(shadowOffsetX(), shadowOffsetY())
   shadow_angle = calShadowAngle()
   shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
@@ -835,10 +849,10 @@ document.addEventListener("mousedown", (e) => {
       break;
     case Shadow_controller_opacity_ring:
       Shadow_controller_opacity_ring.addEventListener("mousemove", () => {
-          Shadow_controller_opacity_ring_final.update()
-          Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
-          Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
-          applyShadow()
+        Shadow_controller_opacity_ring_final.update()
+        Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
+        Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
+        applyShadow()
       })
       break;
     case Opacity:
@@ -910,9 +924,9 @@ Reset_custom_shadow.addEventListener("click", () => {
 })
 
 const Hide_controller = document.getElementById("hide_controller")
-let show_ui_toggle = [Hide_controller,Blur_ring,Spread_level_box,Shadow_controller,Opacity_ring]
+let show_ui_toggle = [Hide_controller, Blur_ring, Spread_level_box, Shadow_controller, Opacity_ring]
 Hide_controller.addEventListener("click", () => {
-  show_ui_toggle.forEach(show_ui_toggles=>{
+  show_ui_toggle.forEach(show_ui_toggles => {
     show_ui_toggles.classList.toggle("show_ui")
   })
 })
