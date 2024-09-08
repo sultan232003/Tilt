@@ -483,8 +483,8 @@ class Shadow {
           this.cmyk_update()
           this.color_alpha_update()
           this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
-          this.Shadow_box_shadow_color_btn.children[0].setAttribute("style", `--color_view_bg:${"#" + this.hex_value};`)
-          this.Shadow_box_shadow_color_btn.children[1].innerHTML = "Custom"
+          this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling.setAttribute("style", `--color_view_bg:${"#" + this.hex_value};`)
+          this.Shadow_box_shadow_color_btn.innerHTML = "Custom"
           this.Color_option_list.children[0].value = ""
           this.Color_option_list.classList.remove("active")
         } else { console.log("minimum 6") }
@@ -498,8 +498,8 @@ class Shadow {
     Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
       color_view_boxes.addEventListener("click", (e) => {
         if (e.target !== this.Color_option_list.children[0]) {
-          this.Shadow_box_shadow_color_btn.children[0].setAttribute("style", `--color_view_bg:${color_view_boxes.children[0].getAttribute("hex_value")};`)
-          this.Shadow_box_shadow_color_btn.children[1].innerHTML = color_view_boxes.children[1].innerHTML
+          this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling.setAttribute("style", `--color_view_bg:${color_view_boxes.children[0].getAttribute("hex_value")};`)
+          this.Shadow_box_shadow_color_btn.innerHTML = color_view_boxes.children[1].innerHTML
           this.Format_btn.setAttribute("hex_code", color_view_boxes.children[0].getAttribute("hex_value"))
           this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
           if (this.Color_format === "HEX") {
@@ -589,6 +589,7 @@ let Border_toggle_final = new Toggle(Border_toggle, "box_border", Custom_shadow_
 const Multiple_layers = document.getElementById("multiple_layers")
 let Multiple_layers_final = new Toggle(Multiple_layers, "box_multiple", Custom_shadow_sandbox_box, false)
 
+let inputUpdateSliderEl = [Horizontal_length, Vertical_length, Blur_radius, Spread_radius, Radius, Opacity, Distance, Shadow_controller_opacity_ring]
 let inputUpdateSlider = [Horizontal_length_final, Vertical_length_final, Blur_radius_final, Spread_radius_final, Radius_final, Opacity_final, Distance_final, Shadow_controller_opacity_ring_final]
 let inputUpdateToggle = [Inset_toggle_final, Border_toggle_final, Multiple_layers_final]
 inputUpdateSlider.forEach(inputUpdateSliders => {
@@ -727,19 +728,23 @@ function mouseMove(e) {
   if (top_touch) newY = 0;
   if (bottom_touch) newY = height;
   if (keypressed_code == undefined) {
+    snapnewX = newX
+    snapnewY = newY
     update_controller(newX, newY)
   }
   if (keypressed_code == 16) {
     if ((e.clientX - Custom_shadow_sandbox_box.getBoundingClientRect().x - Custom_shadow_sandbox_box.offsetWidth / 2) % 10 == 0) {
       snapnewX = (e.clientX - Custom_shadow_sandbox.getBoundingClientRect().x) - Shadow_controller_width / 2
+      if (left_touch) snapnewX = 0;
+      if (right_touch) snapnewX = width;
       update_controller(snapnewX, snapnewY)
     }
     if (Math.round(((e.clientY - Custom_shadow_sandbox_box.getBoundingClientRect().y) - Custom_shadow_sandbox_box.offsetWidth / 2)) % 10 == 0) {
       snapnewY = (e.clientY - Custom_shadow_sandbox.getBoundingClientRect().y) - Shadow_controller_width / 2
+      if (top_touch) snapnewY = 0;
+      if (bottom_touch) snapnewY = height;
       update_controller(snapnewX, snapnewY)
     }
-
-    // work on the bounding box of snap move 
   }
   updateShadowRangeBox(shadowOffsetX(), shadowOffsetY())
   shadow_angle = calShadowAngle()
@@ -757,7 +762,7 @@ function mouseUp(e) {
 
 // BLUR RING CODE STARTS HERE ///////////////////////////////////////////////////////////////////////////////////////
 
-let blur_ring_offset_x = 0, blur_ring_offset_y = 0, blur_drag = false, blur_ring_width_min = 230, blur_ring_width_max = 430, blur_ring_width = 230, blur_ring_radius = 20
+let blur_ring_offset_x = 0, blur_ring_offset_y = 0, blur_drag = false, blur_ring_width_min = 230, blur_ring_width_max = 430, blur_ring_width = 230, blur_ring_radius = 20, percentage, spread_stretch_steps, blur_ring_steps
 let Resize_left = false, Resize_top = false, Resize_right = false, Resize_bottom = false, gap_X = false, gap_Y = false;
 const Left_stretch = document.getElementById("left_stretch")
 const Top_stretch = document.getElementById("top_stretch")
@@ -784,6 +789,11 @@ document.addEventListener("mousedown", (e) => {
   }
 })
 
+function blurRingUpdate(width) {
+  Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
+  percentage = Math.round(convertRange(width, blur_ring_width_min, blur_ring_width_max, 0, 250))
+}
+
 function blur_ring_update(e) {
   if (blur_drag) {
     if (Resize_right) {
@@ -798,10 +808,16 @@ function blur_ring_update(e) {
     if (Resize_top) {
       blur_ring_width = Math.round(Blur_ring.getBoundingClientRect().bottom - e.clientY)
     }
-    Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
-    const percentage = Math.round(convertRange(blur_ring_width, blur_ring_width_min, blur_ring_width_max, 0, 250));
-    Blur_radius_final.slider_customize(percentage)
-    applyShadow()
+    if (keypressed_code == 16) {
+      blur_ring_steps = Math.round(getNearestStepVal(blur_ring_width, blur_ring_width_min, blur_ring_width_max, 25))
+      blurRingUpdate(blur_ring_steps)
+      Blur_radius_final.slider_customize(closestDivisible(percentage, 10))
+      applyShadow()
+    } else if (keypressed_code == undefined) {
+      blurRingUpdate(blur_ring_width)
+      Blur_radius_final.slider_customize(percentage)
+      applyShadow()
+    }
   }
 }
 
@@ -824,6 +840,13 @@ let Spread_level_resize = false, Spread_level_height = 207, Spread_level_height_
 
 function spread_level_reset() {
   Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, 105px, ${Spread_level_height_max}px);`
+}
+
+function spread_level_update(height) {
+  Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${height}px, ${Spread_level_height_max}px);`
+  let Spread_level_height_val = Math.round(convertRange(height, Spread_level_height_min, Spread_level_height_max, -50, 50))
+  Spread_radius_final.slider_customize(Spread_level_height_val)
+  applyShadow()
 }
 
 document.addEventListener("mousedown", (e) => {
@@ -887,10 +910,13 @@ document.addEventListener("mousedown", (e) => {
       document.addEventListener("mousemove", (e) => {
         if (Spread_level_resize) {
           Spread_level_height = Math.round(Spread_level.getBoundingClientRect().bottom - e.clientY)
-          Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
-          let Spread_level_height_val = Math.round(convertRange(Spread_level_height, Spread_level_height_min, Spread_level_height_max, -50, 50))
-          Spread_radius_final.slider_customize(Spread_level_height_val)
-          applyShadow()
+          if (keypressed_code == undefined) {
+            spread_level_update(Spread_level_height)
+          }
+          if (keypressed_code == 16) {
+            spread_stretch_steps = getNearestStepVal(Spread_level_height, 3, 207, 11)
+            spread_level_update(spread_stretch_steps)
+          }
         }
       })
       break;
@@ -923,6 +949,20 @@ Reset_custom_shadow.addEventListener("click", () => {
   applyShadow()
 })
 
+document.addEventListener("keydown", (e) => {
+  if (keypressed_code == 16) {
+    inputUpdateSliderEl.forEach((inputUpdateSliderEls) => {
+      inputUpdateSliderEls.setAttribute("step", 10)
+    })
+  }
+})
+
+document.addEventListener("keyup", (e) => {
+  inputUpdateSliderEl.forEach((inputUpdateSliderEls) => {
+    inputUpdateSliderEls.removeAttribute("step")
+  })
+})
+
 const Hide_controller = document.getElementById("hide_controller")
 let show_ui_toggle = [Hide_controller, Blur_ring, Spread_level_box, Shadow_controller, Opacity_ring]
 Hide_controller.addEventListener("click", () => {
@@ -932,3 +972,13 @@ Hide_controller.addEventListener("click", () => {
 })
 
 // CODE FOR CONTROLLER MOVE HERE
+
+const shadow_panel_custom_input = document.getElementsByClassName("shadow_panel_custom_input")
+let Horizontal_length_input, vertical_length_input, blur_radius_input, spread_radius_input, opacity_input, distance_input, Radius_input
+let input_name = [Horizontal_length_input, vertical_length_input, blur_radius_input, spread_radius_input, opacity_input, distance_input, Radius_input]
+Array.from(shadow_panel_custom_input).forEach((shadow_panel_custom_inputs,index)=>{
+  input_name[index] = shadow_panel_custom_inputs
+  shadow_panel_custom_inputs.addEventListener("change", (e) => {
+    print(e.target.value)
+  })
+})
