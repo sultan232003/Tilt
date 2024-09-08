@@ -343,3 +343,26 @@ document.addEventListener("keyup", (e) => {
     keypressed = undefined
     keypressed_code = undefined
 })
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        keypressed = undefined;
+        keypressed_code = undefined;
+    }
+});
+
+function getNearestStepVal(val, minval, maxval, steps) {
+    let stepSize = (maxval - minval) / (steps - 1);
+    if (val <= minval) return minval;
+    if (val >= maxval) return maxval;
+    let stepIndex = Math.round((val - minval) / stepSize);
+    return minval + stepIndex * stepSize;
+}
+
+function closestDivisible(number, divisible) {
+    if (number % divisible === 0) {
+        return number;
+    } else {
+        return number - (number % divisible);
+    }
+}
