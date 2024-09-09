@@ -589,8 +589,8 @@ let Border_toggle_final = new Toggle(Border_toggle, "box_border", Custom_shadow_
 const Multiple_layers = document.getElementById("multiple_layers")
 let Multiple_layers_final = new Toggle(Multiple_layers, "box_multiple", Custom_shadow_sandbox_box, false)
 
-let inputUpdateSliderEl = [Horizontal_length, Vertical_length, Blur_radius, Spread_radius, Radius, Opacity, Distance, Shadow_controller_opacity_ring]
-let inputUpdateSlider = [Horizontal_length_final, Vertical_length_final, Blur_radius_final, Spread_radius_final, Radius_final, Opacity_final, Distance_final, Shadow_controller_opacity_ring_final]
+let inputUpdateSliderEl = [Horizontal_length, Vertical_length, Blur_radius, Spread_radius, Opacity, Distance, Radius, Shadow_controller_opacity_ring]
+let inputUpdateSlider = [Horizontal_length_final, Vertical_length_final, Blur_radius_final, Spread_radius_final, Opacity_final, Distance_final, Radius_final, Shadow_controller_opacity_ring_final]
 let inputUpdateToggle = [Inset_toggle_final, Border_toggle_final, Multiple_layers_final]
 inputUpdateSlider.forEach(inputUpdateSliders => {
   inputUpdateSliders.update()
@@ -620,6 +620,9 @@ let Opacity_ring_val = document.getElementById("opacity_ring_val")
 let inset_toggle_status = false
 let shadow_distance = 0
 let shadow_angle = 0
+function calShadowDistance() {
+  shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
+}
 
 function applyShadow() {
   if (Multiple_layers.classList.contains("active")) {
@@ -637,7 +640,7 @@ function applyShadow() {
 Multiple_layers.addEventListener("click", applyShadow);
 
 function slider_upadte() {
-  shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
+  calShadowDistance()
   applyShadow()
   newX = (Custom_shadow_sandbox.offsetWidth / 2 - Shadow_controller_width / 2) - Horizontal_length_final.slider_value
   newY = (Custom_shadow_sandbox.offsetHeight / 2 - Shadow_controller_width / 2) - Vertical_length_final.slider_value
@@ -712,6 +715,15 @@ function center_controller() {
   update_controller(Custom_shadow_sandbox_box.offsetLeft - Shadow_controller_width / 2, Custom_shadow_sandbox_box.offsetTop - Shadow_controller_width / 2)
 }
 
+function updateHorVerDist() {
+  newX = (Custom_shadow_sandbox.offsetWidth / 2 - Shadow_controller_width / 2) - Horizontal_length_final.slider_value
+  newY = (Custom_shadow_sandbox.offsetHeight / 2 - Shadow_controller_width / 2) - Vertical_length_final.slider_value
+  update_controller(newX, newY)
+  calShadowDistance()
+  Distance_final.slider_customize(shadow_distance)
+  shadow_angle = calShadowAngle()
+}
+
 function mouseMove(e) {
   const { left, right, top, bottom, width, height } = sandbox_inset;
   const sandboxRect = Custom_shadow_sandbox.getBoundingClientRect();
@@ -748,7 +760,7 @@ function mouseMove(e) {
   }
   updateShadowRangeBox(shadowOffsetX(), shadowOffsetY())
   shadow_angle = calShadowAngle()
-  shadow_distance = calculateDistanceFromCenter(Number(Horizontal_length_final.slider_value) + Custom_shadow_sandbox_box_center_x, Number(Vertical_length_final.slider_value) + Custom_shadow_sandbox_box_center_y, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y)
+  calShadowDistance()
   applyShadow()
   Horizontal_length_final.slider_customize(shadowOffsetX())
   Vertical_length_final.slider_customize(shadowOffsetY())
@@ -792,6 +804,11 @@ document.addEventListener("mousedown", (e) => {
 function blurRingUpdate(width) {
   Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
   percentage = Math.round(convertRange(width, blur_ring_width_min, blur_ring_width_max, 0, 250))
+}
+
+function blurSlideRingUpdate() {
+  blur_ring_width = Math.round(convertRange(Blur_radius_final.slider_value, 0, 250, blur_ring_width_min, blur_ring_width_max))
+  Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
 }
 
 function blur_ring_update(e) {
@@ -849,6 +866,26 @@ function spread_level_update(height) {
   applyShadow()
 }
 
+function spreadSlideRingUpdate() {
+  Spread_level_height = Math.round(convertRange(Spread_radius_final.slider_value, -50, 50, Spread_level_height_min, Spread_level_height_max))
+  Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
+}
+
+function opacitySlideRingUpdate() {
+  Shadow_controller_opacity_ring_final.slider_customize(Number(Opacity_final.slider_value))
+  Opacity_ring_val.innerHTML = Opacity_final.slider_value
+}
+
+function distaneSlideUpdate() {
+  let distance_controller_pos = getCoordinates(shadow_angle, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Distance_final.slider_value)
+  newX = distance_controller_pos.x - Custom_shadow_sandbox.getBoundingClientRect().x - Shadow_controller_width / 2
+  newY = distance_controller_pos.y - Custom_shadow_sandbox.getBoundingClientRect().y - Shadow_controller_width / 2
+  update_controller(newX, newY)
+  updateShadowRangeBox(shadowOffsetX(), shadowOffsetY())
+  Horizontal_length_final.slider_customize(shadowOffsetX())
+  Vertical_length_final.slider_customize(shadowOffsetY())
+}
+
 document.addEventListener("mousedown", (e) => {
   switch (e.target) {
     case Horizontal_length:
@@ -866,8 +903,7 @@ document.addEventListener("mousedown", (e) => {
     case Blur_radius:
       Blur_ring.classList.add("show")
       Blur_radius.addEventListener("mousemove", () => {
-        blur_ring_width = Math.round(convertRange(Blur_radius_final.slider_value, 0, 250, blur_ring_width_min, blur_ring_width_max))
-        Blur_ring.style.cssText = `width: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); height: clamp(${blur_ring_width_min}px, ${blur_ring_width}px, ${blur_ring_width_max}px); border-radius: clamp(20px, 20px, 110px);`
+        blurSlideRingUpdate()
       })
       break;
     case Shadow_controller_opacity_ring:
@@ -882,25 +918,18 @@ document.addEventListener("mousedown", (e) => {
       Opacity_ring.classList.add("show")
       Opacity_ring_val.classList.add("show")
       Opacity.addEventListener("mousemove", () => {
-        Shadow_controller_opacity_ring_final.slider_customize(Number(Opacity_final.slider_value))
+        opacitySlideRingUpdate()
       })
       break;
     case Spread_radius:
       Spread_level_box.classList.add("show")
       Spread_radius.addEventListener("mousemove", () => {
-        Spread_level_height = Math.round(convertRange(Spread_radius_final.slider_value, -50, 50, Spread_level_height_min, Spread_level_height_max))
-        Spread_level.style.cssText = `height: clamp(${Spread_level_height_min}px, ${Spread_level_height}px, ${Spread_level_height_max}px);`
+        spreadSlideRingUpdate()
       })
       break;
     case Distance:
       Distance.addEventListener("mousemove", () => {
-        let distance_controller_pos = getCoordinates(shadow_angle, Custom_shadow_sandbox_box_center_x, Custom_shadow_sandbox_box_center_y, Distance_final.slider_value)
-        newX = distance_controller_pos.x - Custom_shadow_sandbox.getBoundingClientRect().x - Shadow_controller_width / 2
-        newY = distance_controller_pos.y - Custom_shadow_sandbox.getBoundingClientRect().y - Shadow_controller_width / 2
-        update_controller(newX, newY)
-        updateShadowRangeBox(shadowOffsetX(), shadowOffsetY())
-        Horizontal_length_final.slider_customize(shadowOffsetX())
-        Vertical_length_final.slider_customize(shadowOffsetY())
+        distaneSlideUpdate()
       })
       break;
     case Spread_level_stretch:
@@ -931,8 +960,9 @@ document.addEventListener("mouseup", () => {
   })
 })
 
-let reset_val_slider = [{ forSlider: "Horizontal_length", val: 0 }, { forSlider: "Vertical_length", val: 0 }, { forSlider: "Blur_radius", val: 10 }, { forSlider: "Spread_radius", val: 0 }, { forSlider: "Radius", val: 10 }, { forSlider: "Opacity", val: 10 }, { forSlider: "Distance", val: 0 }, { forSlider: "Opacity_ring", val: 10 }];
+let reset_val_slider = [{ forSlider: "Horizontal_length", val: 0 }, { forSlider: "Vertical_length", val: 0 }, { forSlider: "Blur_radius", val: 10 }, { forSlider: "Spread_radius", val: 0 }, { forSlider: "Opacity", val: 10 }, { forSlider: "Distance", val: 0 }, { forSlider: "Radius", val: 10 }, { forSlider: "Opacity_ring", val: 10 }];
 let reset_val_toggle = [{ forToggle: "Inset_toggle", val: true }, { forToggle: "Border_toggle", val: true }, { forToggle: "Multiple_layers", val: false }]
+let reset_val_input = [{ forInput: "Horizontal_length_input", val: 0 }, { forInput: "vertical_length_input", val: 0 }, { forInput: "blur_radius_input", val: 10 }, { forInput: "spread_radius_input", val: 0 }, { forInput: "opacity_input", val: 10 }, { forInput: "distance_input", val: 0 }, { forInput: "Radius_input", val: 10 }]
 const Reset_custom_shadow = document.getElementById("reset")
 
 Reset_custom_shadow.addEventListener("click", () => {
@@ -941,6 +971,9 @@ Reset_custom_shadow.addEventListener("click", () => {
   })
   inputUpdateSlider.forEach((inputUpdateSliders, index) => {
     inputUpdateSliders.slider_customize(reset_val_slider[index].val)
+  })
+  input_name.forEach((input_names,index)=>{
+    input_names.value = reset_val_input[index].val
   })
   blur_ring_reset()
   spread_level_reset()
@@ -974,11 +1007,37 @@ Hide_controller.addEventListener("click", () => {
 // CODE FOR CONTROLLER MOVE HERE
 
 const shadow_panel_custom_input = document.getElementsByClassName("shadow_panel_custom_input")
-let Horizontal_length_input, vertical_length_input, blur_radius_input, spread_radius_input, opacity_input, distance_input, Radius_input
+let Horizontal_length_input, vertical_length_input, blur_radius_input, spread_radius_input, opacity_input, distance_input, Radius_input, Horizontal_length_input_final, vertical_length_input_final, blur_radius_input_final, spread_radius_input_final, opacity_input_final, distance_input_final, Radius_input_final
 let input_name = [Horizontal_length_input, vertical_length_input, blur_radius_input, spread_radius_input, opacity_input, distance_input, Radius_input]
-Array.from(shadow_panel_custom_input).forEach((shadow_panel_custom_inputs,index)=>{
+let input_name_final = [Horizontal_length_input_final, vertical_length_input_final, blur_radius_input_final, spread_radius_input_final, opacity_input_final, distance_input_final, Radius_input_final]
+Array.from(shadow_panel_custom_input).forEach((shadow_panel_custom_inputs, index) => {
   input_name[index] = shadow_panel_custom_inputs
-  shadow_panel_custom_inputs.addEventListener("change", (e) => {
-    print(e.target.value)
-  })
+  input_name_final[index] = new InputBox(input_name[index], inputUpdateSlider[index])
+  input_name_final[index].update()
+})
+document.addEventListener("change", (e) => {
+  switch (e.target) {
+    case input_name[0]:
+      updateHorVerDist()
+      break;
+    case input_name[1]:
+      updateHorVerDist()
+      break;
+    case input_name[2]:
+      Blur_ring.classList.add("show")
+      blurSlideRingUpdate()
+      break;
+    case input_name[3]:
+      Spread_level_box.classList.add("show")
+      spreadSlideRingUpdate()
+      break;
+    case input_name[4]:
+      Opacity_ring.classList.add("show")
+      Opacity_ring_val.classList.add("show")
+      opacitySlideRingUpdate()
+      break;
+    case input_name[5]:
+      distaneSlideUpdate()
+      break;
+  }
 })
