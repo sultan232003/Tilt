@@ -765,9 +765,7 @@ function mouseMove(e) {
   Horizontal_length_final.slider_customize(shadowOffsetX())
   Vertical_length_final.slider_customize(shadowOffsetY())
   Distance_final.slider_customize(shadow_distance)
-  input_name_final[5].customizeInput(Number(Distance_final.slider_value).toFixed(2))
-  input_name_final[0].customizeInput(Number(Horizontal_length_final.slider_value))
-  input_name_final[1].customizeInput(Number(Vertical_length_final.slider_value))
+  callInputUpdate(5); callInputUpdate(0); callInputUpdate(1);
 }
 
 function mouseUp(e) {
@@ -839,7 +837,7 @@ function blur_ring_update(e) {
       applyShadow()
     }
   }
-  input_name_final[2].customizeInput(Number(Blur_radius_final.slider_value))
+  callInputUpdate(2)
 }
 
 function blur_ring_reset() {
@@ -896,23 +894,21 @@ document.addEventListener("mousedown", (e) => {
       Horizontal_length.addEventListener("mousemove", () => {
         Distance_final.slider_customize(shadow_distance)
         shadow_angle = calShadowAngle()
-        input_name_final[0].customizeInput(Number(Horizontal_length_final.slider_value))
-        input_name_final[5].customizeInput(Number(Distance_final.slider_value).toFixed(2))
+        callInputUpdate(0); callInputUpdate(5);
       })
       break;
     case Vertical_length:
       Vertical_length.addEventListener("mousemove", () => {
         Distance_final.slider_customize(shadow_distance)
         shadow_angle = calShadowAngle()
-        input_name_final[1].customizeInput(Number(Vertical_length_final.slider_value))
-        input_name_final[5].customizeInput(Number(Distance_final.slider_value).toFixed(2))
+        callInputUpdate(1); callInputUpdate(5);
       })
       break;
     case Blur_radius:
       Blur_ring.classList.add("show")
       Blur_radius.addEventListener("mousemove", () => {
         blurSlideRingUpdate()
-        input_name_final[2].customizeInput(Number(Blur_radius_final.slider_value))
+        callInputUpdate(2)
       })
       break;
     case Shadow_controller_opacity_ring:
@@ -921,7 +917,7 @@ document.addEventListener("mousedown", (e) => {
         Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
         Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
         applyShadow()
-        input_name_final[4].customizeInput(Number(Opacity_final.slider_value))
+        callInputUpdate(4)
       })
       break;
     case Opacity:
@@ -929,22 +925,20 @@ document.addEventListener("mousedown", (e) => {
       Opacity_ring_val.classList.add("show")
       Opacity.addEventListener("mousemove", () => {
         opacitySlideRingUpdate()
-        input_name_final[4].customizeInput(Number(Opacity_final.slider_value))
+        callInputUpdate(4)
       })
       break;
     case Spread_radius:
       Spread_level_box.classList.add("show")
       Spread_radius.addEventListener("mousemove", () => {
         spreadSlideRingUpdate()
-        input_name_final[3].customizeInput(Number(Spread_radius_final.slider_value))
+        callInputUpdate(3)
       })
       break;
     case Distance:
       Distance.addEventListener("mousemove", () => {
         distaneSlideUpdate()
-        input_name_final[5].customizeInput(Number(Distance_final.slider_value).toFixed(2))
-        input_name_final[0].customizeInput(Number(Horizontal_length_final.slider_value))
-        input_name_final[1].customizeInput(Number(Vertical_length_final.slider_value))
+        callInputUpdate(5); callInputUpdate(0); callInputUpdate(1)
       })
       break;
     case Spread_level_stretch:
@@ -962,12 +956,12 @@ document.addEventListener("mousedown", (e) => {
             spread_level_update(spread_stretch_steps)
           }
         }
-        input_name_final[3].customizeInput(Number(Spread_radius_final.slider_value))
+        callInputUpdate(3)
       })
       break;
     case Radius:
       document.addEventListener("mousemove", (e) => {
-        input_name_final[6].customizeInput(Number(Radius_final.slider_value))
+        callInputUpdate(6)
       })
       break;
   }
@@ -1040,11 +1034,11 @@ document.addEventListener("change", (e) => {
   switch (e.target) {
     case input_name[0]:
       updateHorVerDist()
-      input_name_final[5].customizeInput(Number(Distance_final.slider_value).toFixed(2))
+      callInputUpdate(5)
       break;
     case input_name[1]:
       updateHorVerDist()
-      input_name_final[5].customizeInput(Number(Distance_final.slider_value).toFixed(2))
+      callInputUpdate(5)
       break;
     case input_name[2]:
       Blur_ring.classList.add("show")
@@ -1064,3 +1058,29 @@ document.addEventListener("change", (e) => {
       break;
   }
 })
+
+function callInputUpdate(index) {
+  switch (index) {
+    case 0:
+      input_name_final[0].customizeInput(Number(Horizontal_length_final.slider_value))
+      break;
+    case 1:
+      input_name_final[1].customizeInput(Number(Vertical_length_final.slider_value))
+      break;
+    case 2:
+      input_name_final[2].customizeInput(Number(Blur_radius_final.slider_value))
+      break;
+    case 3:
+      input_name_final[3].customizeInput(Number(Spread_radius_final.slider_value))
+      break;
+    case 4:
+      input_name_final[4].customizeInput(Number(Opacity_final.slider_value))
+      break;
+    case 5:
+      input_name_final[5].customizeInput(Number(Distance_final.slider_value).toFixed(2))
+      break;
+    case 6:
+      input_name_final[6].customizeInput(Number(Radius_final.slider_value))
+      break;
+  }
+}
