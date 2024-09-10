@@ -1054,6 +1054,8 @@ document.addEventListener("change", (e) => {
       opacitySlideRingUpdate()
       break;
     case input_name[5]:
+      callInputUpdate(0)
+      callInputUpdate(1)
       distaneSlideUpdate()
       break;
   }
