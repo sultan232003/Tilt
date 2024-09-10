@@ -367,15 +367,20 @@ function closestDivisible(number, divisible) {
     }
 }
 
-class InputBox{
-    constructor(input,value_to){
+class InputBox {
+    constructor(input, value_to) {
         this.input = input
         this.value_to = value_to
-        this.input_value = 0
+        this.input_value = this.input.getAttribute("value")
     }
 
-    update(){
-        this.input.addEventListener("change",(e)=>{
+    customizeInput(val) {
+        this.input_value = val
+        this.input.value = val
+    }
+
+    update() {
+        this.input.addEventListener("change", (e) => {
             this.input_value = parseFloat(e.target.value)
             this.value_to.slider_customize(this.input_value)
         })
