@@ -2,6 +2,78 @@ function print(val) {
     console.log(val)
 }
 
+const shadowColors = [
+    { name: "Charcoal", hex: "#36454F" },
+    { name: "Cadet gray", hex: "#959da5" },
+    { name: "Dim gray", hex: "#64646f" },
+    { name: "Black", hex: "#000000" },
+    { name: "Dark purple", hex: "#110c2e" },
+    { name: "Dim gray", hex: "#636363" },
+    { name: "Raisin black", hex: "#1F2632" },
+    { name: "Tea green", hex: "#CBEFBE" },
+    { name: "Majorelle Blue", hex: "#5546FF" },
+    { name: "Cadet gray", hex: "#959DA5" },
+    { name: "Dim gray", hex: "#64646F" },
+    { name: "UCLA Blue", hex: "#50749D" },
+    { name: "Slate Gray", hex: "#708090" },
+    { name: "Lavender (web)", hex: "#EBE9FF" },
+    { name: "Dark Slate Gray", hex: "#2F4F4F" },
+    { name: "Ghost white", hex: "#EEEFF7" },
+    { name: "Gunmetal", hex: "#2A3439" },
+    { name: "Jasmine", hex: "#FFDC7C" },
+    { name: "Dim Gray", hex: "#696969" },
+    { name: "Gray", hex: "#808080" },
+    { name: "Light Slate Gray", hex: "#778899" },
+    { name: "Steel Blue", hex: "#4682B4" },
+    { name: "Jordy Blue", hex: "#90AEF4" },
+    { name: "Royal Blue", hex: "#4169E1" },
+    { name: "Palatinate blue", hex: "#402FFF" },
+    { name: "Medium Slate Blue", hex: "#7B68EE" },
+    { name: "Violet", hex: "#7D23FF" },
+    { name: "Dark Olive Green", hex: "#556B2F" },
+    { name: "Forest Green", hex: "#228B22" },
+    { name: "Red (Crayola)", hex: "#EA495F" },
+    { name: "Dark Green", hex: "#006400" },
+    { name: "Jordy Blue", hex: "#88BEF4" },
+    { name: "Dark Khaki", hex: "#BDB76B" },
+    { name: "Saddle Brown", hex: "#8B4513" },
+    { name: "Sienna", hex: "#A0522D" },
+    { name: "Peru", hex: "#CD853F" },
+    { name: "Chocolate", hex: "#D2691E" },
+    { name: "Rosy Brown", hex: "#BC8F8F" },
+    { name: "Indian Red", hex: "#CD5C5C" },
+    { name: "Firebrick", hex: "#B22222" },
+    { name: "Maroon", hex: "#800000" },
+    { name: "Dark Red", hex: "#8B0000" },
+    { name: "Crimson", hex: "#DC143C" },
+    { name: "Medium Violet Red", hex: "#C71585" },
+    { name: "Deep Pink", hex: "#FF1493" },
+    { name: "Dark Orchid", hex: "#9932CC" },
+    { name: "Purple", hex: "#800080" },
+    { name: "Rebecca Purple", hex: "#663399" },
+    { name: "Medium Purple", hex: "#9370DB" },
+    { name: "Thistle", hex: "#D8BFD8" },
+    { name: "Plum", hex: "#DDA0DD" },
+    { name: "Lavender", hex: "#E6E6FA" },
+    { name: "Lavender Blush", hex: "#FFF0F5" },
+    { name: "Light Pink", hex: "#FFB6C1" },
+    { name: "Hot Pink", hex: "#FF69B4" },
+    { name: "Light Coral", hex: "#F08080" },
+    { name: "Salmon", hex: "#FA8072" },
+    { name: "Coral", hex: "#FF7F50" },
+    { name: "Orange Red", hex: "#FF4500" },
+    { name: "Dark Orange", hex: "#FF8C00" },
+    { name: "Orange", hex: "#FFA500" },
+    { name: "Goldenrod", hex: "#DAA520" },
+    { name: "Dark Goldenrod", hex: "#B8860B" },
+    { name: "Cornsilk", hex: "#FFF8DC" },
+    { name: "Beige", hex: "#F5F5DC" },
+    { name: "Antique White", hex: "#FAEBD7" },
+    { name: "White Smoke", hex: "#F5F5F5" },
+    { name: "Gainsboro", hex: "#DCDCDC" }
+];
+
+
 function hexToRgba(hex, alpha = 'FF') {
     hex = hex.replace(/^#/, '');
     let r, g, b, a = 1;
@@ -386,3 +458,64 @@ class InputBox {
         })
     }
 }
+
+
+
+
+class ColorList {
+    constructor(controller, listbox, colorAmt, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass) {
+        this.controller = controller
+        this.listbox = listbox
+        this.colorAmt = colorAmt
+        this.color_view_box
+        this.color_view
+        this.color_name
+        this.colorBoxStyle = colorBoxStyle
+        this.colorViewStyle = colorViewStyle
+        this.colorViewClass = colorViewClass
+        this.colorNameClass = colorNameClass
+        this.colorData = { hex: "000000", colorName: "black" }
+    }
+
+    create() {
+        if (this.colorAmt == "Full") {
+            this.colorAmt = shadowColors.length
+        }
+        for (let i = 0; i < this.colorAmt; i++) {
+            this.color_view_box = document.createElement("div")
+            if (this.colorBoxStyle) {
+                this.color_view_box.setAttribute("style", `display: flex; align-items: center; gap: 5px;`)
+            }
+            this.color_view = document.createElement("div")
+            this.color_name = document.createElement("p")
+            this.listbox.appendChild(this.color_view_box)
+            this.color_view_box.appendChild(this.color_view)
+            this.color_view_box.appendChild(this.color_name)
+            this.color_view.classList.add(this.colorViewClass)
+            this.color_view.setAttribute("style", `--color_view_bg:${shadowColors[i].hex};`)
+            if (this.colorViewStyle) {
+                this.color_view.setAttribute("style", `--color_view_bg:${shadowColors[i].hex}; width: 12px; height: 12px; background: var(--color_view_bg);`)
+            }
+            this.color_view.setAttribute("hex_value", shadowColors[i].hex)
+            this.color_name.classList.add(this.colorNameClass)
+            this.color_name.innerHTML = shadowColors[i].name
+        }
+    }
+
+    select() {
+        Array.from(this.listbox.children).forEach(color_view_boxes => {
+            color_view_boxes.addEventListener("click", (e) => {
+                this.colorData.hex = color_view_boxes.children[0].getAttribute("hex_value")
+                this.colorData.colorName = color_view_boxes.children[1].innerHTML
+                return this.colorData
+            })
+        })
+    }
+}
+
+const testbtn = document.getElementById("testbtn")
+const testlist = document.getElementById("testlist")
+
+let testcolor = new ColorList(testbtn, testlist, 30, true, true, "color_view", "color_value")
+testcolor.create()
+testcolor.select()
