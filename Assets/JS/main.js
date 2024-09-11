@@ -171,77 +171,6 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 
 // SHADOW BOX EFFECT CODE STARTS HERE
 
-const shadowColors = [
-  { name: "Charcoal", hex: "#36454F" },
-  { name: "Cadet gray", hex: "#959da5" },
-  { name: "Dim gray", hex: "#64646f" },
-  { name: "Black", hex: "#000000" },
-  { name: "Dark purple", hex: "#110c2e" },
-  { name: "Dim gray", hex: "#636363" },
-  { name: "Raisin black", hex: "#1F2632" },
-  { name: "Tea green", hex: "#CBEFBE" },
-  { name: "Majorelle Blue", hex: "#5546FF" },
-  { name: "Cadet gray", hex: "#959DA5" },
-  { name: "Dim gray", hex: "#64646F" },
-  { name: "UCLA Blue", hex: "#50749D" },
-  { name: "Slate Gray", hex: "#708090" },
-  { name: "Lavender (web)", hex: "#EBE9FF" },
-  { name: "Dark Slate Gray", hex: "#2F4F4F" },
-  { name: "Ghost white", hex: "#EEEFF7" },
-  { name: "Gunmetal", hex: "#2A3439" },
-  { name: "Jasmine", hex: "#FFDC7C" },
-  { name: "Dim Gray", hex: "#696969" },
-  { name: "Gray", hex: "#808080" },
-  { name: "Light Slate Gray", hex: "#778899" },
-  { name: "Steel Blue", hex: "#4682B4" },
-  { name: "Jordy Blue", hex: "#90AEF4" },
-  { name: "Royal Blue", hex: "#4169E1" },
-  { name: "Palatinate blue", hex: "#402FFF" },
-  { name: "Medium Slate Blue", hex: "#7B68EE" },
-  { name: "Violet", hex: "#7D23FF" },
-  { name: "Dark Olive Green", hex: "#556B2F" },
-  { name: "Forest Green", hex: "#228B22" },
-  { name: "Red (Crayola)", hex: "#EA495F" },
-  { name: "Dark Green", hex: "#006400" },
-  { name: "Jordy Blue", hex: "#88BEF4" },
-  { name: "Dark Khaki", hex: "#BDB76B" },
-  { name: "Saddle Brown", hex: "#8B4513" },
-  { name: "Sienna", hex: "#A0522D" },
-  { name: "Peru", hex: "#CD853F" },
-  { name: "Chocolate", hex: "#D2691E" },
-  { name: "Rosy Brown", hex: "#BC8F8F" },
-  { name: "Indian Red", hex: "#CD5C5C" },
-  { name: "Firebrick", hex: "#B22222" },
-  { name: "Maroon", hex: "#800000" },
-  { name: "Dark Red", hex: "#8B0000" },
-  { name: "Crimson", hex: "#DC143C" },
-  { name: "Medium Violet Red", hex: "#C71585" },
-  { name: "Deep Pink", hex: "#FF1493" },
-  { name: "Dark Orchid", hex: "#9932CC" },
-  { name: "Purple", hex: "#800080" },
-  { name: "Rebecca Purple", hex: "#663399" },
-  { name: "Medium Purple", hex: "#9370DB" },
-  { name: "Thistle", hex: "#D8BFD8" },
-  { name: "Plum", hex: "#DDA0DD" },
-  { name: "Lavender", hex: "#E6E6FA" },
-  { name: "Lavender Blush", hex: "#FFF0F5" },
-  { name: "Light Pink", hex: "#FFB6C1" },
-  { name: "Hot Pink", hex: "#FF69B4" },
-  { name: "Light Coral", hex: "#F08080" },
-  { name: "Salmon", hex: "#FA8072" },
-  { name: "Coral", hex: "#FF7F50" },
-  { name: "Orange Red", hex: "#FF4500" },
-  { name: "Dark Orange", hex: "#FF8C00" },
-  { name: "Orange", hex: "#FFA500" },
-  { name: "Goldenrod", hex: "#DAA520" },
-  { name: "Dark Goldenrod", hex: "#B8860B" },
-  { name: "Cornsilk", hex: "#FFF8DC" },
-  { name: "Beige", hex: "#F5F5DC" },
-  { name: "Antique White", hex: "#FAEBD7" },
-  { name: "White Smoke", hex: "#F5F5F5" },
-  { name: "Gainsboro", hex: "#DCDCDC" }
-];
-
 const Shadow_box = document.getElementsByClassName("shadow_box")
 
 class Shadow {
@@ -453,19 +382,9 @@ class Shadow {
   }
 
   Color_Update() {
-    for (let i = 0; i < shadowColors.length; i++) {
-      this.color_view_box = document.createElement("div")
-      this.color_view = document.createElement("div")
-      this.color_name = document.createElement("p")
-      this.Color_option_list.appendChild(this.color_view_box)
-      this.color_view_box.appendChild(this.color_view)
-      this.color_view_box.appendChild(this.color_name)
-      this.color_view.classList.add("color_view")
-      this.color_view.setAttribute("style", `--color_view_bg:${shadowColors[i].hex};`)
-      this.color_view.setAttribute("hex_value", shadowColors[i].hex)
-      this.color_name.classList.add("color_value")
-      this.color_name.innerHTML = shadowColors[i].name
-    }
+    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn,this.Color_option_list,"Full",false,false,"color_view", "color_value")
+    this.ColorListFinal.create()
+    this.ColorListFinal.select()
 
     this.Shadow_box_shadow_color_btn.addEventListener("click", (e) => {
       this.Color_option_list.classList.toggle("active");
@@ -498,8 +417,8 @@ class Shadow {
     Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
       color_view_boxes.addEventListener("click", (e) => {
         if (e.target !== this.Color_option_list.children[0]) {
-          this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling.setAttribute("style", `--color_view_bg:${color_view_boxes.children[0].getAttribute("hex_value")};`)
-          this.Shadow_box_shadow_color_btn.innerHTML = color_view_boxes.children[1].innerHTML
+          this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling.setAttribute("style", `--color_view_bg:${this.ColorListFinal.colorData.hex};`)
+          this.Shadow_box_shadow_color_btn.innerHTML = this.ColorListFinal.colorData.colorName
           this.Format_btn.setAttribute("hex_code", color_view_boxes.children[0].getAttribute("hex_value"))
           this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
           if (this.Color_format === "HEX") {
