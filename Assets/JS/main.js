@@ -192,6 +192,7 @@ class Shadow {
     this.color_view_box
     this.color_view
     this.color_name
+    this.color_output = this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling
   }
 
   color_format_update() {
@@ -382,13 +383,9 @@ class Shadow {
   }
 
   Color_Update() {
-    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn,this.Color_option_list,"Full",false,false,"color_view", "color_value")
+    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn,this.Color_option_list,"Full",false,false,"color_view", "color_value", this.color_output)
     this.ColorListFinal.create()
     this.ColorListFinal.select()
-
-    this.Shadow_box_shadow_color_btn.addEventListener("click", (e) => {
-      this.Color_option_list.classList.toggle("active");
-    });
 
     this.Color_option_list.children[0].addEventListener("keydown", (e) => {
       if (e.key === 'Enter') {
@@ -417,8 +414,6 @@ class Shadow {
     Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
       color_view_boxes.addEventListener("click", (e) => {
         if (e.target !== this.Color_option_list.children[0]) {
-          this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling.setAttribute("style", `--color_view_bg:${this.ColorListFinal.colorData.hex};`)
-          this.Shadow_box_shadow_color_btn.innerHTML = this.ColorListFinal.colorData.colorName
           this.Format_btn.setAttribute("hex_code", color_view_boxes.children[0].getAttribute("hex_value"))
           this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
           if (this.Color_format === "HEX") {
@@ -433,13 +428,6 @@ class Shadow {
           this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
         }
       })
-    })
-
-    document.addEventListener("click", (e) => {
-      if (e.target !== this.Shadow_box_shadow_color_btn && e.target !== this.Color_option_list.children[0]) {
-        this.Color_option_list.classList.remove("active")
-        this.Color_option_list.children[0].value = ""
-      }
     })
   }
 }
@@ -517,6 +505,21 @@ inputUpdateSlider.forEach(inputUpdateSliders => {
 inputUpdateToggle.forEach(inputUpdateToggles => {
   inputUpdateToggles.update()
 })
+
+const ShadowColorBtn = document.getElementById("Shadow_color_btn")
+const ShadowColorBtnList = document.getElementById("Shadow_color_btn_list")
+const ShadowColorOutput = document.getElementById("Shadow_color_output")
+const BoxColorBtn = document.getElementById("Box_color_btn")
+const BoxColorBtnList = document.getElementById("Box_color_btn_list")
+const BoxColorOutput = document.getElementById("Box_color_output")
+
+let ShadowColorFinal = new ColorList(ShadowColorBtn, ShadowColorBtnList, "Full", true, true, "color_view", "color_value",ShadowColorOutput, ShadowColorBtn)
+ShadowColorFinal.create()
+ShadowColorFinal.select()
+let BoxColorFinal = new ColorList(BoxColorBtn, BoxColorBtnList, "Full", true, true, "color_view", "color_value",BoxColorOutput, BoxColorBtn)
+BoxColorFinal.create()
+BoxColorFinal.select()
+
 // function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
 //   let shadows = [];
 //   let radianAngle = angle * (Math.PI / 180);
