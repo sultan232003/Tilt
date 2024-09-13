@@ -639,7 +639,8 @@ body {
   display: block;
 }
 
-.color_option_list {
+.color_option_list,
+.custom_shadow_panel_button_color_list {
   position: absolute;
   display: flex;
   gap: 2px;
@@ -666,12 +667,14 @@ body {
   box-shadow: 0px 221px 62px rgba(80, 70, 255, 0), 0px 142px 57px rgba(80, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05);
 }
 
-.color_option_list.active {
+.color_option_list.active,
+.custom_shadow_panel_button_color_list.active {
   opacity: 1;
   visibility: visible;
 }
 
-.color_option_list>input {
+.color_option_list>input,
+.custom_shadow_panel_button_color_list>input {
   background: var(--White);
   border: 0.5px solid var(--Border);
   box-shadow: inset 2px 3px 1px #EEEFF7;
@@ -695,7 +698,8 @@ body {
   flex-shrink: 0;
 }
 
-.color_option_list>div {
+.color_option_list>div,
+.custom_shadow_panel_button_color_list>div {
   border: 0.5px solid transparent;
   border-radius: 4px;
   transition: all 0.2s ease-in-out;
@@ -707,7 +711,8 @@ body {
   flex-shrink: 0;
 }
 
-.color_option_list>div:hover {
+.color_option_list>div:hover,
+.custom_shadow_panel_button_color_list>div:hover{
   border: 0.5px solid var(--Alice_blue_2);
   padding-bottom: 3px;
   box-shadow: inset 0px -3px 0px #EEEFF7;
@@ -864,12 +869,14 @@ body {
   padding-bottom: 4px;
 }
 
-.custom_shadow_panel_button div {
+.custom_shadow_panel_button_output {
   width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  height: 100%;
+  border-radius: 4px;
+  box-shadow: inset 0px -3px 0px rgba(0, 0, 0, 0.08);
+  border: 0.5px solid var(--Alice_blue_2);
+  flex-shrink: 0;
   background: var(--color_view_bg);
-  aspect-ratio: 1 / 1;
 }
 
 .border_toggle {
