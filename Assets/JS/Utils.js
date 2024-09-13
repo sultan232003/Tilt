@@ -459,11 +459,8 @@ class InputBox {
     }
 }
 
-
-
-
 class ColorList {
-    constructor(controller, listbox, colorAmt, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass) {
+    constructor(controller, listbox, colorAmt, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass, colorOutput, hexCodeTo) {
         this.controller = controller
         this.listbox = listbox
         this.colorAmt = colorAmt
@@ -474,6 +471,8 @@ class ColorList {
         this.colorViewStyle = colorViewStyle
         this.colorViewClass = colorViewClass
         this.colorNameClass = colorNameClass
+        this.colorOutput = colorOutput
+        this.hexCodeTo = hexCodeTo
         this.colorData = { hex: "000000", colorName: "black" }
     }
 
@@ -505,17 +504,26 @@ class ColorList {
     select() {
         Array.from(this.listbox.children).forEach(color_view_boxes => {
             color_view_boxes.addEventListener("click", (e) => {
-                this.colorData.hex = color_view_boxes.children[0].getAttribute("hex_value")
-                this.colorData.colorName = color_view_boxes.children[1].innerHTML
-                return this.colorData
+                if (e.target != this.listbox.children[0]) {
+                    this.colorData.hex = color_view_boxes.children[0].getAttribute("hex_value")
+                    this.colorData.colorName = color_view_boxes.children[1].innerHTML
+                    this.controller.innerHTML = this.colorData.colorName
+                    if (this.colorOutput != undefined) {
+                        this.colorOutput.setAttribute("style", `--color_view_bg:${this.colorData.hex};`)
+                    }
+                    this.hexCodeTo.setAttribute("hex_code",this.colorData.hex)
+                    return this.colorData
+                }
             })
+        })
+        this.controller.addEventListener("click", () => {
+            this.listbox.classList.toggle("active")
+        })
+        document.addEventListener("click", (e) => {
+            if (e.target !== this.controller && e.target !== this.listbox.children[0]) {
+                this.listbox.classList.remove("active")
+                this.listbox.children[0].value = ""
+            }
         })
     }
 }
-
-const testbtn = document.getElementById("testbtn")
-const testlist = document.getElementById("testlist")
-
-let testcolor = new ColorList(testbtn, testlist, 30, true, true, "color_view", "color_value")
-testcolor.create()
-testcolor.select()
