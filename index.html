@@ -1881,17 +1881,27 @@
               <div class="row gap-10 width-100">
                 <div class="row row-col gap-12 width-100">
                   <h5 class="input_label">Shadow Color</h5>
-                  <button class="mac_3D_btn custom_shadow_panel_button">
-                    <div style="--color_view_bg:#959da5;"></div>
-                    <p class="color_value">Cadet gray</p>
-                  </button>
+                  <div class="row gap-5">
+                    <div class="width-100 pos-rel">
+                      <button class="mac_3D_btn custom_shadow_panel_button" id="Shadow_color_btn" hex_code="#000000">Black</button>
+                      <div class="custom_shadow_panel_button_color_list width-100" id="Shadow_color_btn_list">
+                        <input type="text" placeholder="Custom">
+                      </div>
+                    </div>
+                    <div class="custom_shadow_panel_button_output" id="Shadow_color_output" style="--color_view_bg:#000000;"></div>
+                  </div>
                 </div>
                 <div class="row row-col gap-12 width-100">
                   <h5 class="input_label">Box Color</h5>
-                  <button class="mac_3D_btn custom_shadow_panel_button">
-                    <div style="--color_view_bg:#959da5;"></div>
-                    <p class="color_value">Cadet gray</p>
-                  </button>
+                  <div class="row gap-5">
+                    <div class="width-100 pos-rel">
+                      <button class="mac_3D_btn custom_shadow_panel_button" id="Box_color_btn" hex_code="#000000">White</button>
+                      <div class="custom_shadow_panel_button_color_list width-100" id="Box_color_btn_list">
+                        <input type="text" placeholder="Custom">
+                      </div>
+                    </div>
+                    <div class="custom_shadow_panel_button_output" id="Box_color_output" style="--color_view_bg:#FFFFFF;"></div>
+                  </div>
                 </div>
               </div>
               <div class="row row-col gap-12">
@@ -2062,9 +2072,6 @@
   <br>
   <br>
   <br>
-
-  <div id="testbtn"></div>
-  <div id="testlist"></div>
 
   <script src="Assets/JS/Utils.js"></script>
   <script src="Assets/JS/main.js"></script>
