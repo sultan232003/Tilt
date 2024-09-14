@@ -504,14 +504,14 @@ class ColorList {
     select() {
         Array.from(this.listbox.children).forEach(color_view_boxes => {
             color_view_boxes.addEventListener("click", (e) => {
-                if (e.target != this.listbox.children[0]) {
+                if (e.target.tagName != 'INPUT') {
                     this.colorData.hex = color_view_boxes.children[0].getAttribute("hex_value")
                     this.colorData.colorName = color_view_boxes.children[1].innerHTML
                     this.controller.innerHTML = this.colorData.colorName
                     if (this.colorOutput != undefined) {
                         this.colorOutput.setAttribute("style", `--color_view_bg:${this.colorData.hex};`)
                     }
-                    this.hexCodeTo.setAttribute("hex_code",this.colorData.hex)
+                    this.hexCodeTo.setAttribute("hex_code", this.colorData.hex)
                     return this.colorData
                 }
             })
@@ -525,5 +525,21 @@ class ColorList {
                 this.listbox.children[0].value = ""
             }
         })
+    }
+
+    customInput() {
+        if (this.listbox.children[0].tagName === 'INPUT') {
+            this.listbox.children[0].addEventListener("keydown", (e) => {
+                if (e.key === 'Enter') {
+                    if (this.listbox.children[0].value.length == 6) {
+                        this.hexCodeTo.setAttribute("hex_code", this.listbox.children[0].value)
+                        this.controller.innerHTML = "Custom"
+                        this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.listbox.children[0].value)
+                        this.listbox.children[0].value = ""
+                        this.listbox.classList.remove("active")
+                    } else { console.log("minimum 6") }
+                }
+            })
+        }
     }
 }
