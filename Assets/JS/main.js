@@ -354,6 +354,15 @@ class Shadow {
     }
   }
 
+  colorUpdateGroup() {
+    this.color_format_update()
+    this.color_format_changer()
+    this.hex_update()
+    this.other_color_update()
+    this.cmyk_update()
+    this.color_alpha_update()
+  }
+
   Format_list_creator() {
     this.color_format_update()
     this.Format_btn.addEventListener("click", (e) => {
@@ -383,48 +392,31 @@ class Shadow {
   }
 
   Color_Update() {
-    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn,this.Color_option_list,"Full",false,false,"color_view", "color_value", this.color_output)
+    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn, this.Color_option_list, "Full", false, false, "color_view", "color_value", this.color_output, this.Format_btn)
     this.ColorListFinal.create()
     this.ColorListFinal.select()
 
     this.Color_option_list.children[0].addEventListener("keydown", (e) => {
       if (e.key === 'Enter') {
-        if (this.Color_option_list.children[0].value.length == 6) {
-          this.hex_value = this.Color_option_list.children[0].value
-          this.Format_btn.setAttribute("hex_code", this.Color_option_list.children[0].value)
-          this.color_format_update()
-          this.color_format_changer()
-          this.hex_update()
-          this.other_color_update()
-          this.cmyk_update()
-          this.color_alpha_update()
-          this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
-          this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling.setAttribute("style", `--color_view_bg:${"#" + this.hex_value};`)
-          this.Shadow_box_shadow_color_btn.innerHTML = "Custom"
-          this.Color_option_list.children[0].value = ""
-          this.Color_option_list.classList.remove("active")
-        } else { console.log("minimum 6") }
+        this.hex_value = this.Color_option_list.children[0].value
+        this.colorUpdateGroup()
+        this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
       }
       this.input = this.Color_option_list.children[0].value
-      console.log(shadowColors.filter(item => item.hex.toLowerCase().includes(this.input)))
+      // console.log(shadowColors.filter(item => item.hex.toLowerCase().includes(this.input)))
 
       // fix the issue of serch
     })
+    this.ColorListFinal.customInput()
 
     Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
       color_view_boxes.addEventListener("click", (e) => {
-        if (e.target !== this.Color_option_list.children[0]) {
-          this.Format_btn.setAttribute("hex_code", color_view_boxes.children[0].getAttribute("hex_value"))
+        if (e.target.tagName != 'INPUT') {
           this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
           if (this.Color_format === "HEX") {
             this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
           }
-          this.color_format_update()
-          this.color_format_changer()
-          this.hex_update()
-          this.other_color_update()
-          this.cmyk_update()
-          this.color_alpha_update()
+          this.colorUpdateGroup()
           this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
         }
       })
@@ -513,12 +505,14 @@ const BoxColorBtn = document.getElementById("Box_color_btn")
 const BoxColorBtnList = document.getElementById("Box_color_btn_list")
 const BoxColorOutput = document.getElementById("Box_color_output")
 
-let ShadowColorFinal = new ColorList(ShadowColorBtn, ShadowColorBtnList, "Full", true, true, "color_view", "color_value",ShadowColorOutput, ShadowColorBtn)
+let ShadowColorFinal = new ColorList(ShadowColorBtn, ShadowColorBtnList, "Full", true, true, "color_view", "color_value", ShadowColorOutput, ShadowColorBtn)
 ShadowColorFinal.create()
 ShadowColorFinal.select()
-let BoxColorFinal = new ColorList(BoxColorBtn, BoxColorBtnList, "Full", true, true, "color_view", "color_value",BoxColorOutput, BoxColorBtn)
+ShadowColorFinal.customInput()
+let BoxColorFinal = new ColorList(BoxColorBtn, BoxColorBtnList, "Full", true, true, "color_view", "color_value", BoxColorOutput, BoxColorBtn)
 BoxColorFinal.create()
 BoxColorFinal.select()
+BoxColorFinal.customInput()
 
 // function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
 //   let shadows = [];
