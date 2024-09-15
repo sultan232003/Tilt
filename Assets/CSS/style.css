@@ -1238,11 +1238,11 @@ body {
   background: #ffffff;
   border: 1px solid transparent;
   border-radius: var(--radius);
-  box-shadow: inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(0, 0, 0, var(--opacity));
+  box-shadow: inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(var(--shadow_color), var(--opacity));
 }
 
 #custom_shadow_sandbox_box.box_outline {
-  box-shadow: var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(0, 0, 0, var(--opacity));
+  box-shadow: var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(var(--shadow_color), var(--opacity));
 }
 
 #custom_shadow_sandbox_box.box_border {
