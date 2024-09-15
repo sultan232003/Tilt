@@ -393,7 +393,7 @@ class Shadow {
   }
 
   Color_Update() {
-    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn, this.color_option_list_box, this.Color_option_list,"Full", false, false, "color_view", "color_value", this.color_output, this.Format_btn)
+    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn, this.color_option_list_box, this.Color_option_list, "Full", false, false, "color_view", "color_value", this.color_output, this.Format_btn)
     this.ColorListFinal.create()
     this.ColorListFinal.select()
 
@@ -403,14 +403,6 @@ class Shadow {
         this.colorUpdateGroup()
         this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
       }
-    })
-    
-    this.Color_option_list.children[0].addEventListener("input", (e) => {
-      this.input = this.Color_option_list.children[0].value
-      // console.log(shadowColors.filter(item => item.hex.toLowerCase().includes(this.input)))
-      Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
-        print(Array.from(color_view_boxes).filter(item => item.children[0].getAttribute("hex_value").toLowerCase().includes(this.input)))
-      })
     })
 
     this.ColorListFinal.customInput()
@@ -508,12 +500,13 @@ const ShadowColorBtn = document.getElementById("Shadow_color_btn")
 const ShadowColorBtnList = document.getElementById("Shadow_color_btn_list")
 const ShadowColorOutput = document.getElementById("Shadow_color_output")
 const Shadow_color_color_option_list_box = document.getElementById("Shadow_color_color_option_list_box")
+const ShadowColor = "0,0,0"
 const BoxColorBtn = document.getElementById("Box_color_btn")
 const BoxColorBtnList = document.getElementById("Box_color_btn_list")
 const BoxColorOutput = document.getElementById("Box_color_output")
 const Box_color_color_option_list_box = document.getElementById("Box_color_color_option_list_box")
 
-let ShadowColorFinal = new ColorList(ShadowColorBtn,Shadow_color_color_option_list_box, ShadowColorBtnList, "Full", false, false, "color_view", "color_value", ShadowColorOutput, ShadowColorBtn)
+let ShadowColorFinal = new ColorList(ShadowColorBtn, Shadow_color_color_option_list_box, ShadowColorBtnList, "Full", false, false, "color_view", "color_value", ShadowColorOutput, ShadowColorBtn)
 ShadowColorFinal.create()
 ShadowColorFinal.select()
 ShadowColorFinal.customInput()
@@ -522,21 +515,18 @@ BoxColorFinal.create()
 BoxColorFinal.select()
 BoxColorFinal.customInput()
 
-// function calculateRealisticShadow(element, layers, baseDistance, baseBlur, baseSpread, baseOpacity, angle, inset = false) {
-//   let shadows = [];
-//   let radianAngle = angle * (Math.PI / 180);
-//   for (let i = 1; i <= layers; i++) {
-//     let distance = baseDistance * i;
-//     let offsetX = Math.round(distance * Math.cos(radianAngle));
-//     let offsetY = Math.round(distance * Math.sin(radianAngle));
-//     let blur = baseBlur * i;
-//     let spread = baseSpread * i;
-//     let opacity = baseOpacity / (i * 0.8);
-//     let shadow = `${inset ? 'inset ' : ''}${offsetX}px ${offsetY}px ${blur}px ${spread}px rgba(0, 0, 0, ${opacity})`;
-//     shadows.push(shadow);
-//   }
-//   element.style.boxShadow = shadows.join(', ');
-// }
+// ShadowColorFinal.customizeColor("DA627D","custom","218,98,125")
+// Custom_shadow_sandbox_box.style.setProperty("--shadow_color", ShadowColorFinal.colorData.rgb)
+
+const ShadowColorObserver = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      Custom_shadow_sandbox_box.style.setProperty("--shadow_color", ShadowColorFinal.colorData.rgb)
+    }
+  });
+});
+ShadowColorObserver.observe(ShadowColorBtn, { childList: true, subtree: true });
+
 
 const Slider_style = document.getElementsByClassName("slider_style")
 const Opacity_ring = document.getElementById("opacity_ring")
@@ -556,7 +546,7 @@ function applyShadow() {
   } else {
     Custom_shadow_sandbox_box.style.removeProperty("box-shadow");
     Custom_shadow_sandbox_box.style.setProperty(
-      "box-shadow", `inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(64, 47, 255, var(--opacity));`
+      "box-shadow", `inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(var(--shadow_color), var(--opacity));`
     );
   }
 }
