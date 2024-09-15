@@ -460,9 +460,10 @@ class InputBox {
 }
 
 class ColorList {
-    constructor(controller, listbox, colorAmt, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass, colorOutput, hexCodeTo) {
+    constructor(controller, listbox, activeTo, colorAmt, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass, colorOutput, hexCodeTo) {
         this.controller = controller
         this.listbox = listbox
+        this.activeTo = activeTo
         this.colorAmt = colorAmt
         this.color_view_box
         this.color_view
@@ -501,6 +502,12 @@ class ColorList {
         }
     }
 
+    removeHide(){
+        Array.from(this.listbox.children).forEach(color_view_boxes => {
+            color_view_boxes.classList.remove("hide")
+        })
+    }
+
     select() {
         Array.from(this.listbox.children).forEach(color_view_boxes => {
             color_view_boxes.addEventListener("click", (e) => {
@@ -512,33 +519,40 @@ class ColorList {
                         this.colorOutput.setAttribute("style", `--color_view_bg:${this.colorData.hex};`)
                     }
                     this.hexCodeTo.setAttribute("hex_code", this.colorData.hex)
+                    this.removeHide()
                     return this.colorData
                 }
             })
         })
         this.controller.addEventListener("click", () => {
-            this.listbox.classList.toggle("active")
+            this.activeTo.classList.toggle("active")
         })
         document.addEventListener("click", (e) => {
-            if (e.target !== this.controller && e.target !== this.listbox.children[0]) {
-                this.listbox.classList.remove("active")
-                this.listbox.children[0].value = ""
+            if (e.target !== this.controller && e.target !== this.activeTo.children[0]) {
+                this.activeTo.classList.remove("active")
+                this.activeTo.children[0].value = ""
+                this.removeHide()
             }
         })
     }
 
     customInput() {
-        if (this.listbox.children[0].tagName === 'INPUT') {
-            this.listbox.children[0].addEventListener("keydown", (e) => {
+        if (this.activeTo.children[0].tagName === 'INPUT') {
+            this.activeTo.children[0].addEventListener("keydown", (e) => {
                 if (e.key === 'Enter') {
-                    if (this.listbox.children[0].value.length == 6) {
-                        this.hexCodeTo.setAttribute("hex_code", this.listbox.children[0].value)
-                        this.controller.innerHTML = "Custom"
-                        this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.listbox.children[0].value)
-                        this.listbox.children[0].value = ""
-                        this.listbox.classList.remove("active")
-                    } else { console.log("minimum 6") }
+                    this.hexCodeTo.setAttribute("hex_code", this.activeTo.children[0].value)
+                    this.controller.innerHTML = "Custom"
+                    this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.activeTo.children[0].value)
+                    this.activeTo.children[0].value = ""
+                    this.activeTo.classList.remove("active")
                 }
+            })
+            this.activeTo.children[0].addEventListener("input", (e) => {
+                this.input = e.target.value.toLowerCase()
+                shadowColors.forEach((shadowColor, index) => {
+                    const isVisible = shadowColor.hex.toLowerCase().includes(this.input)
+                    this.listbox.children[index].classList.toggle("hide", !isVisible)
+                })
             })
         }
     }
