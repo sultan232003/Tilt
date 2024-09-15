@@ -3,10 +3,11 @@ function print(val) {
 }
 
 const shadowColors = [
+    { name: "White", hex: "#FFFFFF" },
+    { name: "Black", hex: "#000000" },
     { name: "Charcoal", hex: "#36454F" },
     { name: "Cadet gray", hex: "#959da5" },
     { name: "Dim gray", hex: "#64646f" },
-    { name: "Black", hex: "#000000" },
     { name: "Dark purple", hex: "#110c2e" },
     { name: "Dim gray", hex: "#636363" },
     { name: "Raisin black", hex: "#1F2632" },
@@ -74,18 +75,25 @@ const shadowColors = [
 ];
 
 
-function hexToRgba(hex, alpha = 'FF') {
+function hexToRgba(hex, alpha) {
     hex = hex.replace(/^#/, '');
     let r, g, b, a = 1;
     if (hex.length === 6 || hex.length === 8) {
-        r = parseInt(hex.substring(0, 2), 16);
-        g = parseInt(hex.substring(2, 4), 16);
-        b = parseInt(hex.substring(4, 6), 16);
-        a = parseInt(alpha, 16) / 255;
+        if (alpha) {
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+            a = parseInt(alpha, 16) / 255;
+            return [r, g, b, a.toFixed(2)];
+        } else if (alpha === undefined) {
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+            return [r, g, b];
+        }
     } else {
         throw new Error('Invalid HEX color.');
     }
-    return [r, g, b, a.toFixed(2)];
 }
 
 function rgbaToHsla(r, g, b, a, percentage) {
@@ -474,7 +482,7 @@ class ColorList {
         this.colorNameClass = colorNameClass
         this.colorOutput = colorOutput
         this.hexCodeTo = hexCodeTo
-        this.colorData = { hex: "000000", colorName: "black" }
+        this.colorData = { hex: "000000", colorName: "black", rgb: "0,0,0" }
     }
 
     create() {
@@ -502,26 +510,29 @@ class ColorList {
         }
     }
 
-    removeHide(){
+    removeHide() {
         Array.from(this.listbox.children).forEach(color_view_boxes => {
             color_view_boxes.classList.remove("hide")
         })
     }
 
+    customizeColor(hex, name, rgb) {
+        this.colorData.hex = hex
+        this.colorData.colorName = name
+        this.colorData.rgb = rgb
+        this.controller.innerHTML = this.colorData.colorName
+    }
+
     select() {
         Array.from(this.listbox.children).forEach(color_view_boxes => {
             color_view_boxes.addEventListener("click", (e) => {
-                if (e.target.tagName != 'INPUT') {
-                    this.colorData.hex = color_view_boxes.children[0].getAttribute("hex_value")
-                    this.colorData.colorName = color_view_boxes.children[1].innerHTML
-                    this.controller.innerHTML = this.colorData.colorName
-                    if (this.colorOutput != undefined) {
-                        this.colorOutput.setAttribute("style", `--color_view_bg:${this.colorData.hex};`)
-                    }
-                    this.hexCodeTo.setAttribute("hex_code", this.colorData.hex)
-                    this.removeHide()
-                    return this.colorData
+                this.customizeColor(color_view_boxes.children[0].getAttribute("hex_value"), color_view_boxes.children[1].innerHTML, hexToRgba(color_view_boxes.children[0].getAttribute("hex_value")).toString())
+                if (this.colorOutput != undefined) {
+                    this.colorOutput.setAttribute("style", `--color_view_bg:${this.colorData.hex};`)
                 }
+                this.hexCodeTo.setAttribute("hex_code", this.colorData.hex)
+                this.removeHide()
+                return this.colorData
             })
         })
         this.controller.addEventListener("click", () => {
@@ -541,10 +552,11 @@ class ColorList {
             this.activeTo.children[0].addEventListener("keydown", (e) => {
                 if (e.key === 'Enter') {
                     this.hexCodeTo.setAttribute("hex_code", this.activeTo.children[0].value)
-                    this.controller.innerHTML = "Custom"
+                    this.customizeColor(this.activeTo.children[0].value, "Custom", hexToRgba(this.activeTo.children[0].value).toString())
                     this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.activeTo.children[0].value)
                     this.activeTo.children[0].value = ""
                     this.activeTo.classList.remove("active")
+                    this.removeHide()
                 }
             })
             this.activeTo.children[0].addEventListener("input", (e) => {
