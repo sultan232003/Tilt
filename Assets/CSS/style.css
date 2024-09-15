@@ -698,8 +698,9 @@ body {
   flex-shrink: 0;
 }
 
-.color_option_list>div,
-.custom_shadow_panel_button_color_list>div {
+.color_option_list_box>div,
+#Shadow_color_color_option_list_box>div,
+#Box_color_color_option_list_box>div {
   border: 0.5px solid transparent;
   border-radius: 4px;
   transition: all 0.2s ease-in-out;
@@ -711,12 +712,25 @@ body {
   flex-shrink: 0;
 }
 
-.color_option_list>div:hover,
-.custom_shadow_panel_button_color_list>div:hover{
+.color_option_list_box>div:hover,
+#Shadow_color_color_option_list_box>div:hover,
+#Box_color_color_option_list_box>div:hover{
   border: 0.5px solid var(--Alice_blue_2);
   padding-bottom: 3px;
   box-shadow: inset 0px -3px 0px #EEEFF7;
   /* cursor: var(--pointer); */
+}
+
+.color_option_list_box{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.color_option_list_box > .hide,
+#Shadow_color_color_option_list_box> .hide,
+#Box_color_color_option_list_box> .hide{
+  display: none;
 }
 
 .shadow_box_shadow_color_btn {
