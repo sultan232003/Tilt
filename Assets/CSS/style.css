@@ -1235,7 +1235,7 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background: #ffffff;
+  background: var(--box_color);
   border: 1px solid transparent;
   border-radius: var(--radius);
   box-shadow: inset var(--horizontal_length) var(--vertical_length) var(--blur_radius) var(--spread_radius) rgba(var(--shadow_color), var(--opacity));
