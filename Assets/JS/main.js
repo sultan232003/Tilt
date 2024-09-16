@@ -514,9 +514,15 @@ let BoxColorFinal = new ColorList(BoxColorBtn, Box_color_color_option_list_box, 
 BoxColorFinal.create()
 BoxColorFinal.select()
 BoxColorFinal.customInput()
+let ShadowCSS
 
-// ShadowColorFinal.customizeColor("DA627D","custom","218,98,125")
-// Custom_shadow_sandbox_box.style.setProperty("--shadow_color", ShadowColorFinal.colorData.rgb)
+function shadowCSSMaker() {
+  if (inset_toggle_status) {
+    ShadowCSS = `inset ${Horizontal_length_final.slider_value}px ${Vertical_length_final.slider_value}px ${Blur_radius_final.slider_value}px ${Spread_radius_final.slider_value}px rgba(${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)})`
+  } else{
+    ShadowCSS = `${Horizontal_length_final.slider_value}px ${Vertical_length_final.slider_value}px ${Blur_radius_final.slider_value}px ${Spread_radius_final.slider_value}px rgba(${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)})`
+  }
+}
 
 const ShadowColorObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
@@ -526,6 +532,15 @@ const ShadowColorObserver = new MutationObserver((mutations) => {
   });
 });
 ShadowColorObserver.observe(ShadowColorBtn, { childList: true, subtree: true });
+
+const BoxColorObserver = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      Custom_shadow_sandbox_box.style.setProperty("--box_color", BoxColorFinal.colorData.hex)
+    }
+  });
+});
+BoxColorObserver.observe(BoxColorBtn, { childList: true, subtree: true });
 
 
 const Slider_style = document.getElementsByClassName("slider_style")
@@ -560,6 +575,7 @@ function slider_upadte() {
   newY = (Custom_shadow_sandbox.offsetHeight / 2 - Shadow_controller_width / 2) - Vertical_length_final.slider_value
   update_controller(newX, newY)
   Opacity_ring_val.innerHTML = Opacity_final.slider_value
+  shadowCSSMaker()
 }
 
 Array.from(Slider_style).forEach((Slider_styles) => {
@@ -907,6 +923,10 @@ Reset_custom_shadow.addEventListener("click", () => {
   blur_ring_reset()
   spread_level_reset()
   center_controller()
+  ShadowColorFinal.customizeColor("000000", "Black", "0,0,0")
+  Custom_shadow_sandbox_box.style.setProperty("--shadow_color", ShadowColorFinal.colorData.rgb)
+  BoxColorFinal.customizeColor("ffffff", "White", "255,255,255")
+  Custom_shadow_sandbox_box.style.setProperty("--box_color", BoxColorFinal.colorData.hex)
   shadow_distance = 0
   applyShadow()
 })
