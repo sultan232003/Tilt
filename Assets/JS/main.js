@@ -505,6 +505,9 @@ const BoxColorBtn = document.getElementById("Box_color_btn")
 const BoxColorBtnList = document.getElementById("Box_color_btn_list")
 const BoxColorOutput = document.getElementById("Box_color_output")
 const Box_color_color_option_list_box = document.getElementById("Box_color_color_option_list_box")
+const CustomShadowCopy = document.getElementById("custom_shadow_copy")
+const CustomShadowCodeSnippet = document.getElementById("custom_shadow_code_snippet")
+
 
 let ShadowColorFinal = new ColorList(ShadowColorBtn, Shadow_color_color_option_list_box, ShadowColorBtnList, "Full", false, false, "color_view", "color_value", ShadowColorOutput, ShadowColorBtn)
 ShadowColorFinal.create()
@@ -515,19 +518,31 @@ BoxColorFinal.create()
 BoxColorFinal.select()
 BoxColorFinal.customInput()
 let ShadowCSS
+let ShadowCSSOutput
 
 function shadowCSSMaker() {
-  if (inset_toggle_status) {
-    ShadowCSS = `inset ${Horizontal_length_final.slider_value}px ${Vertical_length_final.slider_value}px ${Blur_radius_final.slider_value}px ${Spread_radius_final.slider_value}px rgba(${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)})`
-  } else{
-    ShadowCSS = `${Horizontal_length_final.slider_value}px ${Vertical_length_final.slider_value}px ${Blur_radius_final.slider_value}px ${Spread_radius_final.slider_value}px rgba(${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)})`
+  if (!Inset_toggle_final.toggle_status) {
+    ShadowCSS = `box-shadow: inset ${Horizontal_length_final.slider_value}px ${Vertical_length_final.slider_value}px ${Blur_radius_final.slider_value}px ${Spread_radius_final.slider_value}px rgba(${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)});`
+    ShadowCSSOutput = `box-shadow: inset <span class="val">${Horizontal_length_final.slider_value}</span>px <span class="val">${Vertical_length_final.slider_value}</span>px <span class="val">${Blur_radius_final.slider_value}</span>px <span class="val">${Spread_radius_final.slider_value}</span>px rgba(<span class="val">${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)}</span>);`
+    copyClipboard(CustomShadowCopy, ShadowCSS)
+  } else if(Inset_toggle_final.toggle_status){
+    ShadowCSS = `box-shadow: ${Horizontal_length_final.slider_value}px ${Vertical_length_final.slider_value}px ${Blur_radius_final.slider_value}px ${Spread_radius_final.slider_value}px rgba(${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)});`
+    ShadowCSSOutput = `box-shadow: <span class="val">${Horizontal_length_final.slider_value}</span>px <span class="val">${Vertical_length_final.slider_value}</span>px <span class="val">${Blur_radius_final.slider_value}</span>px <span class="val">${Spread_radius_final.slider_value}</span>px rgba(<span class="val">${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)}</span>);`
+    copyClipboard(CustomShadowCopy, ShadowCSS)
   }
 }
+
+function shadowCSSOutput() {
+  shadowCSSMaker()
+  CustomShadowCodeSnippet.innerHTML = ShadowCSSOutput
+}
+
 
 const ShadowColorObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if (mutation.type === 'childList') {
       Custom_shadow_sandbox_box.style.setProperty("--shadow_color", ShadowColorFinal.colorData.rgb)
+      shadowCSSOutput()
     }
   });
 });
@@ -575,7 +590,7 @@ function slider_upadte() {
   newY = (Custom_shadow_sandbox.offsetHeight / 2 - Shadow_controller_width / 2) - Vertical_length_final.slider_value
   update_controller(newX, newY)
   Opacity_ring_val.innerHTML = Opacity_final.slider_value
-  shadowCSSMaker()
+  shadowCSSOutput()
 }
 
 Array.from(Slider_style).forEach((Slider_styles) => {
@@ -590,6 +605,7 @@ Array.from(Slider_style).forEach((Slider_styles) => {
 Inset_toggle.addEventListener("click", () => {
   inset_toggle_status = !Inset_toggle_final.toggle_status;
   applyShadow();
+  shadowCSSOutput()
 });
 
 // CODE FOR CONTROLLER MOVE HERE
@@ -696,6 +712,7 @@ function mouseMove(e) {
   Vertical_length_final.slider_customize(shadowOffsetY())
   Distance_final.slider_customize(shadow_distance)
   callInputUpdate(5); callInputUpdate(0); callInputUpdate(1);
+  shadowCSSOutput()
 }
 
 function mouseUp(e) {
@@ -768,6 +785,7 @@ function blur_ring_update(e) {
     }
   }
   callInputUpdate(2)
+  shadowCSSOutput()
 }
 
 function blur_ring_reset() {
@@ -796,6 +814,7 @@ function spread_level_update(height) {
   let Spread_level_height_val = Math.round(convertRange(height, Spread_level_height_min, Spread_level_height_max, -50, 50))
   Spread_radius_final.slider_customize(Spread_level_height_val)
   applyShadow()
+  shadowCSSOutput()
 }
 
 function spreadSlideRingUpdate() {
@@ -821,14 +840,14 @@ function distaneSlideUpdate() {
 document.addEventListener("mousedown", (e) => {
   switch (e.target) {
     case Horizontal_length:
-      Horizontal_length.addEventListener("mousemove", () => {
+      Horizontal_length.addEventListener("input", () => {
         Distance_final.slider_customize(shadow_distance)
         shadow_angle = calShadowAngle()
         callInputUpdate(0); callInputUpdate(5);
       })
       break;
     case Vertical_length:
-      Vertical_length.addEventListener("mousemove", () => {
+      Vertical_length.addEventListener("input", () => {
         Distance_final.slider_customize(shadow_distance)
         shadow_angle = calShadowAngle()
         callInputUpdate(1); callInputUpdate(5);
@@ -836,37 +855,38 @@ document.addEventListener("mousedown", (e) => {
       break;
     case Blur_radius:
       Blur_ring.classList.add("show")
-      Blur_radius.addEventListener("mousemove", () => {
+      Blur_radius.addEventListener("input", () => {
         blurSlideRingUpdate()
         callInputUpdate(2)
       })
       break;
     case Shadow_controller_opacity_ring:
-      Shadow_controller_opacity_ring.addEventListener("mousemove", () => {
+      Shadow_controller_opacity_ring.addEventListener("input", () => {
         Shadow_controller_opacity_ring_final.update()
         Opacity_final.slider_customize(Number(Shadow_controller_opacity_ring.value))
         Opacity_ring_val.innerHTML = Shadow_controller_opacity_ring.value
         applyShadow()
         callInputUpdate(4)
+        shadowCSSOutput()
       })
       break;
     case Opacity:
       Opacity_ring.classList.add("show")
       Opacity_ring_val.classList.add("show")
-      Opacity.addEventListener("mousemove", () => {
+      Opacity.addEventListener("input", () => {
         opacitySlideRingUpdate()
         callInputUpdate(4)
       })
       break;
     case Spread_radius:
       Spread_level_box.classList.add("show")
-      Spread_radius.addEventListener("mousemove", () => {
+      Spread_radius.addEventListener("input", () => {
         spreadSlideRingUpdate()
         callInputUpdate(3)
       })
       break;
     case Distance:
-      Distance.addEventListener("mousemove", () => {
+      Distance.addEventListener("input", () => {
         distaneSlideUpdate()
         callInputUpdate(5); callInputUpdate(0); callInputUpdate(1)
       })
@@ -890,7 +910,7 @@ document.addEventListener("mousedown", (e) => {
       })
       break;
     case Radius:
-      document.addEventListener("mousemove", (e) => {
+      document.addEventListener("input", (e) => {
         callInputUpdate(6)
       })
       break;
@@ -929,6 +949,7 @@ Reset_custom_shadow.addEventListener("click", () => {
   Custom_shadow_sandbox_box.style.setProperty("--box_color", BoxColorFinal.colorData.hex)
   shadow_distance = 0
   applyShadow()
+  shadowCSSOutput()
 })
 
 document.addEventListener("keydown", (e) => {
