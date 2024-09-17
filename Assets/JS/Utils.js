@@ -269,10 +269,8 @@ class Slider {
     update() {
         this.slider_width = Math.round(convertRange(this.slider.value, this.slider_min, this.slider_max, 0, 100))
         this.slider.setAttribute("style", "--slide_width:" + this.slider_width + "%")
-        this.slider.addEventListener("mousedown", () => {
-            this.slider.addEventListener("mousemove", (e) => {
-                this.slider_calc(this.slider.value)
-            })
+        this.slider.addEventListener("input", (e) => {
+            this.slider_calc(this.slider.value)
         })
     }
 }
@@ -447,6 +445,12 @@ function closestDivisible(number, divisible) {
     }
 }
 
+function copyClipboard (copy_button, toCopy){
+    copy_button.addEventListener("click", () => {
+        navigator.clipboard.writeText(toCopy)
+    })
+}
+
 class InputBox {
     constructor(input, value_to) {
         this.input = input
@@ -521,6 +525,7 @@ class ColorList {
         this.colorData.colorName = name
         this.colorData.rgb = rgb
         this.controller.innerHTML = this.colorData.colorName
+        this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.colorData.hex)
     }
 
     select() {
