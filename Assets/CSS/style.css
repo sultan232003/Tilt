@@ -1249,4 +1249,16 @@ body {
   border: 1px solid var(--Border);
 }
 
+#custom_shadow_code_snippet{
+  font-size: 19px;
+    letter-spacing: 0.2px;
+    font-family: inter;
+    line-height: 0.7;
+    color: var(--Russian_violet);
+}
+
+#custom_shadow_code_snippet .val{
+  color: var(--Mint);
+}
+
 /* CODE ABOUT SHADOW AREA END HERE */
