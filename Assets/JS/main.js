@@ -393,7 +393,7 @@ class Shadow {
   }
 
   Color_Update() {
-    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn, this.color_option_list_box, this.Color_option_list, "Full", false, false, "color_view", "color_value", this.color_output, this.Format_btn)
+    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn, this.color_option_list_box, this.Color_option_list, "Full", false, false, "color_view", "color_value", this.color_output, this.Format_btn,this.Shadow_box_shadow_color_btn)
     this.ColorListFinal.create()
     this.ColorListFinal.select()
 
@@ -509,11 +509,11 @@ const CustomShadowCopy = document.getElementById("custom_shadow_copy")
 const CustomShadowCodeSnippet = document.getElementById("custom_shadow_code_snippet")
 
 
-let ShadowColorFinal = new ColorList(ShadowColorBtn, Shadow_color_color_option_list_box, ShadowColorBtnList, "Full", false, false, "color_view", "color_value", ShadowColorOutput, ShadowColorBtn)
+let ShadowColorFinal = new ColorList(ShadowColorBtn, Shadow_color_color_option_list_box, ShadowColorBtnList, "Full", false, false, "color_view", "color_value", ShadowColorOutput, ShadowColorBtn,ShadowColorBtn)
 ShadowColorFinal.create()
 ShadowColorFinal.select()
 ShadowColorFinal.customInput()
-let BoxColorFinal = new ColorList(BoxColorBtn, Box_color_color_option_list_box, BoxColorBtnList, "Full", false, false, "color_view", "color_value", BoxColorOutput, BoxColorBtn)
+let BoxColorFinal = new ColorList(BoxColorBtn, Box_color_color_option_list_box, BoxColorBtnList, "Full", false, false, "color_view", "color_value", BoxColorOutput, BoxColorBtn, BoxColorBtn)
 BoxColorFinal.create()
 BoxColorFinal.select()
 BoxColorFinal.customInput()
@@ -525,7 +525,7 @@ function shadowCSSMaker() {
     ShadowCSS = `box-shadow: inset ${Horizontal_length_final.slider_value}px ${Vertical_length_final.slider_value}px ${Blur_radius_final.slider_value}px ${Spread_radius_final.slider_value}px rgba(${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)});`
     ShadowCSSOutput = `box-shadow: inset <span class="val">${Horizontal_length_final.slider_value}</span>px <span class="val">${Vertical_length_final.slider_value}</span>px <span class="val">${Blur_radius_final.slider_value}</span>px <span class="val">${Spread_radius_final.slider_value}</span>px rgba(<span class="val">${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)}</span>);`
     copyClipboard(CustomShadowCopy, ShadowCSS)
-  } else if(Inset_toggle_final.toggle_status){
+  } else if (Inset_toggle_final.toggle_status) {
     ShadowCSS = `box-shadow: ${Horizontal_length_final.slider_value}px ${Vertical_length_final.slider_value}px ${Blur_radius_final.slider_value}px ${Spread_radius_final.slider_value}px rgba(${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)});`
     ShadowCSSOutput = `box-shadow: <span class="val">${Horizontal_length_final.slider_value}</span>px <span class="val">${Vertical_length_final.slider_value}</span>px <span class="val">${Blur_radius_final.slider_value}</span>px <span class="val">${Spread_radius_final.slider_value}</span>px rgba(<span class="val">${ShadowColorFinal.colorData.rgb},${convertRange(Opacity_final.slider_value, 0, 100, 0, 1)}</span>);`
     copyClipboard(CustomShadowCopy, ShadowCSS)
@@ -925,6 +925,15 @@ document.addEventListener("mouseup", () => {
   })
 })
 
+
+const BgColorBox = document.getElementById("bg_color_box")
+const BgColorListBox = document.getElementById("bg_color_list_box")
+const BG_Color = document.getElementById("bg_color")
+const BgColorFinal = new ColorList(BG_Color, BgColorListBox, BgColorBox, "Full", false, false, "color_view", "color_value", Custom_shadow_sandbox, Custom_shadow_sandbox,undefined)
+BgColorFinal.create()
+BgColorFinal.select()
+BgColorFinal.customInput()
+
 let reset_val_slider = [{ forSlider: "Horizontal_length", val: 0 }, { forSlider: "Vertical_length", val: 0 }, { forSlider: "Blur_radius", val: 10 }, { forSlider: "Spread_radius", val: 0 }, { forSlider: "Opacity", val: 10 }, { forSlider: "Distance", val: 0 }, { forSlider: "Radius", val: 10 }, { forSlider: "Opacity_ring", val: 10 }];
 let reset_val_toggle = [{ forToggle: "Inset_toggle", val: true }, { forToggle: "Border_toggle", val: true }, { forToggle: "Multiple_layers", val: false }]
 let reset_val_input = [{ forInput: "Horizontal_length_input", val: 0 }, { forInput: "vertical_length_input", val: 0 }, { forInput: "blur_radius_input", val: 10 }, { forInput: "spread_radius_input", val: 0 }, { forInput: "opacity_input", val: 10 }, { forInput: "distance_input", val: 0 }, { forInput: "Radius_input", val: 10 }]
@@ -943,10 +952,11 @@ Reset_custom_shadow.addEventListener("click", () => {
   blur_ring_reset()
   spread_level_reset()
   center_controller()
-  ShadowColorFinal.customizeColor("000000", "Black", "0,0,0")
+  ShadowColorFinal.customizeColor("#000000", "Black", "0,0,0")
   Custom_shadow_sandbox_box.style.setProperty("--shadow_color", ShadowColorFinal.colorData.rgb)
-  BoxColorFinal.customizeColor("ffffff", "White", "255,255,255")
+  BoxColorFinal.customizeColor("#ffffff", "White", "255,255,255")
   Custom_shadow_sandbox_box.style.setProperty("--box_color", BoxColorFinal.colorData.hex)
+  BgColorFinal.customizeColor("#ffffff","White","255,255,255")
   shadow_distance = 0
   applyShadow()
   shadowCSSOutput()
