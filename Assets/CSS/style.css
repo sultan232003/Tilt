@@ -700,7 +700,8 @@ body {
 
 .color_option_list_box>div,
 #Shadow_color_color_option_list_box>div,
-#Box_color_color_option_list_box>div {
+#Box_color_color_option_list_box>div,
+#bg_color_list_box>div {
   border: 0.5px solid transparent;
   border-radius: 4px;
   transition: all 0.2s ease-in-out;
@@ -714,22 +715,24 @@ body {
 
 .color_option_list_box>div:hover,
 #Shadow_color_color_option_list_box>div:hover,
-#Box_color_color_option_list_box>div:hover{
+#Box_color_color_option_list_box>div:hover,
+#bg_color_list_box>div:hover {
   border: 0.5px solid var(--Alice_blue_2);
   padding-bottom: 3px;
   box-shadow: inset 0px -3px 0px #EEEFF7;
   /* cursor: var(--pointer); */
 }
 
-.color_option_list_box{
+.color_option_list_box {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.color_option_list_box > .hide,
-#Shadow_color_color_option_list_box> .hide,
-#Box_color_color_option_list_box> .hide{
+.color_option_list_box>.hide,
+#Shadow_color_color_option_list_box>.hide,
+#Box_color_color_option_list_box>.hide,
+#bg_color_list_box>.hide {
   display: none;
 }
 
@@ -954,7 +957,7 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  background: var(--White);
+  background: var(--color_view_bg);
   border: 1px solid var(--Border);
   box-shadow: inset 3px 3px 5px #EBE9FF;
   overflow: hidden;
@@ -986,7 +989,109 @@ body {
   color: var(--Alice_blue_2);
   background: transparent;
   outline: none;
-  border: none;
+  border: 0.5px solid transparent;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.right_control_panel_btn::before {
+  content: '';
+  position: absolute;
+  height: 10px;
+  background: #ffffff;
+  border: 0.5px solid var(--Alice_blue_2);
+  font-size: 10px;
+  color: var(--Russian_violet);
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 3px 5px;
+  border-radius: 4px;
+  line-height: 0.8;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -5px;
+  width: max-content;
+  box-shadow: 0px 221px 62px rgba(80, 70, 255, 0), 0px 142px 57px rgba(80, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05);
+  opacity: 0;
+  visibility: hidden;
+
+}
+
+#reset::before{
+  content: 'Reset';
+}
+#bg_color::before{
+  content: 'bg color';
+}
+#hide_controller::before{
+  content: 'hide UI';
+}
+
+.right_control_panel_btn:hover::before{
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.2s ease;
+  transition-delay: 1s;
+}
+
+.right_control_panel_btn:hover {
+  border: 0.5px solid var(--Alice_blue_2);
+  padding-bottom: 3px;
+  box-shadow: inset 0px -3px 0px #EEEFF7;
+  transition: all 0.2s ease-in-out;
+}
+
+#bg_color {
+  anchor-name: --bg_color_btn;
+}
+
+#bg_color_box {
+  height: 200px;
+  width: 150px;
+  top: 0;
+  display: flex;
+  gap: 2px;
+  border: 0.5px solid var(--Border);
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 5px 3px 3px 3px;
+  box-sizing: border-box;
+  font-size: 10px;
+  color: var(--Russian_violet);
+  font-weight: 500;
+  line-height: 0.7;
+  text-align: center;
+  overflow: hidden;
+  transition: all 0.1s ease-in-out;
+  flex-direction: column;
+  z-index: 1;
+  overflow-y: scroll;
+  user-select: none;
+  position-anchor: --bg_color_btn;
+  right: calc(anchor(left) + 21px);
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0px 221px 62px rgba(80, 70, 255, 0), 0px 142px 57px rgba(80, 70, 255, 0.01), 0px 80px 48px rgba(80, 70, 255, 0.03), 0px 35px 35px rgba(80, 70, 255, 0.04), 0px 9px 19px rgba(80, 70, 255, 0.05);
+}
+
+#bg_color_box.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+#bg_color_box>input {
+  background: var(--White);
+  border: 0.5px solid var(--Border);
+  box-shadow: inset 2px 3px 1px #EEEFF7;
+  border-radius: 4px;
+  font-size: 10px;
+  color: var(--Russian_violet);
+  font-weight: 500;
+  line-height: 0.7;
+  height: 20px;
+  flex-shrink: 0;
+  padding: 0px 6px;
+  outline: none;
 }
 
 #hide_controller.show_ui {
@@ -1155,6 +1260,14 @@ body {
   transition: all 100ms ease;
 }
 
+#Box_color_color_option_list_box,
+#Shadow_color_color_option_list_box,
+#bg_color_list_box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 #spread_level_box {
   width: var(--shadow_box_width);
   height: var(--shadow_box_height);
@@ -1249,15 +1362,15 @@ body {
   border: 1px solid var(--Border);
 }
 
-#custom_shadow_code_snippet{
+#custom_shadow_code_snippet {
   font-size: 19px;
-    letter-spacing: 0.2px;
-    font-family: inter;
-    line-height: 0.7;
-    color: var(--Russian_violet);
+  letter-spacing: 0.2px;
+  font-family: inter;
+  line-height: 0.7;
+  color: var(--Russian_violet);
 }
 
-#custom_shadow_code_snippet .val{
+#custom_shadow_code_snippet .val {
   color: var(--Mint);
 }
 
