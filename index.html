@@ -2018,13 +2018,19 @@
                 </div>
               </div>
               <div class="right_control_panel row row-col gap-5">
-                <button id="reset" class="right_control_panel_btn">
+                <button id="reset" class="right_control_panel_btn pos-rel">
                   <i class="fa-solid fa-trash-arrow-up"></i>
                 </button>
-                <button id="option" class="right_control_panel_btn">
-                  <i class="fa-solid fa-border-all"></i>
-                </button>
-                <button id="hide_controller" class="right_control_panel_btn">
+                <div class="pos-rel">
+                  <button id="bg_color" class="right_control_panel_btn pos-rel">
+                    <i class="fa-solid fa-border-all"></i>
+                  </button>
+                  <div id="bg_color_box" class="pos-abs">
+                    <input type="text" placeholder="Custom" maxlength="6">
+                    <div id="bg_color_list_box"></div>
+                  </div>
+                </div>
+                <button id="hide_controller" class="right_control_panel_btn pos-rel">
                   <i class="fa-solid fa-eye"></i>
                 </button>
               </div>
