@@ -472,7 +472,7 @@ class InputBox {
 }
 
 class ColorList {
-    constructor(controller, listbox, activeTo, colorAmt, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass, colorOutput, hexCodeTo) {
+    constructor(controller, listbox, activeTo, colorAmt, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass, colorOutput, hexCodeTo, nameTo ) {
         this.controller = controller
         this.listbox = listbox
         this.activeTo = activeTo
@@ -486,6 +486,7 @@ class ColorList {
         this.colorNameClass = colorNameClass
         this.colorOutput = colorOutput
         this.hexCodeTo = hexCodeTo
+        this.nameTo = nameTo
         this.colorData = { hex: "000000", colorName: "black", rgb: "0,0,0" }
     }
 
@@ -524,8 +525,12 @@ class ColorList {
         this.colorData.hex = hex
         this.colorData.colorName = name
         this.colorData.rgb = rgb
-        this.controller.innerHTML = this.colorData.colorName
-        this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.colorData.hex)
+        if (this.nameTo != undefined) {
+            this.nameTo.innerHTML = this.colorData.colorName
+        }
+        if (this.colorOutput != undefined) {
+            this.colorOutput.style.setProperty(`--color_view_bg`, this.colorData.hex)
+        }
     }
 
     select() {
@@ -544,7 +549,7 @@ class ColorList {
             this.activeTo.classList.toggle("active")
         })
         document.addEventListener("click", (e) => {
-            if (e.target !== this.controller && e.target !== this.activeTo.children[0]) {
+            if (e.target !== this.controller && e.target !== this.activeTo.children[0] && e.target !== this.controller.children[0]) {
                 this.activeTo.classList.remove("active")
                 this.activeTo.children[0].value = ""
                 this.removeHide()
@@ -558,7 +563,9 @@ class ColorList {
                 if (e.key === 'Enter') {
                     this.hexCodeTo.setAttribute("hex_code", this.activeTo.children[0].value)
                     this.customizeColor(this.activeTo.children[0].value, "Custom", hexToRgba(this.activeTo.children[0].value).toString())
-                    this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.activeTo.children[0].value)
+                    if (this.colorOutput != undefined) {
+                        this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.activeTo.children[0].value)
+                    }
                     this.activeTo.children[0].value = ""
                     this.activeTo.classList.remove("active")
                     this.removeHide()
