@@ -674,7 +674,7 @@ body {
 }
 
 .color_option_list>input,
-.custom_shadow_panel_button_color_list>input {
+.custom_shadow_panel_button_color_list>div input:first-child {
   background: var(--White);
   border: 0.5px solid var(--Border);
   box-shadow: inset 2px 3px 1px #EEEFF7;
@@ -687,6 +687,10 @@ body {
   flex-shrink: 0;
   padding: 0px 6px;
   outline: none;
+}
+
+.custom_shadow_panel_button_color_list>div input:first-child {
+  flex-shrink: 1;
 }
 
 .color_view {
@@ -1017,17 +1021,19 @@ body {
 
 }
 
-#reset::before{
+#reset::before {
   content: 'Reset';
 }
-#bg_color::before{
+
+#bg_color::before {
   content: 'bg color';
 }
-#hide_controller::before{
+
+#hide_controller::before {
   content: 'hide UI';
 }
 
-.right_control_panel_btn:hover::before{
+.right_control_panel_btn:hover::before {
   opacity: 1;
   visibility: visible;
   transition: all 0.2s ease;
@@ -1079,7 +1085,7 @@ body {
   visibility: visible;
 }
 
-#bg_color_box>input {
+#bg_color_box>div>input:first-child {
   background: var(--White);
   border: 0.5px solid var(--Border);
   box-shadow: inset 2px 3px 1px #EEEFF7;
@@ -1089,7 +1095,6 @@ body {
   font-weight: 500;
   line-height: 0.7;
   height: 20px;
-  flex-shrink: 0;
   padding: 0px 6px;
   outline: none;
 }
@@ -1372,6 +1377,24 @@ body {
 
 #custom_shadow_code_snippet .val {
   color: var(--Mint);
+}
+
+#bg_color_input_pallete,
+#Box_color_input_pallete,
+#Shadow_color_input_pallete {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  outline: none;
+  border: none;
+}
+
+#bg_color_input_pallete::-webkit-color-swatch-wrapper,
+#Box_color_input_pallete::-webkit-color-swatch-wrapper,
+#Shadow_color_input_pallete::-webkit-color-swatch-wrapper {
+  padding: 0;
 }
 
 /* CODE ABOUT SHADOW AREA END HERE */
