@@ -472,11 +472,12 @@ class InputBox {
 }
 
 class ColorList {
-    constructor(controller, listbox, activeTo, colorAmt, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass, colorOutput, hexCodeTo, nameTo ) {
+    constructor(controller, listbox, activeTo, colorAmt, colorInput, colorBoxStyle, colorViewStyle, colorViewClass, colorNameClass, colorOutput, hexCodeTo, nameTo, Palette) {
         this.controller = controller
         this.listbox = listbox
         this.activeTo = activeTo
         this.colorAmt = colorAmt
+        this.colorInput = colorInput
         this.color_view_box
         this.color_view
         this.color_name
@@ -487,6 +488,7 @@ class ColorList {
         this.colorOutput = colorOutput
         this.hexCodeTo = hexCodeTo
         this.nameTo = nameTo
+        this.Palette = Palette
         this.colorData = { hex: "000000", colorName: "black", rgb: "0,0,0" }
     }
 
@@ -521,6 +523,10 @@ class ColorList {
         })
     }
 
+    resetPallete(val){
+        this.Palette.value = val
+    }
+
     customizeColor(hex, name, rgb) {
         this.colorData.hex = hex
         this.colorData.colorName = name
@@ -549,30 +555,40 @@ class ColorList {
             this.activeTo.classList.toggle("active")
         })
         document.addEventListener("click", (e) => {
-            if (e.target !== this.controller && e.target !== this.activeTo.children[0] && e.target !== this.controller.children[0]) {
+            if (e.target !== this.controller && e.target !== this.colorInput && e.target !== this.Palette && e.target !== this.controller.children[0]) {
                 this.activeTo.classList.remove("active")
-                this.activeTo.children[0].value = ""
+                this.colorInput.value = ""
                 this.removeHide()
             }
         })
     }
 
     customInput() {
-        if (this.activeTo.children[0].tagName === 'INPUT') {
-            this.activeTo.children[0].addEventListener("keydown", (e) => {
+        if (this.colorInput.tagName === 'INPUT') {
+            this.colorInput.addEventListener("keydown", (e) => {
                 if (e.key === 'Enter') {
-                    this.hexCodeTo.setAttribute("hex_code", this.activeTo.children[0].value)
-                    this.customizeColor(this.activeTo.children[0].value, "Custom", hexToRgba(this.activeTo.children[0].value).toString())
+                    this.hexCodeTo.setAttribute("hex_code", this.colorInput.value)
+                    this.customizeColor("#" + this.colorInput.value, "Custom", hexToRgba(this.colorInput.value).toString())
                     if (this.colorOutput != undefined) {
-                        this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.activeTo.children[0].value)
+                        this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.colorInput.value)
                     }
-                    this.activeTo.children[0].value = ""
+                    this.colorInput.value = ""
                     this.activeTo.classList.remove("active")
                     this.removeHide()
                 }
             })
-            this.activeTo.children[0].addEventListener("input", (e) => {
+            this.colorInput.addEventListener("input", (e) => {
                 this.input = e.target.value.toLowerCase()
+                shadowColors.forEach((shadowColor, index) => {
+                    const isVisible = shadowColor.hex.toLowerCase().includes(this.input)
+                    this.listbox.children[index].classList.toggle("hide", !isVisible)
+                })
+            })
+        }
+        if(this.Palette != undefined){
+            this.Palette.addEventListener("input",(e)=>{
+                this.customizeColor(this.Palette.value, "Custom", hexToRgba(this.Palette.value).toString())
+                this.input = this.Palette.value.toLowerCase()
                 shadowColors.forEach((shadowColor, index) => {
                     const isVisible = shadowColor.hex.toLowerCase().includes(this.input)
                     this.listbox.children[index].classList.toggle("hide", !isVisible)
