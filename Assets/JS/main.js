@@ -194,6 +194,7 @@ class Shadow {
     this.color_view
     this.color_name
     this.color_output = this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling
+    this.colorInput = this.Format_btn.nextElementSibling.nextElementSibling.children[1].children[0]
   }
 
   color_format_update() {
@@ -393,7 +394,7 @@ class Shadow {
   }
 
   Color_Update() {
-    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn, this.color_option_list_box, this.Color_option_list, "Full", false, false, "color_view", "color_value", this.color_output, this.Format_btn,this.Shadow_box_shadow_color_btn)
+    this.ColorListFinal = new ColorList(this.Shadow_box_shadow_color_btn, this.color_option_list_box, this.Color_option_list, "Full", this.colorInput, false, false, "color_view", "color_value", this.color_output, this.Format_btn, this.Shadow_box_shadow_color_btn)
     this.ColorListFinal.create()
     this.ColorListFinal.select()
 
@@ -498,22 +499,26 @@ inputUpdateToggle.forEach(inputUpdateToggles => {
 
 const ShadowColorBtn = document.getElementById("Shadow_color_btn")
 const ShadowColorBtnList = document.getElementById("Shadow_color_btn_list")
+const ShadowColorInput = document.getElementById("Shadow_color_input")
+const ShadowColorInputPallete = document.getElementById("Shadow_color_input_pallete")
 const ShadowColorOutput = document.getElementById("Shadow_color_output")
 const Shadow_color_color_option_list_box = document.getElementById("Shadow_color_color_option_list_box")
 const ShadowColor = "0,0,0"
 const BoxColorBtn = document.getElementById("Box_color_btn")
 const BoxColorBtnList = document.getElementById("Box_color_btn_list")
+const BoxColorInput = document.getElementById("Box_color_input")
+const BoxColorInputPallete = document.getElementById("Box_color_input_pallete")
 const BoxColorOutput = document.getElementById("Box_color_output")
 const Box_color_color_option_list_box = document.getElementById("Box_color_color_option_list_box")
 const CustomShadowCopy = document.getElementById("custom_shadow_copy")
 const CustomShadowCodeSnippet = document.getElementById("custom_shadow_code_snippet")
 
 
-let ShadowColorFinal = new ColorList(ShadowColorBtn, Shadow_color_color_option_list_box, ShadowColorBtnList, "Full", false, false, "color_view", "color_value", ShadowColorOutput, ShadowColorBtn,ShadowColorBtn)
+let ShadowColorFinal = new ColorList(ShadowColorBtn, Shadow_color_color_option_list_box, ShadowColorBtnList, "Full", ShadowColorInput, false, false, "color_view", "color_value", ShadowColorOutput, ShadowColorBtn, ShadowColorBtn, ShadowColorInputPallete)
 ShadowColorFinal.create()
 ShadowColorFinal.select()
 ShadowColorFinal.customInput()
-let BoxColorFinal = new ColorList(BoxColorBtn, Box_color_color_option_list_box, BoxColorBtnList, "Full", false, false, "color_view", "color_value", BoxColorOutput, BoxColorBtn, BoxColorBtn)
+let BoxColorFinal = new ColorList(BoxColorBtn, Box_color_color_option_list_box, BoxColorBtnList, "Full", BoxColorInput, false, false, "color_view", "color_value", BoxColorOutput, BoxColorBtn, BoxColorBtn, BoxColorInputPallete)
 BoxColorFinal.create()
 BoxColorFinal.select()
 BoxColorFinal.customInput()
@@ -928,8 +933,10 @@ document.addEventListener("mouseup", () => {
 
 const BgColorBox = document.getElementById("bg_color_box")
 const BgColorListBox = document.getElementById("bg_color_list_box")
+const BgColorInput = document.getElementById("bg_color_input")
+const BgColorInputPallete = document.getElementById("bg_color_input_pallete")
 const BG_Color = document.getElementById("bg_color")
-const BgColorFinal = new ColorList(BG_Color, BgColorListBox, BgColorBox, "Full", false, false, "color_view", "color_value", Custom_shadow_sandbox, Custom_shadow_sandbox,undefined)
+const BgColorFinal = new ColorList(BG_Color, BgColorListBox, BgColorBox, "Full", BgColorInput, false, false, "color_view", "color_value", Custom_shadow_sandbox, Custom_shadow_sandbox, undefined, BgColorInputPallete)
 BgColorFinal.create()
 BgColorFinal.select()
 BgColorFinal.customInput()
@@ -956,8 +963,9 @@ Reset_custom_shadow.addEventListener("click", () => {
   Custom_shadow_sandbox_box.style.setProperty("--shadow_color", ShadowColorFinal.colorData.rgb)
   BoxColorFinal.customizeColor("#ffffff", "White", "255,255,255")
   Custom_shadow_sandbox_box.style.setProperty("--box_color", BoxColorFinal.colorData.hex)
-  BgColorFinal.customizeColor("#ffffff","White","255,255,255")
+  BgColorFinal.customizeColor("#fafafb", "White", "255,255,255")
   shadow_distance = 0
+  BgColorFinal.resetPallete('#fafafb')
   applyShadow()
   shadowCSSOutput()
 })
