@@ -20,6 +20,11 @@ class Shadow {
         this.color_name
         this.color_output = this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling
         this.colorInput = this.Format_btn.nextElementSibling.nextElementSibling.children[1].children[0]
+        this.Bg_color_btn = this.Shadow_box.children[2].children[0].children[0]
+        this.Bg_color_list_box = this.Shadow_box.children[2].children[0].children[1]
+        this.Bg_color_input = this.Shadow_box.children[2].children[0].children[1].children[0].children[0]
+        this.Bg_color_input_pallete = this.Shadow_box.children[2].children[0].children[1].children[0].children[1]
+        this.Bg_color_list = this.Shadow_box.children[2].children[0].children[1].children[1]
     }
 
     color_format_update() {
@@ -96,7 +101,6 @@ class Shadow {
 
     cmyk_update() {
         if (this.Color_format === "CMYK") {
-
             this.Color_format_data.classList.add("gap-5")
             this.Color_format_data.classList.remove("gap-10", "row-col")
             this.Color_alpha_data.classList.remove("col-3")
@@ -223,11 +227,16 @@ class Shadow {
         this.ColorListFinal.create()
         this.ColorListFinal.select()
 
+        this.BgColorFinal = new ColorList(this.Bg_color_btn, this.Bg_color_list, this.Bg_color_list_box, "Full", this.Bg_color_input, false, false, "color_view", "color_value", this.Shadow_box, this.Bg_color_btn, this.Bg_color_btn, this.Bg_color_input_pallete)
+        this.BgColorFinal.create()
+        this.BgColorFinal.select()
+        this.BgColorFinal.customInput()
+
         this.Color_option_list.children[0].addEventListener("keydown", (e) => {
             if (e.key === 'Enter') {
                 this.hex_value = this.Color_option_list.children[0].value
                 this.colorUpdateGroup()
-                this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
+                this.Shadow_box.style.setProperty("--shadow_box", this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
             }
         })
 
@@ -241,7 +250,7 @@ class Shadow {
                         this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
                     }
                     this.colorUpdateGroup()
-                    this.Shadow_box.setAttribute("style", "--shadow_box:" + this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
+                    this.Shadow_box.style.setProperty("--shadow_box" , this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
                 }
             })
         })
