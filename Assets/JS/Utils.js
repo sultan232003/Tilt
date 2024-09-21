@@ -74,6 +74,13 @@ const shadowColors = [
     { name: "Gainsboro", hex: "#DCDCDC" }
 ];
 
+function nest(parent, depth) {
+    if (depth === 0) return
+    const newdiv = document.createElement("div")
+    newdiv.classList.add("tilt_infinity_child")
+    parent.appendChild(newdiv)
+    nest(newdiv, depth - 1)
+}
 
 function hexToRgba(hex, alpha) {
     hex = hex.replace(/^#/, '');
@@ -445,7 +452,7 @@ function closestDivisible(number, divisible) {
     }
 }
 
-function copyClipboard (copy_button, toCopy){
+function copyClipboard(copy_button, toCopy) {
     copy_button.addEventListener("click", () => {
         navigator.clipboard.writeText(toCopy)
     })
@@ -523,7 +530,7 @@ class ColorList {
         })
     }
 
-    resetPallete(val){
+    resetPallete(val) {
         this.Palette.value = val
     }
 
@@ -547,6 +554,7 @@ class ColorList {
                     this.colorOutput.setAttribute("style", `--color_view_bg:${this.colorData.hex};`)
                 }
                 this.hexCodeTo.setAttribute("hex_code", this.colorData.hex)
+                this.resetPallete(this.colorData.hex)
                 this.removeHide()
                 return this.colorData
             })
@@ -572,6 +580,7 @@ class ColorList {
                     if (this.colorOutput != undefined) {
                         this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.colorInput.value)
                     }
+                    this.resetPallete("#" + this.colorInput.value)
                     this.colorInput.value = ""
                     this.activeTo.classList.remove("active")
                     this.removeHide()
@@ -585,8 +594,8 @@ class ColorList {
                 })
             })
         }
-        if(this.Palette != undefined){
-            this.Palette.addEventListener("input",(e)=>{
+        if (this.Palette != undefined) {
+            this.Palette.addEventListener("input", (e) => {
                 this.customizeColor(this.Palette.value, "Custom", hexToRgba(this.Palette.value).toString())
                 this.input = this.Palette.value.toLowerCase()
                 shadowColors.forEach((shadowColor, index) => {
