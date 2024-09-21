@@ -1021,6 +1021,11 @@ body {
 
 }
 
+#reset:active,
+#bg_color:active{
+  color: var(--Palatinate_blue);
+}
+
 #reset::before {
   content: 'Reset';
 }
@@ -1045,6 +1050,11 @@ body {
   padding-bottom: 3px;
   box-shadow: inset 0px -3px 0px #EEEFF7;
   transition: all 0.2s ease-in-out;
+}
+
+.right_control_panel_btn:active{
+  padding-bottom: 0px;
+  box-shadow: inset 0px -1px 0px #EEEFF7;
 }
 
 #bg_color {
@@ -1099,7 +1109,8 @@ body {
   outline: none;
 }
 
-#hide_controller.show_ui {
+#hide_controller.show_ui,
+#bg_color.show_ui {
   color: var(--Palatinate_blue);
 }
 
