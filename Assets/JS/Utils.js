@@ -516,7 +516,7 @@ class ColorList {
             this.color_view.classList.add(this.colorViewClass)
             this.color_view.setAttribute("style", `--color_view_bg:${shadowColors[i].hex};`)
             if (this.colorViewStyle) {
-                this.color_view.setAttribute("style", `--color_view_bg:${shadowColors[i].hex}; width: 12px; height: 12px; background: var(--color_view_bg);`)
+                this.color_view.setProperty("style", `--color_view_bg:${shadowColors[i].hex}; width: 12px; height: 12px; background: var(--color_view_bg);`)
             }
             this.color_view.setAttribute("hex_value", shadowColors[i].hex)
             this.color_name.classList.add(this.colorNameClass)
@@ -551,10 +551,12 @@ class ColorList {
             color_view_boxes.addEventListener("click", (e) => {
                 this.customizeColor(color_view_boxes.children[0].getAttribute("hex_value"), color_view_boxes.children[1].innerHTML, hexToRgba(color_view_boxes.children[0].getAttribute("hex_value")).toString())
                 if (this.colorOutput != undefined) {
-                    this.colorOutput.setAttribute("style", `--color_view_bg:${this.colorData.hex};`)
+                    this.colorOutput.style.setProperty(`--color_view_bg`, this.colorData.hex)
                 }
                 this.hexCodeTo.setAttribute("hex_code", this.colorData.hex)
-                this.resetPallete(this.colorData.hex)
+                if (this.Palette != undefined) {
+                    this.resetPallete(this.colorData.hex)
+                }
                 this.removeHide()
                 return this.colorData
             })
@@ -580,7 +582,9 @@ class ColorList {
                     if (this.colorOutput != undefined) {
                         this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.colorInput.value)
                     }
-                    this.resetPallete("#" + this.colorInput.value)
+                    if (this.Palette != undefined) {
+                        this.resetPallete("#" + this.colorInput.value)
+                    }
                     this.colorInput.value = ""
                     this.activeTo.classList.remove("active")
                     this.removeHide()
@@ -597,6 +601,7 @@ class ColorList {
         if (this.Palette != undefined) {
             this.Palette.addEventListener("input", (e) => {
                 this.customizeColor(this.Palette.value, "Custom", hexToRgba(this.Palette.value).toString())
+                this.hexCodeTo.setAttribute("hex_code", this.Palette.value)
                 this.input = this.Palette.value.toLowerCase()
                 shadowColors.forEach((shadowColor, index) => {
                     const isVisible = shadowColor.hex.toLowerCase().includes(this.input)
