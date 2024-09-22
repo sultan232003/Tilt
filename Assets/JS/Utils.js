@@ -3,75 +3,71 @@ function print(val) {
 }
 
 const shadowColors = [
-    { name: "White", hex: "#FFFFFF" },
-    { name: "Black", hex: "#000000" },
-    { name: "Charcoal", hex: "#36454F" },
-    { name: "Cadet gray", hex: "#959da5" },
-    { name: "Dim gray", hex: "#64646f" },
-    { name: "Dark purple", hex: "#110c2e" },
-    { name: "Dim gray", hex: "#636363" },
-    { name: "Raisin black", hex: "#1F2632" },
-    { name: "Tea green", hex: "#CBEFBE" },
-    { name: "Majorelle Blue", hex: "#5546FF" },
-    { name: "Cadet gray", hex: "#959DA5" },
-    { name: "Dim gray", hex: "#64646F" },
-    { name: "UCLA Blue", hex: "#50749D" },
-    { name: "Slate Gray", hex: "#708090" },
-    { name: "Lavender (web)", hex: "#EBE9FF" },
-    { name: "Dark Slate Gray", hex: "#2F4F4F" },
-    { name: "Ghost white", hex: "#EEEFF7" },
-    { name: "Gunmetal", hex: "#2A3439" },
-    { name: "Jasmine", hex: "#FFDC7C" },
-    { name: "Dim Gray", hex: "#696969" },
-    { name: "Gray", hex: "#808080" },
-    { name: "Light Slate Gray", hex: "#778899" },
-    { name: "Steel Blue", hex: "#4682B4" },
-    { name: "Jordy Blue", hex: "#90AEF4" },
-    { name: "Royal Blue", hex: "#4169E1" },
-    { name: "Palatinate blue", hex: "#402FFF" },
-    { name: "Medium Slate Blue", hex: "#7B68EE" },
-    { name: "Violet", hex: "#7D23FF" },
-    { name: "Dark Olive Green", hex: "#556B2F" },
-    { name: "Forest Green", hex: "#228B22" },
-    { name: "Red (Crayola)", hex: "#EA495F" },
-    { name: "Dark Green", hex: "#006400" },
-    { name: "Jordy Blue", hex: "#88BEF4" },
-    { name: "Dark Khaki", hex: "#BDB76B" },
-    { name: "Saddle Brown", hex: "#8B4513" },
-    { name: "Sienna", hex: "#A0522D" },
-    { name: "Peru", hex: "#CD853F" },
-    { name: "Chocolate", hex: "#D2691E" },
-    { name: "Rosy Brown", hex: "#BC8F8F" },
-    { name: "Indian Red", hex: "#CD5C5C" },
-    { name: "Firebrick", hex: "#B22222" },
-    { name: "Maroon", hex: "#800000" },
-    { name: "Dark Red", hex: "#8B0000" },
-    { name: "Crimson", hex: "#DC143C" },
-    { name: "Medium Violet Red", hex: "#C71585" },
-    { name: "Deep Pink", hex: "#FF1493" },
-    { name: "Dark Orchid", hex: "#9932CC" },
-    { name: "Purple", hex: "#800080" },
-    { name: "Rebecca Purple", hex: "#663399" },
-    { name: "Medium Purple", hex: "#9370DB" },
-    { name: "Thistle", hex: "#D8BFD8" },
-    { name: "Plum", hex: "#DDA0DD" },
-    { name: "Lavender", hex: "#E6E6FA" },
-    { name: "Lavender Blush", hex: "#FFF0F5" },
-    { name: "Light Pink", hex: "#FFB6C1" },
-    { name: "Hot Pink", hex: "#FF69B4" },
-    { name: "Light Coral", hex: "#F08080" },
-    { name: "Salmon", hex: "#FA8072" },
-    { name: "Coral", hex: "#FF7F50" },
-    { name: "Orange Red", hex: "#FF4500" },
-    { name: "Dark Orange", hex: "#FF8C00" },
-    { name: "Orange", hex: "#FFA500" },
-    { name: "Goldenrod", hex: "#DAA520" },
-    { name: "Dark Goldenrod", hex: "#B8860B" },
-    { name: "Cornsilk", hex: "#FFF8DC" },
-    { name: "Beige", hex: "#F5F5DC" },
-    { name: "Antique White", hex: "#FAEBD7" },
-    { name: "White Smoke", hex: "#F5F5F5" },
-    { name: "Gainsboro", hex: "#DCDCDC" }
+    { name: "White", hex: "#FFFFFF", tag: "Light", text: "Black" },
+    { name: "Black", hex: "#000000", tag: "Dark", text: "White" },
+    { name: "Charcoal", hex: "#36454F", tag: "Dark", text: "White" },
+    { name: "Cadet gray", hex: "#959DA5", tag: "Light", text: "Black" },
+    { name: "Dim gray", hex: "#64646F", tag: "Dark", text: "White" },
+    { name: "Dark purple", hex: "#110c2e", tag: "Dark", text: "White" },
+    { name: "Raisin black", hex: "#1F2632", tag: "Dark", text: "White" },
+    { name: "Tea green", hex: "#CBEFBE", tag: "Light", text: "Black" },
+    { name: "Majorelle Blue", hex: "#5546FF", tag: "Dark", text: "White" },
+    { name: "UCLA Blue", hex: "#50749D", tag: "Dark", text: "White" },
+    { name: "Slate Gray", hex: "#708090", tag: "Dark", text: "White" },
+    { name: "Lavender (web)", hex: "#EBE9FF", tag: "Light", text: "Black" },
+    { name: "Dark Slate Gray", hex: "#2F4F4F", tag: "Dark", text: "White" },
+    { name: "Ghost white", hex: "#EEEFF7", tag: "Light", text: "Black" },
+    { name: "Gunmetal", hex: "#2A3439", tag: "Dark", text: "White" },
+    { name: "Jasmine", hex: "#FFDC7C", tag: "Light", text: "Black" },
+    { name: "Dim Gray", hex: "#696969", tag: "Dark", text: "White" },
+    { name: "Gray", hex: "#808080", tag: "Dark", text: "White" },
+    { name: "Light Slate Gray", hex: "#778899", tag: "Light", text: "Black" },
+    { name: "Steel Blue", hex: "#4682B4", tag: "Dark", text: "White" },
+    { name: "Jordy Blue", hex: "#90AEF4", tag: "Light", text: "Black" },
+    { name: "Royal Blue", hex: "#4169E1", tag: "Dark", text: "White" },
+    { name: "Palatinate blue", hex: "#402FFF", tag: "Dark", text: "White" },
+    { name: "Medium Slate Blue", hex: "#7B68EE", tag: "Light", text: "Black" },
+    { name: "Violet", hex: "#7D23FF", tag: "Dark", text: "White" },
+    { name: "Dark Olive Green", hex: "#556B2F", tag: "Dark", text: "White" },
+    { name: "Forest Green", hex: "#228B22", tag: "Dark", text: "White" },
+    { name: "Red (Crayola)", hex: "#EA495F", tag: "Light", text: "Black" },
+    { name: "Dark Green", hex: "#006400", tag: "Dark", text: "White" },
+    { name: "Dark Khaki", hex: "#BDB76B", tag: "Light", text: "Black" },
+    { name: "Saddle Brown", hex: "#8B4513", tag: "Dark", text: "White" },
+    { name: "Sienna", hex: "#A0522D", tag: "Dark", text: "White" },
+    { name: "Peru", hex: "#CD853F", tag: "Light", text: "Black" },
+    { name: "Chocolate", hex: "#D2691E", tag: "Light", text: "Black" },
+    { name: "Rosy Brown", hex: "#BC8F8F", tag: "Light", text: "Black" },
+    { name: "Indian Red", hex: "#CD5C5C", tag: "Light", text: "Black" },
+    { name: "Firebrick", hex: "#B22222", tag: "Dark", text: "White" },
+    { name: "Maroon", hex: "#800000", tag: "Dark", text: "White" },
+    { name: "Dark Red", hex: "#8B0000", tag: "Dark", text: "White" },
+    { name: "Crimson", hex: "#DC143C", tag: "Light", text: "Black" },
+    { name: "Medium Violet Red", hex: "#C71585", tag: "Light", text: "Black" },
+    { name: "Deep Pink", hex: "#FF1493", tag: "Light", text: "Black" },
+    { name: "Dark Orchid", hex: "#9932CC", tag: "Dark", text: "White" },
+    { name: "Purple", hex: "#800080", tag: "Dark", text: "White" },
+    { name: "Rebecca Purple", hex: "#663399", tag: "Dark", text: "White" },
+    { name: "Medium Purple", hex: "#9370DB", tag: "Light", text: "Black" },
+    { name: "Thistle", hex: "#D8BFD8", tag: "Light", text: "Black" },
+    { name: "Plum", hex: "#DDA0DD", tag: "Light", text: "Black" },
+    { name: "Lavender", hex: "#E6E6FA", tag: "Light", text: "Black" },
+    { name: "Lavender Blush", hex: "#FFF0F5", tag: "Light", text: "Black" },
+    { name: "Light Pink", hex: "#FFB6C1", tag: "Light", text: "Black" },
+    { name: "Hot Pink", hex: "#FF69B4", tag: "Light", text: "Black" },
+    { name: "Light Coral", hex: "#F08080", tag: "Light", text: "Black" },
+    { name: "Salmon", hex: "#FA8072", tag: "Light", text: "Black" },
+    { name: "Coral", hex: "#FF7F50", tag: "Light", text: "Black" },
+    { name: "Orange Red", hex: "#FF4500", tag: "Light", text: "Black" },
+    { name: "Dark Orange", hex: "#FF8C00", tag: "Light", text: "Black" },
+    { name: "Orange", hex: "#FFA500", tag: "Light", text: "Black" },
+    { name: "Goldenrod", hex: "#DAA520", tag: "Light", text: "Black" },
+    { name: "Dark Goldenrod", hex: "#B8860B", tag: "Dark", text: "White" },
+    { name: "Cornsilk", hex: "#FFF8DC", tag: "Light", text: "Black" },
+    { name: "Beige", hex: "#F5F5DC", tag: "Light", text: "Black" },
+    { name: "Antique White", hex: "#FAEBD7", tag: "Light", text: "Black" },
+    { name: "White Smoke", hex: "#F5F5F5", tag: "Light", text: "Black" },
+    { name: "Gainsboro", hex: "#DCDCDC", tag: "Light", text: "Black" }
 ];
 
 function nest(parent, depth) {
@@ -80,6 +76,14 @@ function nest(parent, depth) {
     newdiv.classList.add("tilt_infinity_child")
     parent.appendChild(newdiv)
     nest(newdiv, depth - 1)
+}
+
+function isLightColor(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    return luminance > 128;
 }
 
 function hexToRgba(hex, alpha) {
@@ -496,7 +500,7 @@ class ColorList {
         this.hexCodeTo = hexCodeTo
         this.nameTo = nameTo
         this.Palette = Palette
-        this.colorData = { hex: "000000", colorName: "black", rgb: "0,0,0" }
+        this.colorData = { hex: "000000", colorName: "black", rgb: "0,0,0", tag: "Dark", text: "White"}
     }
 
     create() {
@@ -519,6 +523,8 @@ class ColorList {
                 this.color_view.setProperty("style", `--color_view_bg:${shadowColors[i].hex}; width: 12px; height: 12px; background: var(--color_view_bg);`)
             }
             this.color_view.setAttribute("hex_value", shadowColors[i].hex)
+            this.color_view.setAttribute("tag", shadowColors[i].tag)
+            this.color_view.setAttribute("text", shadowColors[i].text)
             this.color_name.classList.add(this.colorNameClass)
             this.color_name.innerHTML = shadowColors[i].name
         }
@@ -534,10 +540,12 @@ class ColorList {
         this.Palette.value = val
     }
 
-    customizeColor(hex, name, rgb) {
+    customizeColor(hex, name, rgb, tag, text) {
         this.colorData.hex = hex
         this.colorData.colorName = name
         this.colorData.rgb = rgb
+        this.colorData.tag = tag
+        this.colorData.text = text
         if (this.nameTo != undefined) {
             this.nameTo.innerHTML = this.colorData.colorName
         }
@@ -549,7 +557,7 @@ class ColorList {
     select() {
         Array.from(this.listbox.children).forEach(color_view_boxes => {
             color_view_boxes.addEventListener("click", (e) => {
-                this.customizeColor(color_view_boxes.children[0].getAttribute("hex_value"), color_view_boxes.children[1].innerHTML, hexToRgba(color_view_boxes.children[0].getAttribute("hex_value")).toString())
+                this.customizeColor(color_view_boxes.children[0].getAttribute("hex_value"), color_view_boxes.children[1].innerHTML, hexToRgba(color_view_boxes.children[0].getAttribute("hex_value")).toString(),color_view_boxes.children[0].getAttribute("tag"),color_view_boxes.children[0].getAttribute("text"))
                 if (this.colorOutput != undefined) {
                     this.colorOutput.style.setProperty(`--color_view_bg`, this.colorData.hex)
                 }
@@ -578,7 +586,7 @@ class ColorList {
             this.colorInput.addEventListener("keydown", (e) => {
                 if (e.key === 'Enter') {
                     this.hexCodeTo.setAttribute("hex_code", this.colorInput.value)
-                    this.customizeColor("#" + this.colorInput.value, "Custom", hexToRgba(this.colorInput.value).toString())
+                    this.customizeColor("#" + this.colorInput.value, "Custom", hexToRgba(this.colorInput.value).toString(),color_view_boxes.children[0].getAttribute("tag"),color_view_boxes.children[0].getAttribute("text"))
                     if (this.colorOutput != undefined) {
                         this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.colorInput.value)
                     }
