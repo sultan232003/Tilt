@@ -552,6 +552,18 @@ body {
   line-height: 0.78;
 }
 
+.color_alpha h3.black,
+.color_format_data h3.black,
+.shadow_format_data .black {
+  color: var(--Russian_violet);
+}
+
+.color_alpha h3.white,
+.color_format_data h3.white,
+.shadow_format_data .white {
+  color: #ffffff;
+}
+
 .shadow_value {
   padding-left: 5px;
   padding-right: 5px;
