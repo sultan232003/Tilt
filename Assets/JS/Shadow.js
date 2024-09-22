@@ -27,6 +27,7 @@ class Shadow {
         this.Bg_color_input_pallete = this.Shadow_box.children[2].children[0].children[1].children[0].children[1]
         this.Bg_color_list = this.Shadow_box.children[2].children[0].children[1].children[1]
         this.Shadow_value = this.Shadow_box.children[1].children[2]
+        this.copy_btn = this.Shadow_box.children[2].children[1]
     }
 
     color_format_update() {
@@ -45,7 +46,7 @@ class Shadow {
             this.Color_format_data.classList.add("gap-10", "row-col")
             this.Color_format_data.classList.remove("gap-5")
             this.Color_format_data.innerHTML = `
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
         <p>[</p>
         <p>HEX</p>
         <p>]</p>
@@ -61,7 +62,7 @@ class Shadow {
             this.Color_format_data.classList.remove("gap-10", "row-col")
             this.Color_format_data.innerHTML = `
       <div class="row row-col gap-10 col-4">
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
           <p>[</p>
           <p>${this.Color_format[0]}</p>
           <p>]</p>
@@ -69,7 +70,7 @@ class Shadow {
         <h3 class="text-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">${this.Shadow_box_color_format_value[0]}</h3>
       </div>
       <div class="row row-col gap-10 col-4">
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
           <p>[</p>
           <p>${this.Color_format[1]}</p>
           <p>]</p>
@@ -77,7 +78,7 @@ class Shadow {
         <h3 class="text-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">${this.Shadow_box_color_format_value[1]}</h3>
       </div>
       <div class="row row-col gap-10 col-4">
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
           <p>[</p>
           <p>${this.Color_format[2]}</p>
           <p>]</p>
@@ -91,7 +92,7 @@ class Shadow {
         if (this.Color_format === "HEX" || this.Color_format === "RGB" || this.Color_format === "HSL" || this.Color_format === "HSB" || this.Color_format === "CSS") {
             this.Color_alpha_data.classList.add("col-3")
             this.Color_alpha_data.innerHTML = `
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
         <p>[</p>
         <p>alpha</p>
         <p>]</p>
@@ -109,7 +110,7 @@ class Shadow {
             this.Color_alpha_data.innerHTML = ``
             this.Color_format_data.innerHTML = `
         <div class="row row-col gap-10 col-3">
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
         <p>[</p>
         <p>${this.Color_format[0]}</p>
         <p>]</p>
@@ -117,7 +118,7 @@ class Shadow {
         <h3 class="text-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">${this.Shadow_box_color_format_value[0]}</h3>
         </div>
         <div class="row row-col gap-10 col-3">
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
         <p>[</p>
           <p>${this.Color_format[1]}</p>
           <p>]</p>
@@ -125,7 +126,7 @@ class Shadow {
         <h3 class="text-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">${this.Shadow_box_color_format_value[1]}</h3>
         </div>
         <div class="row row-col gap-10 col-3">
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
           <p>[</p>
           <p>${this.Color_format[2]}</p>
           <p>]</p>
@@ -133,7 +134,7 @@ class Shadow {
           <h3 class="text-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">${this.Shadow_box_color_format_value[2]}</h3>
           </div>
       <div class="row row-col gap-10 col-3">
-        <div class="color_format_index_value row space-between align-center text-upper">
+        <div class="color_format_index_value row space-between align-center text-upper ${this.BgColorFinal.colorData.tag === "Light" ? 'black' : 'white'}">
           <p>[</p>
           <p>${this.Color_format[3]}</p>
           <p>]</p>
@@ -143,11 +144,13 @@ class Shadow {
         }
     }
 
-    Shadow_value_update(){
+    Shadow_value_update() {
         this.isLight = this.BgColorFinal.colorData.tag === "Light";
-        Array.from(this.Shadow_value.children).forEach(shadowValueChild=>{
+        Array.from(this.Shadow_value.children).forEach(shadowValueChild => {
             shadowValueChild.children[0].classList.toggle("black", this.isLight);
             shadowValueChild.children[0].classList.toggle("white", !this.isLight);
+            shadowValueChild.children[1].classList.toggle("black", this.isLight);
+            shadowValueChild.children[1].classList.toggle("white", !this.isLight);
         })
     }
 
@@ -250,7 +253,6 @@ class Shadow {
                 this.Shadow_box.style.setProperty("--shadow_box", this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
             }
         })
-
         this.ColorListFinal.customInput()
 
         this.BgColorObserver = new MutationObserver((mutations) => {
@@ -268,14 +270,13 @@ class Shadow {
 
         Array.from(this.Color_option_list.children).forEach(color_view_boxes => {
             color_view_boxes.addEventListener("click", (e) => {
-                if (e.target.tagName != 'INPUT') {
-                    this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
-                    if (this.Color_format === "HEX") {
-                        this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
-                    }
-                    this.colorUpdateGroup()
-                    this.Shadow_box.style.setProperty("--shadow_box", this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
+                this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
+                if (this.Color_format === "HEX") {
+                    this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
                 }
+                this.colorUpdateGroup()
+                this.Shadow_box.style.setProperty("--shadow_box", this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
+                copyClipboard(this.copy_btn, `box-shadow: ${this.Shadow_css_code} #${this.hex_value}${this.alpha_value};`)
             })
         })
     }
