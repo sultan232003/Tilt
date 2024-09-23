@@ -521,14 +521,14 @@ body {
   flex-shrink: 0;
 }
 
-.shadow_box_copy_btn {
+.shadow_box_copy_btn.white {
   background: var(--Majorelle_Blue);
   box-shadow: inset 0px -4px 0px var(--Palatinate_blue);
   color: var(--White);
   border: none;
 }
 
-.shadow_box_copy_btn:active {
+.shadow_box_copy_btn.white:active {
   padding-bottom: 0px;
   box-shadow: inset 0px -1px 0px var(--Palatinate_blue);
 }
