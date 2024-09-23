@@ -152,6 +152,7 @@ class Shadow {
             shadowValueChild.children[1].classList.toggle("black", this.isLight);
             shadowValueChild.children[1].classList.toggle("white", !this.isLight);
         })
+        this.copy_btn.classList.toggle("white", this.isLight)
     }
 
     color_format_changer() {
@@ -279,5 +280,6 @@ class Shadow {
                 copyClipboard(this.copy_btn, `box-shadow: ${this.Shadow_css_code} #${this.hex_value}${this.alpha_value};`)
             })
         })
+        copyClipboard(this.copy_btn, `box-shadow: ${this.Shadow_css_code} #${this.hex_value}${this.alpha_value};`)
     }
 }
