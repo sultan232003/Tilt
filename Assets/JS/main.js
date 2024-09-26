@@ -37,3 +37,71 @@ Array.from(Shadow_box).forEach(Shadow_boxs => {
 });
 
 // SHADOW BOX EFFECT CODE ENDS HERE
+
+
+
+
+
+
+
+
+
+
+class Carousel {
+  constructor(carousel_box, want_controller) {
+    this.carousel_box = carousel_box
+    this.want_controller = want_controller || false
+    this.btn_box = document.createElement('div')
+    this.prev_btn = document.createElement('div')
+    this.next_btn = document.createElement('div')
+    this.carousel_box_width = this.carousel_box.offsetWidth
+    this.carousel_cards = this.carousel_box.children
+    this.carousel_card_number = this.carousel_box.children.length
+    this.carousel_card_width = this.carousel_box.children[0].offsetWidth
+    this.carousel_move_offset = (this.carousel_box_width - (this.carousel_card_width * this.carousel_card_number)) / (this.carousel_card_number - 1)
+    this.count = 0
+  }
+
+  create() {
+    this.carousel_wrapper = document.createElement('div');
+    this.carousel_wrapper.classList.add('carousel_wrapper');
+    this.carousel_box.parentNode.insertBefore(this.carousel_wrapper, this.carousel_box);
+    this.carousel_wrapper.appendChild(this.carousel_box);
+    this.carousel_wrapper.appendChild(this.btn_box);
+    this.btn_box.appendChild(this.prev_btn);
+    this.btn_box.style.cssText = `display: flex; gap: 5px;`
+    this.prev_btn.classList.add("prev")
+    this.prev_btn.style.cssText = `width: 50px; height: 50px; border-radius: 5px; background: #f5f5f5; border: 1px solid #e5e5e5;`
+    this.btn_box.appendChild(this.next_btn);
+    this.next_btn.classList.add("next")
+    this.next_btn.style.cssText = `width: 50px; height: 50px; border-radius: 5px; background: #f5f5f5; border: 1px solid #e5e5e5;`
+  }
+
+  move() {
+    this.prev_btn.addEventListener("click", (e) => {
+      if (this.count > 0 && this.count <= this.carousel_card_number - 1) {
+        this.count--
+        this.carousel_cards[this.count].classList.add("center")
+        this.carousel_cards[this.count + 1].classList.remove("center")
+        this.carousel_box.style.cssText = `transition: all ease 300ms; transform:translateX(${-(this.carousel_card_width + this.carousel_move_offset) * (this.count)}px)`
+      }
+    })
+    this.next_btn.addEventListener("click", (e) => {
+      if (this.count < this.carousel_card_number - 1) {
+        this.count++
+        this.carousel_cards[this.count - 1].classList.remove("center")
+        this.carousel_cards[this.count].classList.add("center")
+        this.carousel_box.style.cssText = `transition: all ease 300ms; transform:translateX(${-(this.carousel_card_width + this.carousel_move_offset) * (this.count)}px)`
+      }
+    })
+  }
+}
+
+
+
+
+
+
+let testcar = new Carousel(carcardbox, true)
+testcar.create()
+testcar.move()
