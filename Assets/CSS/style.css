@@ -71,6 +71,7 @@ body {
 
 .grid {
   display: grid;
+  justify-content: center;
   grid-template-columns: repeat(6, 1fr);
   /* grid-template-rows: repeat(6, 1fr); */
 }
@@ -1441,3 +1442,27 @@ body {
 }
 
 /* CODE ABOUT SHADOW AREA END HERE */
+
+
+
+
+
+
+
+
+
+
+
+
+#carcardbox{
+  display: flex;
+  gap: 5px;
+  width: fit-content;
+  
+}
+
+.cards{
+  width: 100px;
+  height: 100px;
+  background: red;
+}
