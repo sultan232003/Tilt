@@ -48,7 +48,7 @@ Array.from(Shadow_box).forEach(Shadow_boxs => {
 
 
 class Carousel {
-  constructor(carousel_box, want_controller) {
+  constructor(carousel_box, want_controller, content, visible_cards) {
     this.carousel_box = carousel_box
     this.want_controller = want_controller || false
     this.btn_box = document.createElement('div')
@@ -60,6 +60,9 @@ class Carousel {
     this.carousel_card_width = this.carousel_box.children[0].offsetWidth
     this.carousel_move_offset = (this.carousel_box_width - (this.carousel_card_width * this.carousel_card_number)) / (this.carousel_card_number - 1)
     this.count = 0
+    this.content = content
+    this.visible_cards = visible_cards
+    this.remain_next = this.carousel_card_number - this.visible_cards
   }
 
   create() {
@@ -77,21 +80,48 @@ class Carousel {
     this.next_btn.style.cssText = `width: 50px; height: 50px; border-radius: 5px; background: #f5f5f5; border: 1px solid #e5e5e5;`
   }
 
+  updateCarouselPosition = () => {
+    this.carousel_box.style.cssText = `transition: all ease 300ms; transform:translateX(${-(this.carousel_card_width + this.carousel_move_offset) * this.count}px)`;
+  };
+
   move() {
     this.prev_btn.addEventListener("click", (e) => {
-      if (this.count > 0 && this.count <= this.carousel_card_number - 1) {
+      if (this.count > 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
         this.count--
         this.carousel_cards[this.count].classList.add("center")
+        if (this.content != undefined && Array.isArray(this.content)) {
+          this.carousel_cards[this.count].innerHTML = this.content[this.count]
+        } else if (this.content != undefined) {
+          this.carousel_cards[this.count].innerHTML = this.content
+        }
         this.carousel_cards[this.count + 1].classList.remove("center")
-        this.carousel_box.style.cssText = `transition: all ease 300ms; transform:translateX(${-(this.carousel_card_width + this.carousel_move_offset) * (this.count)}px)`
+        this.carousel_cards[this.count + 1].innerHTML = ""
+        this.updateCarouselPosition()
+      }
+      if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content) && this.count > 0) {
+        this.count--
+        this.carousel_cards[0].innerHTML = this.content[this.count]
       }
     })
     this.next_btn.addEventListener("click", (e) => {
-      if (this.count < this.carousel_card_number - 1) {
+      if (this.count < this.carousel_card_number - 1 && this.carousel_card_number > 1) {
         this.count++
         this.carousel_cards[this.count - 1].classList.remove("center")
+        this.carousel_cards[this.count - 1].innerHTML = ""
         this.carousel_cards[this.count].classList.add("center")
-        this.carousel_box.style.cssText = `transition: all ease 300ms; transform:translateX(${-(this.carousel_card_width + this.carousel_move_offset) * (this.count)}px)`
+        if (this.content != undefined && Array.isArray(this.content)) {
+          this.carousel_cards[this.count].innerHTML = this.content[this.count]
+        } else if (this.content != undefined) {
+          this.carousel_cards[this.count].innerHTML = this.content
+        }
+        this.updateCarouselPosition()
+      }
+      if (this.carousel_card_number === 1) {
+        this.count = (this.count === 0) ? 1 : this.count;
+        if (this.content != undefined && Array.isArray(this.content) && this.count < this.content.length) {
+          this.carousel_cards[0].innerHTML = this.content[this.count]
+          this.count = (this.count < this.content.length - 1) ? this.count + 1 : this.count;
+        }
       }
     })
   }
@@ -100,8 +130,15 @@ class Carousel {
 
 
 
+let carcont = ["center", "center", "center", "center", "center", "center"]
+let carcont2 = ["1", "2", "3", "4", "5", "6"]
 
-
-let testcar = new Carousel(carcardbox, true)
+let testcar = new Carousel(carcardbox, true, carcont,3)
 testcar.create()
 testcar.move()
+let testcar2 = new Carousel(carcardbox2, true, "test",4)
+testcar2.create()
+testcar2.move()
+let testcar3 = new Carousel(carcardbox3, true, carcont2,1)
+testcar3.create()
+testcar3.move()
