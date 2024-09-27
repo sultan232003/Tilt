@@ -1454,7 +1454,9 @@ body {
 
 
 
-#carcardbox{
+#carcardbox,
+#carcardbox2,
+#carcardbox3{
   display: flex;
   gap: 5px;
   width: fit-content;
