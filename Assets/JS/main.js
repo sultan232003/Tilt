@@ -88,13 +88,28 @@ class Carousel {
     this.prev_btn.addEventListener("click", (e) => {
       if (this.count > 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
         this.count--
-        this.carousel_cards[this.count].classList.add("center")
+        if (this.visible_cards % 2 === 1) {
+          this.carousel_cards[this.count + 1].classList.add("center")
+          this.carousel_cards[this.count + 2].classList.remove("center")
+        } else {
+          this.carousel_cards[this.count + 1].classList.add("first_center")
+          this.carousel_cards[this.count + 2].classList.add("last_center")
+          this.carousel_cards[this.count + 2].classList.remove("first_center")
+          this.carousel_cards[this.count + 3].classList.remove("last_center")
+        }
+        for (let i = this.count; i < this.visible_cards + this.count; i++) {
+          this.carousel_cards[i].classList.add('active');
+          this.carousel_cards[this.visible_cards + this.count].classList.remove('active');
+        }
+        this.carousel_cards[this.count].classList.add("first_active")
+        this.carousel_cards[this.count + this.visible_cards - 1].classList.add("last_active")
+        this.carousel_cards[this.count + 1].classList.remove("first_active")
+        this.carousel_cards[this.count + this.visible_cards].classList.remove("last_active")
         if (this.content != undefined && Array.isArray(this.content)) {
           this.carousel_cards[this.count].innerHTML = this.content[this.count]
         } else if (this.content != undefined) {
           this.carousel_cards[this.count].innerHTML = this.content
         }
-        this.carousel_cards[this.count + 1].classList.remove("center")
         this.carousel_cards[this.count + 1].innerHTML = ""
         this.updateCarouselPosition()
       }
@@ -104,11 +119,26 @@ class Carousel {
       }
     })
     this.next_btn.addEventListener("click", (e) => {
-      if (this.count < this.carousel_card_number - 1 && this.carousel_card_number > 1) {
+      if (this.count < this.remain_next && this.carousel_card_number > 1) {
         this.count++
-        this.carousel_cards[this.count - 1].classList.remove("center")
+        if (this.visible_cards % 2 === 1) {
+          this.carousel_cards[this.count].classList.remove("center")
+          this.carousel_cards[this.count + 1].classList.add("center")
+        } else {
+          this.carousel_cards[this.count].classList.remove("first_center")
+          this.carousel_cards[this.count + 1].classList.remove("last_center")
+          this.carousel_cards[this.count + 1].classList.add("first_center")
+          this.carousel_cards[this.count + 2].classList.add("last_center")
+        }
+        for (let i = this.count; i < this.visible_cards + this.count; i++) {
+          this.carousel_cards[this.count - 1].classList.remove('active');
+          this.carousel_cards[i].classList.add('active');
+        }
+        this.carousel_cards[this.count].classList.add("first_active")
+        this.carousel_cards[this.count + this.visible_cards - 1].classList.add("last_active")
+        this.carousel_cards[this.count - 1].classList.remove("first_active")
+        this.carousel_cards[this.count + this.visible_cards].classList.remove("last_active")
         this.carousel_cards[this.count - 1].innerHTML = ""
-        this.carousel_cards[this.count].classList.add("center")
         if (this.content != undefined && Array.isArray(this.content)) {
           this.carousel_cards[this.count].innerHTML = this.content[this.count]
         } else if (this.content != undefined) {
@@ -116,13 +146,11 @@ class Carousel {
         }
         this.updateCarouselPosition()
       }
-      if (this.carousel_card_number === 1) {
-        this.count = (this.count === 0) ? 1 : this.count;
-        if (this.content != undefined && Array.isArray(this.content) && this.count < this.content.length) {
-          this.carousel_cards[0].innerHTML = this.content[this.count]
-          this.count = (this.count < this.content.length - 1) ? this.count + 1 : this.count;
-        }
+      if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content)) {
+        this.count = (this.count < this.content.length - 1) ? this.count + 1 : this.count;
+        this.carousel_cards[0].innerHTML = this.content[this.count]
       }
+
     })
   }
 }
@@ -133,12 +161,12 @@ class Carousel {
 let carcont = ["center", "center", "center", "center", "center", "center"]
 let carcont2 = ["1", "2", "3", "4", "5", "6"]
 
-let testcar = new Carousel(carcardbox, true, carcont,3)
+let testcar = new Carousel(carcardbox, true, carcont, 3)
 testcar.create()
 testcar.move()
-let testcar2 = new Carousel(carcardbox2, true, "test",4)
+let testcar2 = new Carousel(carcardbox2, true, "test", 4)
 testcar2.create()
 testcar2.move()
-let testcar3 = new Carousel(carcardbox3, true, carcont2,1)
+let testcar3 = new Carousel(carcardbox3, true, carcont2, 1)
 testcar3.create()
 testcar3.move()
