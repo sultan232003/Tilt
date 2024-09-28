@@ -1467,6 +1467,7 @@ body {
   width: 100px;
   height: 100px;
   background: red;
+  transition: all ease 200ms;
 }
 
 .cards.active{
@@ -1480,4 +1481,10 @@ body {
 }
 .cards.last_center{
   background: var(--Tiffany_blue_2);
+}
+.cards.first_active{
+  background: var(--Jasmine);
+}
+.cards.last_active{
+  background: var(--Violet);
 }
