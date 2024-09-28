@@ -1468,3 +1468,16 @@ body {
   height: 100px;
   background: red;
 }
+
+.cards.active{
+  background: var(--Dodger_blue);
+}
+.cards.center{
+  background: var(--Mint);
+}
+.cards.first_center{
+  background: var(--Red_Crayola);
+}
+.cards.last_center{
+  background: var(--Tiffany_blue_2);
+}
