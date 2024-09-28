@@ -92,10 +92,10 @@ class Carousel {
           this.carousel_cards[this.count + 1].classList.add("center")
           this.carousel_cards[this.count + 2].classList.remove("center")
         } else {
-          this.carousel_cards[this.count + 1].classList.add("first_center")
-          this.carousel_cards[this.count + 2].classList.add("last_center")
-          this.carousel_cards[this.count + 2].classList.remove("first_center")
-          this.carousel_cards[this.count + 3].classList.remove("last_center")
+          this.carousel_cards[this.count + (this.visible_cards/2) - 1].classList.add("first_center")
+          this.carousel_cards[this.count + (this.visible_cards/2)].classList.add("last_center")
+          this.carousel_cards[this.count + (this.visible_cards/2)].classList.remove("first_center")
+          this.carousel_cards[this.count + (this.visible_cards/2) + 1].classList.remove("last_center")
         }
         for (let i = this.count; i < this.visible_cards + this.count; i++) {
           this.carousel_cards[i].classList.add('active');
@@ -125,10 +125,10 @@ class Carousel {
           this.carousel_cards[this.count].classList.remove("center")
           this.carousel_cards[this.count + 1].classList.add("center")
         } else {
-          this.carousel_cards[this.count].classList.remove("first_center")
-          this.carousel_cards[this.count + 1].classList.remove("last_center")
-          this.carousel_cards[this.count + 1].classList.add("first_center")
-          this.carousel_cards[this.count + 2].classList.add("last_center")
+          this.carousel_cards[this.count + (this.visible_cards/2) - 2].classList.remove("first_center")
+          this.carousel_cards[this.count + (this.visible_cards/2) - 1].classList.remove("last_center")
+          this.carousel_cards[this.count + (this.visible_cards/2) - 1].classList.add("first_center")
+          this.carousel_cards[this.count + (this.visible_cards/2)].classList.add("last_center")
         }
         for (let i = this.count; i < this.visible_cards + this.count; i++) {
           this.carousel_cards[this.count - 1].classList.remove('active');
@@ -137,7 +137,7 @@ class Carousel {
         this.carousel_cards[this.count].classList.add("first_active")
         this.carousel_cards[this.count + this.visible_cards - 1].classList.add("last_active")
         this.carousel_cards[this.count - 1].classList.remove("first_active")
-        this.carousel_cards[this.count + this.visible_cards].classList.remove("last_active")
+        this.carousel_cards[this.count + this.visible_cards - 2].classList.remove("last_active")
         this.carousel_cards[this.count - 1].innerHTML = ""
         if (this.content != undefined && Array.isArray(this.content)) {
           this.carousel_cards[this.count].innerHTML = this.content[this.count]
@@ -164,7 +164,7 @@ let carcont2 = ["1", "2", "3", "4", "5", "6"]
 let testcar = new Carousel(carcardbox, true, carcont, 3)
 testcar.create()
 testcar.move()
-let testcar2 = new Carousel(carcardbox2, true, "test", 4)
+let testcar2 = new Carousel(carcardbox2, true, "test", 6)
 testcar2.create()
 testcar2.move()
 let testcar3 = new Carousel(carcardbox3, true, carcont2, 1)
