@@ -48,7 +48,7 @@ Array.from(Shadow_box).forEach(Shadow_boxs => {
 
 
 class Carousel {
-  constructor(carousel_box, want_controller, content, visible_cards, gap, overflow, navigate) {
+  constructor(carousel_box, want_controller, content, visible_cards, gap, overflow, navigate, loop) {
     this.carousel_box = carousel_box
     this.want_controller = want_controller || false
     this.btn_box = document.createElement('div')
@@ -67,6 +67,7 @@ class Carousel {
     this.navigate = navigate
     this.navigate_box = document.createElement('div')
     this.navigate_length = this.carousel_card_number
+    this.loop = loop
   }
 
   create() {
@@ -74,9 +75,20 @@ class Carousel {
     this.carousel_box.style.setProperty("gap", this.gap + `px`)
     this.carousel_wrapper = document.createElement('div');
     this.carousel_wrapper.classList.add('carousel_wrapper');
+    if (this.loop) {
+      for (let i = 0; i < this.visible_cards; i++) {
+        this.cloned_cards = this.carousel_cards[i].cloneNode(true)
+        this.carousel_box.appendChild(this.cloned_cards)
+      }
+    }
     this.navigate_box.classList.add('navigate_box')
     this.navigate_box.style.cssText = `display: flex; gap: 5px; justify-content: center; height: 15px; align-items: center;`
-    for (let i = 0; i < this.carousel_card_number; i++) {
+    if (!this.loop) {
+      this.navigate_dots_number = this.carousel_card_number - (this.visible_cards - 1)
+    } else {
+      this.navigate_dots_number = this.carousel_card_number + 1
+    }
+    for (let i = 0; i < this.navigate_dots_number; i++) {
       this.navigate_dots = document.createElement('div')
       this.navigate_dots.style.cssText = `width: 5px; height: 5px; background: #D6D6D6; border-radius: 50%`
       this.navigate_box.appendChild(this.navigate_dots)
@@ -129,17 +141,32 @@ class Carousel {
     Array.from(this.navigate_box.children)[movecount].style.setProperty("background", "#979797")
   };
 
+  updateCarouselContent(movecount) {
+    Array.from(this.carousel_cards).forEach(carousel_cards => {
+      // carousel_cards.innerHTML = ""
+    })
+    if (this.content != undefined && Array.isArray(this.content)) {
+      this.carousel_cards[movecount].innerHTML = this.content[movecount]
+    } else if (this.content != undefined) {
+      this.carousel_cards[movecount].innerHTML = this.content
+    }
+  }
+
   move() {
     this.prev_btn.addEventListener("click", (e) => {
-      if (this.count > 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
-        this.count--
-        if (this.content != undefined && Array.isArray(this.content)) {
-          this.carousel_cards[this.count].innerHTML = this.content[this.count]
-        } else if (this.content != undefined) {
-          this.carousel_cards[this.count].innerHTML = this.content
+      if (!this.loop) {
+        if (this.count > 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
+          this.count--
+          this.updateCarouselContent(this.count)
+          this.updateCarouselPosition(this.count)
         }
-        this.carousel_cards[this.count + 1].innerHTML = ""
-        this.updateCarouselPosition(this.count)
+      } else {
+        if (this.count >= 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
+          this.count--
+          this.count = (this.count < 0) ? (this.carousel_card_number - 1) : this.count;
+          this.updateCarouselContent(this.count)
+          this.updateCarouselPosition(this.count)
+        }
       }
       if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content) && this.count > 0) {
         this.count--
@@ -147,15 +174,19 @@ class Carousel {
       }
     })
     this.next_btn.addEventListener("click", (e) => {
-      if (this.count < this.remain_next && this.carousel_card_number > 1) {
-        this.count++
-        this.carousel_cards[this.count - 1].innerHTML = ""
-        if (this.content != undefined && Array.isArray(this.content)) {
-          this.carousel_cards[this.count].innerHTML = this.content[this.count]
-        } else if (this.content != undefined) {
-          this.carousel_cards[this.count].innerHTML = this.content
+      if (!this.loop) {
+        if (this.count < this.remain_next && this.carousel_card_number > 1) {
+          this.count++
+          this.updateCarouselContent(this.count)
+          this.updateCarouselPosition(this.count)
         }
-        this.updateCarouselPosition(this.count)
+      } else {
+        if (this.count < this.carousel_card_number && this.carousel_card_number > 1) {
+          this.count++
+          this.updateCarouselContent(this.count)
+          this.updateCarouselPosition(this.count)
+        }
+        this.count === this.carousel_card_number ? (this.updateCarouselPosition(0), this.count = 0) : null;
       }
       if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content)) {
         this.count = (this.count < this.content.length - 1) ? this.count + 1 : this.count;
@@ -164,7 +195,13 @@ class Carousel {
     })
     Array.from(this.navigate_box.children).forEach((navigate_dots, index) => {
       navigate_dots.addEventListener("click", () => {
-        if (index < this.remain_next + 1) {
+        if (!this.loop) {
+          if (index < this.remain_next + 1) {
+            this.updateCarouselPosition(index)
+            this.count = index
+          }
+        } else {
+          index = (index == this.carousel_card_number) ? 0 : index;
           this.updateCarouselPosition(index)
           this.count = index
         }
@@ -178,10 +215,10 @@ class Carousel {
 let carcont = ["center", "center", "center", "center", "center", "center"]
 let carcont2 = ["1", "2", "3", "4", "5", "6"]
 
-let testcar = new Carousel(carcardbox, true, carcont, 3, 5, true, true)
+let testcar = new Carousel(carcardbox, true, undefined, 3, 5, true, true, true)
 testcar.create()
 testcar.move()
-let testcar2 = new Carousel(carcardbox2, true, "test", 4, 15, true, true)
+let testcar2 = new Carousel(carcardbox2, true, undefined, 4, 15, true, true, true)
 testcar2.create()
 testcar2.move()
 let testcar3 = new Carousel(carcardbox3, true, carcont2, 1, 5, false, false)
