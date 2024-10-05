@@ -1458,6 +1458,7 @@ body {
 #carcardbox2,
 #carcardbox3{
   width: fit-content;
+  background: var(--Border);
 }
 
 .cards{
