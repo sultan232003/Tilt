@@ -48,9 +48,9 @@ Array.from(Shadow_box).forEach(Shadow_boxs => {
 
 
 class Carousel {
-  constructor({ carousel_box = undefined, want_controller = true, content = undefined, visible_cards = undefined, gap = 30, overflow = true, navigate = true, loop = false, cover = true, transition_speed = 300, transition_type = 'ease', autoplay = false, autoplay_time = 1000, hover_Pause = true, auto_height = false }) {
+  constructor({ carousel_box = undefined, want_controller = true, content = undefined, visible_cards = undefined, gap = 30, overflow = true, navigate = true, navigate_speed = 300, loop = false, cover = true, transition_speed = 300, transition_type = 'ease', autoplay = false, autoplay_time = 1000, autoplay_speed = 300, hover_Pause = true, auto_height = false, center = false, padding = 0 }) {
     this.carousel_box = carousel_box;
-    this.want_controller = want_controller || false;
+    this.want_controller = want_controller;
     this.btn_box = document.createElement('div');
     this.prev_btn = document.createElement('div');
     this.next_btn = document.createElement('div');
@@ -69,6 +69,7 @@ class Carousel {
     this.remain_next = this.carousel_card_number - this.visible_cards;
     this.overflow = overflow;
     this.navigate = navigate;
+    this.navigate_speed = navigate_speed
     this.navigate_box = document.createElement('div');
     this.navigate_length = this.carousel_card_number;
     this.loop = loop;
@@ -77,18 +78,23 @@ class Carousel {
     this.transition_type = transition_type;
     this.autoplay = autoplay;
     this.autoplay_time = autoplay_time;
+    this.autoplay_speed = autoplay_speed
     this.animate = undefined;
     this.hover_Pause = hover_Pause;
     this.first_cloned_cards = []
     this.carousel_move_offset = 0
     this.auto_height = auto_height
     this.cards_visible = undefined
+    this.center = center
+    this.center_offset = 0
+    this.padding = padding
   }
 
   create() {
     this.carousel_box.style.setProperty("display", `flex`);
     this.carousel_box.style.setProperty("gap", this.gap + `px`);
     this.carousel_wrapper.classList.add('carousel_wrapper');
+    this.carousel_wrapper.style.setProperty("padding", this.padding + `px`);
     if (this.carousel_card_number > 1) {
       for (let i = (this.carousel_card_number - this.visible_cards); i < this.carousel_card_number; i++) {
         this.cloned_cards = this.carousel_cards[i].cloneNode(true);
@@ -122,7 +128,7 @@ class Carousel {
     this.carousel_width = this.carousel_wrapper.offsetWidth;
 
     if (this.cover) {
-      this.carousel_card_width = (this.carousel_width - ((this.visible_cards - 1) * this.gap)) / this.visible_cards;
+      this.carousel_card_width = ((this.carousel_width - (this.padding * 2)) - ((this.visible_cards - 1) * this.gap)) / this.visible_cards;
       Array.from(this.carousel_box.children).forEach(carousel_cards => {
         this.carousel_card_height.push(carousel_cards.offsetHeight);
         carousel_cards.style.setProperty("width", this.carousel_card_width + "px");
@@ -150,14 +156,16 @@ class Carousel {
     if (this.navigate) {
       this.carousel_wrapper.appendChild(this.navigate_box);
     }
-    this.carousel_wrapper.appendChild(this.btn_box);
-    this.btn_box.appendChild(this.prev_btn);
-    this.btn_box.style.cssText = `display: flex; gap: 5px; justify-content: center`
-    this.prev_btn.classList.add("prev");
-    this.prev_btn.style.cssText = `width: 50px; height: 50px; border-radius: 5px; background: #f5f5f5; border: 1px solid #e5e5e5;`;
-    this.btn_box.appendChild(this.next_btn);
-    this.next_btn.classList.add("next");
-    this.next_btn.style.cssText = `width: 50px; height: 50px; border-radius: 5px; background: #f5f5f5; border: 1px solid #e5e5e5;`;
+    if (this.want_controller) {
+      this.carousel_wrapper.appendChild(this.btn_box);
+      this.btn_box.appendChild(this.prev_btn);
+      this.btn_box.style.cssText = `display: flex; gap: 5px; justify-content: center`
+      this.prev_btn.classList.add("prev");
+      this.prev_btn.style.cssText = `width: 50px; height: 50px; border-radius: 5px; background: #f5f5f5; border: 1px solid #e5e5e5;`;
+      this.btn_box.appendChild(this.next_btn);
+      this.next_btn.classList.add("next");
+      this.next_btn.style.cssText = `width: 50px; height: 50px; border-radius: 5px; background: #f5f5f5; border: 1px solid #e5e5e5;`;
+    }
     // if (this.carousel_card_number > 1) {
     //   this.carousel_overflow_width = (this.carousel_card_width * this.visible_cards) + (this.gap * (this.visible_cards - 1))
     //   this.carousel_wrapper.style.cssText = `width: ${this.carousel_overflow_width}px`
@@ -166,6 +174,13 @@ class Carousel {
     // }
     if (this.overflow) {
       this.carousel_wrapper.style.setProperty("overflow", `hidden`);
+    }
+
+    if (this.center && this.visible_cards % 2 === 0) {
+      this.center_offset = ((this.carousel_card_width + this.gap) / 2) - ((this.carousel_card_width + this.gap) * (this.visible_cards / 2))
+    } else if( this.center && this.visible_cards % 2 === 1){
+      this.center_offset = 0 - (this.carousel_card_width + this.gap) * (Math.floor(this.visible_cards / 2))
+      print(this.center_offset)
     }
   }
 
@@ -187,7 +202,7 @@ class Carousel {
     this.final_height = Math.max(...this.sub_height);
   }
 
-  updateCarouselPosition = (movecount) => {
+  updateCarouselPosition = (movecount, movespeed) => {
     if (this.auto_height && this.carousel_card_number > 1) {
       if (this.cover) {
         this.finalHeightFinder(movecount, this.visible_cards * 2)
@@ -198,16 +213,20 @@ class Carousel {
         this.carousel_box.style.setProperty("height", this.final_height + 'px');
       }
     }
-    this.carousel_box.style.setProperty("transition", `all ${this.transition_type} ${this.transition_speed}ms`);
+    this.carousel_box.style.setProperty("transition", `all ${this.transition_type} ${movespeed}ms`);
     if (this.cover) {
       this.carousel_move = (this.carousel_card_width + this.gap) * movecount;
-      this.carousel_box.style.setProperty("transform", `translateX(${-(this.carousel_move + this.carousel_move_offset)}px)`);
+      this.carousel_box.style.setProperty("transform", `translateX(${-(this.carousel_move + this.carousel_move_offset + this.center_offset)}px)`);
     } else {
       this.carousel_move = 0;
       for (let i = 0; i < movecount; i++) {
         this.carousel_move += (this.carousel_card_width[i + this.visible_cards] + this.gap);
+        if (this.center) {
+          this.center_offset = ((this.carousel_card_width[i + this.visible_cards] + this.gap) / 2)
+        }
+        print(this.center_offset)
       }
-      this.carousel_box.style.setProperty("transform", `translateX(${-(this.carousel_move + this.carousel_move_offset)}px)`);
+      this.carousel_box.style.setProperty("transform", `translateX(${-(this.carousel_move + this.carousel_move_offset + this.center_offset)}px)`);
     }
     Array.from(this.carousel_cards).forEach(carousel_cards => {
       carousel_cards.classList.remove("active", "center", "first_center", "last_center", "first_active", "last_active");
@@ -234,9 +253,9 @@ class Carousel {
   animteCarousel() {
     this.animate = setInterval(() => {
       this.count++;
-      this.updateCarouselPosition(this.count);
-      this.count === this.carousel_card_number ? (this.updateCarouselPosition(0), this.count = 0) : null;
-    }, this.autoplay_time);
+      this.updateCarouselPosition(this.count, this.autoplay_speed);
+      this.count === this.carousel_card_number ? (this.updateCarouselPosition(0, this.autoplay_speed), this.count = 0) : null;
+    }, this.autoplay_time + this.autoplay_speed);
   }
 
   updateCarouselContent(movecount) {
@@ -275,14 +294,14 @@ class Carousel {
         if (this.count > 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
           this.count--;
           this.updateCarouselContent(this.count);
-          this.updateCarouselPosition(this.count);
+          this.updateCarouselPosition(this.count, this.transition_speed);
         }
       } else {
         if (this.count >= 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
           this.count--;
           this.count = (this.count < 0) ? (this.carousel_card_number - 1) : this.count;
           this.updateCarouselContent(this.count);
-          this.updateCarouselPosition(this.count);
+          this.updateCarouselPosition(this.count, this.transition_speed);
         }
       }
       if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content) && this.count > 0) {
@@ -296,15 +315,15 @@ class Carousel {
         if (this.count < this.remain_next && this.carousel_card_number > 1) {
           this.count++;
           this.updateCarouselContent(this.count);
-          this.updateCarouselPosition(this.count);
+          this.updateCarouselPosition(this.count, this.transition_speed);
         }
       } else {
         if (this.count < this.carousel_card_number && this.carousel_card_number > 1) {
           this.count++;
           this.updateCarouselContent(this.count);
-          this.updateCarouselPosition(this.count);
+          this.updateCarouselPosition(this.count, this.transition_speed);
         }
-        this.count === this.carousel_card_number ? (this.updateCarouselPosition(0), this.count = 0) : null;
+        this.count === this.carousel_card_number ? (this.updateCarouselPosition(0, this.transition_speed), this.count = 0) : null;
       }
       if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content)) {
         this.count = (this.count < this.content.length - 1) ? this.count + 1 : this.count;
@@ -315,12 +334,12 @@ class Carousel {
       navigate_dots.addEventListener("click", () => {
         if (!this.loop) {
           if (index < this.remain_next + 1) {
-            this.updateCarouselPosition(index);
+            this.updateCarouselPosition(index, this.navigate_speed);
             this.count = index;
           }
         } else {
           index = (index == this.carousel_card_number) ? 0 : index;
-          this.updateCarouselPosition(index);
+          this.updateCarouselPosition(index, this.navigate_speed);
           this.count = index;
         }
       })
@@ -344,9 +363,9 @@ class Carousel {
 
 let carcont = ["center", "center", "center", "center", "center", "center"]
 let carcont2 = ["1", "2", "3", "4", "5", "6"]
-let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 3, gap: 30, overflow: true, navigate: true, loop: true, transition_speed: 500, auto_height: true })
+let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 4, gap: 30, overflow: true, navigate: true, loop: true, transition_speed: 500, auto_height: true, navigate_speed: 100, center: true, padding: 40 })
 testcar.carouselUpdate()
-let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 4, gap: 15, overflow: true, navigate: true, loop: true, cover: false, autoplay: true, autoplay_time: 2000, auto_height: true })
+let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 4, gap: 15, overflow: true, navigate: true, loop: true, cover: false, autoplay: false, autoplay_time: 2000, auto_height: true, autoplay_speed: 2000, padding: 0, center: false })
 testcar2.carouselUpdate()
 let testcar3 = new Carousel({ carousel_box: carcardbox3, want_controller: true, content: carcont2, visible_cards: 1, gap: 5, overflow: false, navigate: false })
 testcar3.carouselUpdate()
