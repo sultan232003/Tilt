@@ -91,72 +91,31 @@ class Carousel {
     this.class_index = 0
   }
 
-  create() {
-    this.carousel_box.style.setProperty("display", `flex`);
-    this.carousel_box.style.setProperty("gap", this.gap + `px`);
-    this.carousel_wrapper.classList.add('carousel_wrapper');
-    this.carousel_wrapper.style.setProperty("padding", this.padding + `px`);
-    if (this.carousel_card_number > 1) {
-      for (let i = (this.carousel_card_number - this.visible_cards); i < this.carousel_card_number; i++) {
-        this.cloned_cards = this.carousel_cards[i].cloneNode(true);
-        this.cloned_cards.classList.add("Cloned");
-        this.first_cloned_cards.push(this.cloned_cards)
-      }
-      for (let i = 0; i < this.visible_cards; i++) {
-        this.cloned_cards = this.carousel_cards[i].cloneNode(true);
-        this.cloned_cards.classList.add("Cloned");
-        this.carousel_box.appendChild(this.cloned_cards);
-      }
-      for (let i = this.visible_cards - 1; i >= 0; i--) {
-        this.carousel_box.insertBefore(this.first_cloned_cards[i], this.carousel_box.firstChild);
-      }
-    }
+  ///////////////////////////////////////////////////////////////////////////////////////////
 
-    this.navigate_box.classList.add('navigate_box')
-    this.navigate_box.style.cssText = `display: flex; gap: 5px; justify-content: center; height: 15px; align-items: center;`;
-    if (!this.loop) {
-      this.navigate_dots_number = this.carousel_card_number - (this.visible_cards - 1);
-    } else {
-      this.navigate_dots_number = this.carousel_card_number + 1;
-    }
-    for (let i = 0; i < this.navigate_dots_number; i++) {
-      this.navigate_dots = document.createElement('div');
-      this.navigate_dots.style.cssText = `width: 5px; height: 5px; background: #D6D6D6; border-radius: 50%;`;
-      this.navigate_box.appendChild(this.navigate_dots);
-    }
-    Array.from(this.navigate_box.children)[this.count].style.setProperty("background", "#979797");
-    this.carousel_box.parentNode.insertBefore(this.carousel_wrapper, this.carousel_box);
-    this.carousel_width = this.carousel_wrapper.offsetWidth;
-
-    if (this.cover) {
-      this.carousel_card_width = ((this.carousel_width - (this.padding * 2)) - ((this.visible_cards - 1) * this.gap)) / this.visible_cards;
-      Array.from(this.carousel_box.children).forEach(carousel_cards => {
-        this.carousel_card_height.push(carousel_cards.offsetHeight);
-        carousel_cards.style.setProperty("width", this.carousel_card_width + "px");
-      })
-    } else {
+  #loopCloneCardsMaker() {
+    if (this.loop) {
       if (this.carousel_card_number > 1) {
-        Array.from(this.carousel_box.children).forEach(carousel_cards => {
-          this.carousel_card_width.push(carousel_cards.offsetWidth);
-          this.carousel_card_height.push(carousel_cards.offsetHeight);
-        })
+        for (let i = (this.carousel_card_number - this.visible_cards); i < this.carousel_card_number; i++) {
+          this.cloned_cards = this.carousel_cards[i].cloneNode(true);
+          this.cloned_cards.classList.add("Cloned");
+          this.first_cloned_cards.push(this.cloned_cards)
+        }
+        for (let i = 0; i < this.visible_cards; i++) {
+          this.cloned_cards = this.carousel_cards[i].cloneNode(true);
+          this.cloned_cards.classList.add("Cloned");
+          this.carousel_box.appendChild(this.cloned_cards);
+        }
+        for (let i = this.visible_cards - 1; i >= 0; i--) {
+          this.carousel_box.insertBefore(this.first_cloned_cards[i], this.carousel_box.firstChild);
+        }
       }
     }
+  }
 
-    if (this.loop && this.cover) {
-      for (let i = 0; i < this.visible_cards; i++) {
-        this.carousel_move_offset += (this.carousel_card_width + this.gap);
-      }
-    } else if (this.loop) {
-      for (let i = 0; i < this.visible_cards; i++) {
-        this.carousel_move_offset += (this.carousel_card_width[i] + this.gap);
-      }
-    }
+  ///////////////////////////////////////////////////////////////////////////////////////////
 
-    this.carousel_wrapper.appendChild(this.carousel_box);
-    if (this.navigate) {
-      this.carousel_wrapper.appendChild(this.navigate_box);
-    }
+  #carouselButtonMaker() {
     if (this.want_controller) {
       this.carousel_wrapper.appendChild(this.btn_box);
       this.btn_box.appendChild(this.prev_btn);
@@ -167,25 +126,107 @@ class Carousel {
       this.next_btn.classList.add("next");
       this.next_btn.style.cssText = `width: 50px; height: 50px; border-radius: 5px; background: #f5f5f5; border: 1px solid #e5e5e5;`;
     }
-    // if (this.carousel_card_number > 1) {
-    //   this.carousel_overflow_width = (this.carousel_card_width * this.visible_cards) + (this.gap * (this.visible_cards - 1))
-    //   this.carousel_wrapper.style.cssText = `width: ${this.carousel_overflow_width}px`
-    // } else {
-    //   this.carousel_wrapper.style.cssText = `width: ${this.carousel_card_width}px`
-    // }
-    if (this.overflow) {
-      this.carousel_wrapper.style.setProperty("overflow", `hidden`);
-    }
+  }
 
-    if (this.center && this.visible_cards % 2 === 0) {
-      this.center_offset = ((this.carousel_card_width + this.gap) / 2) - ((this.carousel_card_width + this.gap) * (this.visible_cards / 2))
-    } else if (this.center && this.visible_cards % 2 === 1) {
-      this.center_offset = 0 - (this.carousel_card_width + this.gap) * (Math.floor(this.visible_cards / 2))
-      print(this.center_offset)
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #carouselCardsWidthDefine() {
+    if (this.cover) {
+      this.carousel_card_width = ((this.carousel_width - (this.padding * 2)) - ((this.visible_cards - 1) * this.gap)) / this.visible_cards;
+      Array.from(this.carousel_box.children).forEach(carousel_cards => {
+        this.carousel_card_height.push(carousel_cards.offsetHeight);
+        carousel_cards.style.setProperty("width", this.carousel_card_width + "px");
+      })
+    } else if (this.carousel_card_number > 1) {
+      Array.from(this.carousel_box.children).forEach(carousel_cards => {
+        this.carousel_card_width.push(carousel_cards.offsetWidth);
+        this.carousel_card_height.push(carousel_cards.offsetHeight);
+      })
     }
   }
 
-  countCardsToReachWidth(cardWidths, mainWidth) {
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #navigateDotsMaker() {
+    if (this.navigate) {
+      this.navigate_box.classList.add('navigate_box')
+      this.navigate_box.style.cssText = `display: flex; gap: 5px; justify-content: center; height: 15px; align-items: center;`;
+      if (!this.loop) {
+        this.navigate_dots_number = this.carousel_card_number - (this.visible_cards - 1);
+      } else {
+        this.navigate_dots_number = this.carousel_card_number + 1;
+      }
+      for (let i = 0; i < this.navigate_dots_number; i++) {
+        this.navigate_dots = document.createElement('div');
+        this.navigate_dots.style.cssText = `width: 5px; height: 5px; background: #D6D6D6; border-radius: 50%;`;
+        this.navigate_box.appendChild(this.navigate_dots);
+      }
+      Array.from(this.navigate_box.children)[this.count].style.setProperty("background", "#979797");
+      this.carousel_wrapper.appendChild(this.navigate_box);
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #carouselMoveOffsetDefiner() {
+    if (this.loop && this.cover) {
+      for (let i = 0; i < this.visible_cards; i++) {
+        this.carousel_move_offset += (this.carousel_card_width + this.gap);
+      }
+    } else if (this.loop) {
+      for (let i = 0; i < this.visible_cards; i++) {
+        this.carousel_move_offset += (this.carousel_card_width[i] + this.gap);
+      }
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  create() {
+    this.carousel_box.style.setProperty("display", `flex`);
+    this.carousel_box.style.setProperty("gap", this.gap + `px`);
+    this.carousel_wrapper.classList.add('carousel_wrapper');
+    this.carousel_wrapper.style.setProperty("padding", `0px ` + this.padding + `px`);
+
+    this.#loopCloneCardsMaker()
+
+    this.carousel_box.parentNode.insertBefore(this.carousel_wrapper, this.carousel_box);
+    this.carousel_width = this.carousel_wrapper.offsetWidth;
+
+    this.#carouselCardsWidthDefine()
+
+    this.#carouselMoveOffsetDefiner()
+
+    this.carousel_wrapper.appendChild(this.carousel_box);
+
+    this.#navigateDotsMaker()
+
+    this.#carouselButtonMaker()
+
+    this.carousel_wrapper.style.setProperty("overflow", this.overflow ? "hidden" : "visible");
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #centerOffsetCalculator(movecount) {
+    if (this.center) {
+      if (this.cover && this.carousel_card_number > 1) {
+        if (this.visible_cards % 2 === 0) {
+          this.center_offset = ((this.carousel_card_width + this.gap) / 2) - ((this.carousel_card_width + this.gap) * (this.visible_cards / 2))
+        } else if (this.visible_cards % 2 === 1) {
+          this.center_offset = 0 - (this.carousel_card_width + this.gap) * (Math.floor(this.visible_cards / 2))
+        }
+      } else if (this.carousel_card_number > 1) {
+        for (let i = movecount; i < movecount + this.visible_cards; i++) {
+          this.center_offset = (this.carousel_card_width[i + 1] / 2) - (this.carousel_width / 2) + this.padding
+        }
+      }
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #countCardsToReachWidth(cardWidths, mainWidth) {
     this.totalWidth = 0;
     this.cardCount = 0;
     for (let width of cardWidths) {
@@ -198,60 +239,72 @@ class Carousel {
     return this.cardCount;
   }
 
-  finalHeightFinder(movecount, comapare_to) {
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #finalHeightFinder(movecount, comapare_to) {
     this.sub_height = this.carousel_card_height.slice(movecount + this.visible_cards, movecount + comapare_to);
     this.final_height = Math.max(...this.sub_height);
   }
 
-  indexCalculator(movecount) {
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #indexCalculator(movecount) {
     if (this.loop && this.center) {
       if (this.visible_cards % 2 === 1) {
         this.class_index = (movecount + this.visible_cards) - Math.floor(this.visible_cards / 2)
       } else {
         this.class_index = (movecount + this.visible_cards) - (this.visible_cards % 2) - 1
       }
+    } else if(this.center){
+      this.class_index = movecount
     } else {
       this.class_index = movecount + this.visible_cards
     }
   }
 
-  updateCarouselPosition = (movecount, movespeed) => {
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #carouselHeightDefiner(movecount) {
     if (this.auto_height && this.carousel_card_number > 1) {
       if (this.cover) {
-        this.finalHeightFinder(movecount, this.visible_cards * 2)
+        this.#finalHeightFinder(movecount, this.visible_cards * 2)
         this.carousel_box.style.setProperty("height", this.final_height + 'px');
       } else {
-        this.cards_visible = this.countCardsToReachWidth(this.carousel_card_width.slice(movecount + this.visible_cards), this.carousel_width)
-        this.finalHeightFinder(movecount, this.cards_visible + this.visible_cards)
+        this.cards_visible = this.#countCardsToReachWidth(this.carousel_card_width.slice(movecount + this.visible_cards), this.carousel_width)
+        this.#finalHeightFinder(movecount, this.cards_visible + this.visible_cards)
         this.carousel_box.style.setProperty("height", this.final_height + 'px');
       }
     }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #carouselMoveDefiner(movecount, movespeed) {
     this.carousel_box.style.setProperty("transition", `all ${this.transition_type} ${movespeed}ms`);
+    this.carousel_move = 0;
     if (this.cover) {
       this.carousel_move = (this.carousel_card_width + this.gap) * movecount;
-      this.carousel_box.style.setProperty("transform", `translateX(${-(this.carousel_move + this.carousel_move_offset + this.center_offset)}px)`);
     } else {
-      this.carousel_move = 0;
       for (let i = 0; i < movecount; i++) {
         this.carousel_move += (this.carousel_card_width[i + this.visible_cards] + this.gap);
-        if (this.center) {
-          this.center_offset = ((this.carousel_card_width[i + this.visible_cards] + this.gap) / 2)
-        }
-        print(this.center_offset)
       }
-      this.carousel_box.style.setProperty("transform", `translateX(${-(this.carousel_move + this.carousel_move_offset + this.center_offset)}px)`);
+      this.#centerOffsetCalculator(movecount);
     }
+    this.carousel_box.style.setProperty("transform", `translateX(${-(this.carousel_move + this.carousel_move_offset + this.center_offset)}px)`);
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #carouselClassHandler() {
     Array.from(this.carousel_cards).forEach(carousel_cards => {
       carousel_cards.classList.remove("active", "center", "first_center", "last_center", "first_active", "last_active");
     })
-
-
     if (this.carousel_card_number > 1) {
       for (let i = this.class_index; i < this.class_index + this.visible_cards; i++) {
         this.carousel_cards[i].classList.add('active');
       }
       if (this.visible_cards % 2 === 1) {
-        this.carousel_cards[this.class_index + Math.floor(this.visible_cards/2)].classList.add("center");
+        this.carousel_cards[this.class_index + Math.floor(this.visible_cards / 2)].classList.add("center");
       } else {
         this.carousel_cards[this.class_index + (this.visible_cards / 2)].classList.add("last_center");
         this.carousel_cards[this.class_index + (this.visible_cards / 2) - 1].classList.add("first_center");
@@ -259,24 +312,40 @@ class Carousel {
       this.carousel_cards[this.class_index].classList.add("first_active");
       this.carousel_cards[(this.class_index + this.visible_cards) - 1].classList.add("last_active");
     }
+  }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////
 
-    Array.from(this.navigate_box.children).forEach(navigate_dots => {
-      navigate_dots.style.setProperty("background", "#D6D6D6");
-    })
-    Array.from(this.navigate_box.children)[movecount].style.setProperty("background", "#979797");
+  updateCarouselPosition = (movecount, movespeed) => {
+
+    this.#carouselHeightDefiner(movecount)
+
+    this.#carouselMoveDefiner(movecount, movespeed)
+
+    this.#carouselClassHandler()
+
+    if (this.navigate) {
+      Array.from(this.navigate_box.children).forEach(navigate_dots => {
+        navigate_dots.style.setProperty("background", "#D6D6D6");
+      })
+      this.navigate_box.children[movecount].style.setProperty("background", "#979797");
+    }
   };
 
-  animteCarousel() {
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #animteCarousel() {
     this.animate = setInterval(() => {
       this.count++;
-      this.indexCalculator(this.count)
+      this.#indexCalculator(this.count)
       this.updateCarouselPosition(this.count, this.autoplay_speed);
 
       /////////////////////
       this.count === this.carousel_card_number ? (this.updateCarouselPosition(0, this.autoplay_speed), this.count = 0) : null;
     }, this.autoplay_time + this.autoplay_speed);
   }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
 
   updateCarouselContent(movecount) {
     Array.from(this.carousel_cards).forEach(carousel_cards => {
@@ -289,41 +358,57 @@ class Carousel {
     }
   }
 
-  handleMouseEnter() {
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #handleMouseEnter() {
     clearInterval(this.animate);
   };
 
-  handleMouseLeave() {
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #handleMouseLeave() {
     if (this.autoplay) {
-      this.animteCarousel();
+      this.#animteCarousel();
     }
   };
 
-  move() {
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #hoverPauseHandler() {
     if (this.hover_Pause) {
-      this.carousel_box.addEventListener("mouseenter", () => { this.handleMouseEnter() });
-      this.prev_btn.addEventListener("mouseenter", () => { this.handleMouseEnter() });
-      this.next_btn.addEventListener("mouseenter", () => { this.handleMouseEnter() });
-      this.carousel_box.addEventListener("mouseleave", () => { this.handleMouseLeave() });
-      this.prev_btn.addEventListener("mouseleave", () => { this.handleMouseLeave() });
-      this.next_btn.addEventListener("mouseleave", () => { this.handleMouseLeave() });
+      this.carousel_box.addEventListener("mouseenter", () => { this.#handleMouseEnter() });
+      this.prev_btn.addEventListener("mouseenter", () => { this.#handleMouseEnter() });
+      this.next_btn.addEventListener("mouseenter", () => { this.#handleMouseEnter() });
+      this.carousel_box.addEventListener("mouseleave", () => { this.#handleMouseLeave() });
+      this.prev_btn.addEventListener("mouseleave", () => { this.#handleMouseLeave() });
+      this.next_btn.addEventListener("mouseleave", () => { this.#handleMouseLeave() });
     }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #moveUpdateHandler() {
+    this.updateCarouselContent(this.count);
+    this.#indexCalculator(this.count)
+    this.updateCarouselPosition(this.count, this.transition_speed);
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  move() {
+    this.#hoverPauseHandler()
 
     this.prev_btn.addEventListener("click", (e) => {
       if (!this.loop) {
         if (this.count > 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
           this.count--;
-          this.updateCarouselContent(this.count);
-          this.indexCalculator(this.count)
-          this.updateCarouselPosition(this.count, this.transition_speed);
+          this.#moveUpdateHandler()
         }
       } else {
         if (this.count >= 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
           this.count--;
           this.count = (this.count < 0) ? (this.carousel_card_number - 1) : this.count;
-          this.updateCarouselContent(this.count);
-          this.indexCalculator(this.count)
-          this.updateCarouselPosition(this.count, this.transition_speed);
+          this.#moveUpdateHandler()
         }
       }
       if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content) && this.count > 0) {
@@ -336,19 +421,15 @@ class Carousel {
       if (!this.loop) {
         if (this.count < this.remain_next && this.carousel_card_number > 1) {
           this.count++;
-          this.updateCarouselContent(this.count);
-          this.indexCalculator(this.count)
-          this.updateCarouselPosition(this.count, this.transition_speed);
+          this.#moveUpdateHandler()
         }
       } else {
         if (this.count < this.carousel_card_number && this.carousel_card_number > 1) {
           this.count++;
-          this.updateCarouselContent(this.count);
-          this.indexCalculator(this.count)
-          this.updateCarouselPosition(this.count, this.transition_speed);
+          this.#moveUpdateHandler()
         }
         ///////////////////////
-        this.indexCalculator(0)
+        this.#indexCalculator(0)
         this.count === this.carousel_card_number ? (this.updateCarouselPosition(0, this.transition_speed), this.count = 0) : null;
       }
       if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content)) {
@@ -356,17 +437,18 @@ class Carousel {
         this.carousel_cards[0].innerHTML = this.content[this.count];
       }
     })
+
     Array.from(this.navigate_box.children).forEach((navigate_dots, index) => {
       navigate_dots.addEventListener("click", () => {
         if (!this.loop) {
           if (index < this.remain_next + 1) {
-            this.indexCalculator(index)
+            this.#indexCalculator(index)
             this.updateCarouselPosition(this.count, this.navigate_speed);
             this.count = index;
           }
         } else {
           index = (index == this.carousel_card_number) ? 0 : index;
-          this.indexCalculator(index)
+          this.#indexCalculator(index)
           this.updateCarouselPosition(this.count, this.navigate_speed);
           this.count = index;
         }
@@ -374,14 +456,17 @@ class Carousel {
     })
 
     if (this.autoplay) {
-      this.animteCarousel();
+      this.#animteCarousel();
     }
   }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
 
   carouselUpdate() {
     document.addEventListener("DOMContentLoaded", () => {
       this.create()
-      this.indexCalculator(0)
+      this.#centerOffsetCalculator(0)
+      this.#indexCalculator(0)
       this.move()
       this.updateCarouselPosition(0)
     })
@@ -392,9 +477,9 @@ class Carousel {
 
 let carcont = ["center", "center", "center", "center", "center", "center"]
 let carcont2 = ["1", "2", "3", "4", "5", "6"]
-let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 4, gap: 30, overflow: true, navigate: true, loop: true, transition_speed: 500, auto_height: true, navigate_speed: 100, center: true, padding: 40 })
+let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 4, gap: 30, overflow: true, navigate: true, loop: false, transition_speed: 500, auto_height: false, navigate_speed: 100, center: true, padding: 40 })
 testcar.carouselUpdate()
-let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 4, gap: 15, overflow: true, navigate: true, loop: true, cover: false, autoplay: false, autoplay_time: 2000, auto_height: true, autoplay_speed: 2000, padding: 0, center: false })
+let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 3, gap: 15, overflow: true, navigate: true, loop: true, cover: false, autoplay: false, autoplay_time: 2000, auto_height: true, autoplay_speed: 2000, padding: 40, center: true })
 testcar2.carouselUpdate()
 let testcar3 = new Carousel({ carousel_box: carcardbox3, want_controller: true, content: carcont2, visible_cards: 1, gap: 5, overflow: false, navigate: false })
 testcar3.carouselUpdate()
