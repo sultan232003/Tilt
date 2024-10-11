@@ -152,7 +152,11 @@ class Carousel {
       this.navigate_box.classList.add('navigate_box')
       this.navigate_box.style.cssText = `display: flex; gap: 5px; justify-content: center; height: 15px; align-items: center;`;
       if (!this.loop) {
-        this.navigate_dots_number = this.carousel_card_number - (this.visible_cards - 1);
+        if (this.center) {
+          this.navigate_dots_number = this.carousel_card_number;
+        } else {
+          this.navigate_dots_number = this.carousel_card_number - (this.visible_cards - 1);
+        }
       } else {
         this.navigate_dots_number = this.carousel_card_number + 1;
       }
@@ -216,10 +220,15 @@ class Carousel {
         } else if (this.visible_cards % 2 === 1) {
           this.center_offset = 0 - (this.carousel_card_width + this.gap) * (Math.floor(this.visible_cards / 2))
         }
-      } else if (this.carousel_card_number > 1) {
+      } else if (this.carousel_card_number > 1 && this.loop) {
         for (let i = movecount; i < movecount + this.visible_cards; i++) {
           this.center_offset = (this.carousel_card_width[i + 1] / 2) - (this.carousel_width / 2) + this.padding
         }
+      } else if (!this.cover && !this.loop) {
+        for (let i = 0; i < movecount; i++) {
+          this.center_offset = movecount > 0 ? (this.carousel_card_width[i + 1] / 2) - (this.carousel_width / 2) + this.padding : this.center_offset;
+        }
+        this.center_offset = (movecount == 0) ? (this.carousel_card_width[0] / 2) - (this.carousel_width / 2) + this.padding : this.center_offset;
       }
     }
   }
@@ -255,10 +264,12 @@ class Carousel {
       } else {
         this.class_index = (movecount + this.visible_cards) - (this.visible_cards % 2) - 1
       }
-    } else if(this.center){
-      this.class_index = movecount
-    } else {
+    } else if (this.center) {
+      this.class_index = movecount - 1
+    } else if (this.loop && !this.center) {
       this.class_index = movecount + this.visible_cards
+    } else {
+      this.class_index = movecount
     }
   }
 
@@ -285,8 +296,14 @@ class Carousel {
     if (this.cover) {
       this.carousel_move = (this.carousel_card_width + this.gap) * movecount;
     } else {
-      for (let i = 0; i < movecount; i++) {
-        this.carousel_move += (this.carousel_card_width[i + this.visible_cards] + this.gap);
+      if (this.loop) {
+        for (let i = 0; i < movecount; i++) {
+          this.carousel_move += (this.carousel_card_width[i + this.visible_cards] + this.gap);
+        }
+      } else {
+        for (let i = 0; i < movecount; i++) {
+          this.carousel_move += (this.carousel_card_width[i] + this.gap);
+        }
       }
       this.#centerOffsetCalculator(movecount);
     }
@@ -301,16 +318,28 @@ class Carousel {
     })
     if (this.carousel_card_number > 1) {
       for (let i = this.class_index; i < this.class_index + this.visible_cards; i++) {
-        this.carousel_cards[i].classList.add('active');
+        if (this.carousel_cards[i]) {
+          this.carousel_cards[i].classList.add('active');
+        }
       }
       if (this.visible_cards % 2 === 1) {
-        this.carousel_cards[this.class_index + Math.floor(this.visible_cards / 2)].classList.add("center");
+        if (this.carousel_cards[this.class_index + Math.floor(this.visible_cards / 2)]) {
+          this.carousel_cards[this.class_index + Math.floor(this.visible_cards / 2)].classList.add("center");
+        }
       } else {
-        this.carousel_cards[this.class_index + (this.visible_cards / 2)].classList.add("last_center");
-        this.carousel_cards[this.class_index + (this.visible_cards / 2) - 1].classList.add("first_center");
+        if (this.carousel_cards[this.class_index + (this.visible_cards / 2)]) {
+          this.carousel_cards[this.class_index + (this.visible_cards / 2)].classList.add("last_center");
+        }
+        if (this.carousel_cards[this.class_index + (this.visible_cards / 2) - 1]) {
+          this.carousel_cards[this.class_index + (this.visible_cards / 2) - 1].classList.add("first_center");
+        }
       }
-      this.carousel_cards[this.class_index].classList.add("first_active");
-      this.carousel_cards[(this.class_index + this.visible_cards) - 1].classList.add("last_active");
+      if (this.carousel_cards[this.class_index]) {
+        this.carousel_cards[this.class_index].classList.add("first_active");
+      }
+      if (this.carousel_cards[(this.class_index + this.visible_cards) - 1]) {
+        this.carousel_cards[(this.class_index + this.visible_cards) - 1].classList.add("last_active");
+      }
     }
   }
 
@@ -399,18 +428,19 @@ class Carousel {
     this.#hoverPauseHandler()
 
     this.prev_btn.addEventListener("click", (e) => {
-      if (!this.loop) {
-        if (this.count > 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
+      if (!this.loop && this.carousel_card_number > 1) {
+        if (this.count > 0 && this.count <= this.carousel_card_number - 1) {
           this.count--;
           this.#moveUpdateHandler()
         }
-      } else {
-        if (this.count >= 0 && this.count <= this.carousel_card_number - 1 && this.carousel_card_number > 1) {
+      } else if (this.carousel_card_number > 1) {
+        if (this.count >= 0 && this.count <= this.carousel_card_number - 1) {
           this.count--;
           this.count = (this.count < 0) ? (this.carousel_card_number - 1) : this.count;
           this.#moveUpdateHandler()
         }
       }
+
       if (this.carousel_card_number === 1 && this.content != undefined && Array.isArray(this.content) && this.count > 0) {
         this.count--;
         this.carousel_cards[0].innerHTML = this.content[this.count];
@@ -418,13 +448,16 @@ class Carousel {
     })
 
     this.next_btn.addEventListener("click", (e) => {
-      if (!this.loop) {
-        if (this.count < this.remain_next && this.carousel_card_number > 1) {
+      if (!this.loop && this.carousel_card_number > 1) {
+        if (this.count < this.remain_next) {
+          this.count++;
+          this.#moveUpdateHandler()
+        } else if (this.center && this.count < this.carousel_card_number - 1) {
           this.count++;
           this.#moveUpdateHandler()
         }
-      } else {
-        if (this.count < this.carousel_card_number && this.carousel_card_number > 1) {
+      } else if (this.carousel_card_number > 1) {
+        if (this.count < this.carousel_card_number) {
           this.count++;
           this.#moveUpdateHandler()
         }
@@ -441,7 +474,11 @@ class Carousel {
     Array.from(this.navigate_box.children).forEach((navigate_dots, index) => {
       navigate_dots.addEventListener("click", () => {
         if (!this.loop) {
-          if (index < this.remain_next + 1) {
+          if (index < this.remain_next + 1 && !this.center) {
+            this.#indexCalculator(index)
+            this.updateCarouselPosition(this.count, this.navigate_speed);
+            this.count = index;
+          } else if (index < this.carousel_card_number && this.center) {
             this.#indexCalculator(index)
             this.updateCarouselPosition(this.count, this.navigate_speed);
             this.count = index;
@@ -465,8 +502,9 @@ class Carousel {
   carouselUpdate() {
     document.addEventListener("DOMContentLoaded", () => {
       this.create()
-      this.#centerOffsetCalculator(0)
+      this.#centerOffsetCalculator(1)
       this.#indexCalculator(0)
+      this.#carouselMoveDefiner(0)
       this.move()
       this.updateCarouselPosition(0)
     })
@@ -479,7 +517,7 @@ let carcont = ["center", "center", "center", "center", "center", "center"]
 let carcont2 = ["1", "2", "3", "4", "5", "6"]
 let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 4, gap: 30, overflow: true, navigate: true, loop: false, transition_speed: 500, auto_height: false, navigate_speed: 100, center: true, padding: 40 })
 testcar.carouselUpdate()
-let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 3, gap: 15, overflow: true, navigate: true, loop: true, cover: false, autoplay: false, autoplay_time: 2000, auto_height: true, autoplay_speed: 2000, padding: 40, center: true })
+let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 3, gap: 15, overflow: true, navigate: true, loop: false, cover: false, autoplay: false, autoplay_time: 2000, auto_height: false, autoplay_speed: 2000, padding: 40, center: true })
 testcar2.carouselUpdate()
 let testcar3 = new Carousel({ carousel_box: carcardbox3, want_controller: true, content: carcont2, visible_cards: 1, gap: 5, overflow: false, navigate: false })
 testcar3.carouselUpdate()
