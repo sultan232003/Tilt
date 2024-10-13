@@ -48,7 +48,7 @@ Array.from(Shadow_box).forEach(Shadow_boxs => {
 
 
 class Carousel {
-  constructor({ carousel_box = undefined, want_controller = true, content = undefined, visible_cards = undefined, gap = 30, overflow = true, navigate = true, navigate_speed = 300, loop = false, cover = true, transition_speed = 300, transition_type = 'ease', autoplay = false, autoplay_time = 1000, autoplay_speed = 300, hover_Pause = true, auto_height = false, center = false, padding = 0 }) {
+  constructor({ carousel_box = undefined, want_controller = true, content = undefined, visible_cards = undefined, gap = 30, overflow = true, navigate = true, navigate_speed = 300, loop = false, cover = true, transition_speed = 300, transition_type = 'ease', autoplay = false, autoplay_time = 1000, autoplay_speed = 300, hover_Pause = true, auto_height = false, center = false, padding = 0, transition_animation = false, animate_in = "Default" }) {
     this.carousel_box = carousel_box;
     this.want_controller = want_controller;
     this.btn_box = document.createElement('div');
@@ -89,6 +89,8 @@ class Carousel {
     this.center_offset = 0
     this.padding = padding
     this.class_index = 0
+    this.transition_animation = transition_animation
+    this.animate_in = animate_in.toUpperCase()
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
@@ -345,6 +347,96 @@ class Carousel {
 
   ///////////////////////////////////////////////////////////////////////////////////////////
 
+  #animationInHandler() {
+    if (this.transition_animation) {
+      Array.from(this.carousel_cards).forEach(carousel_cards => {
+        carousel_cards.classList.remove("animate_in", "animate_out")
+        if (carousel_cards.classList.contains("active")) {
+          carousel_cards.classList.add("animate_in")
+          if (carousel_cards.previousElementSibling) {
+            carousel_cards.previousElementSibling.classList.add("animate_out")
+          }
+        }
+      })
+      const onTransitionEnd = (event) => {
+        if (event.propertyName === 'transform') {
+          Array.from(this.carousel_cards).forEach(carousel_cards => {
+            carousel_cards.classList.remove("animate_in", "animate_out")
+          })
+          this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
+        }
+      };
+      this.carousel_box.addEventListener("transitionend", onTransitionEnd);
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #animationOutHandler() {
+    if (this.transition_animation) {
+      Array.from(this.carousel_cards).forEach(carousel_cards => {
+        carousel_cards.classList.remove("animate_in", "animate_out")
+        if (carousel_cards.classList.contains("active")) {
+          carousel_cards.classList.add("animate_in")
+        }
+        if (carousel_cards.classList.contains("animate_in") && carousel_cards.nextElementSibling) {
+          test()
+          carousel_cards.nextElementSibling.classList.add("animate_out")
+        }
+      })
+      const onTransitionEnd = (event) => {
+        if (event.propertyName === 'transform') {
+          Array.from(this.carousel_cards).forEach(carousel_cards => {
+            carousel_cards.classList.remove("animate_in", "animate_out")
+          })
+          this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
+        }
+      };
+      this.carousel_box.addEventListener("transitionend", onTransitionEnd);
+    }
+
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  #animationClassHandler() {
+    Array.from(this.carousel_cards).forEach(carousel_cards => {
+      carousel_cards.classList.remove("animate_in", "animate_out")
+    })
+
+    if (this.transition_animation) {
+      if (this.visible_cards === 1) {
+        Array.from(this.carousel_cards).forEach(carousel_cards => {
+          switch (this.animate_in) {
+            case "DEFAULT":
+              if (carousel_cards.classList.contains("active")) {
+                carousel_cards.classList.add("animate_in")
+                if (carousel_cards.previousElementSibling) {
+                  carousel_cards.previousElementSibling.classList.add("animate_out")
+                }
+              }
+              break;
+          }
+        })
+      } else if (this.visible_cards > 1) {
+
+      }
+    }
+
+    const onTransitionEnd = (event) => {
+      if (event.propertyName === 'transform') {
+        Array.from(this.carousel_cards).forEach(carousel_cards => {
+          carousel_cards.classList.remove("animate_in", "animate_out")
+        })
+        this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
+      }
+    };
+    this.carousel_box.addEventListener("transitionend", onTransitionEnd);
+
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
   updateCarouselPosition = (movecount, movespeed) => {
 
     this.#carouselHeightDefiner(movecount)
@@ -445,6 +537,8 @@ class Carousel {
         this.count--;
         this.carousel_cards[0].innerHTML = this.content[this.count];
       }
+
+      this.#animationOutHandler()
     })
 
     this.next_btn.addEventListener("click", (e) => {
@@ -469,6 +563,8 @@ class Carousel {
         this.count = (this.count < this.content.length - 1) ? this.count + 1 : this.count;
         this.carousel_cards[0].innerHTML = this.content[this.count];
       }
+      // this.#animationClassHandler()
+      this.#animationInHandler()
     })
 
     Array.from(this.navigate_box.children).forEach((navigate_dots, index) => {
@@ -505,6 +601,7 @@ class Carousel {
       this.#centerOffsetCalculator(1)
       this.#indexCalculator(0)
       this.#carouselMoveDefiner(0)
+      this.#animationClassHandler()
       this.move()
       this.updateCarouselPosition(0)
     })
@@ -515,7 +612,7 @@ class Carousel {
 
 let carcont = ["center", "center", "center", "center", "center", "center"]
 let carcont2 = ["1", "2", "3", "4", "5", "6"]
-let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 4, gap: 30, overflow: true, navigate: true, loop: false, transition_speed: 500, auto_height: false, navigate_speed: 100, center: true, padding: 40 })
+let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 1, gap: 30, overflow: true, navigate: true, loop: true, transition_speed: 2000, auto_height: false, navigate_speed: 100, center: true, padding: 40, animate_in: "Default", transition_animation: true })
 testcar.carouselUpdate()
 let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 3, gap: 15, overflow: true, navigate: true, loop: false, cover: false, autoplay: false, autoplay_time: 2000, auto_height: false, autoplay_speed: 2000, padding: 40, center: true })
 testcar2.carouselUpdate()
