@@ -1486,3 +1486,35 @@ body {
 .cards.last_active{
   background: var(--Violet);
 }
+
+.cards.animate_in{
+  z-index: 100;
+  animation: flip-horizontal-bottom 0.4s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+}
+.cards.animate_out{
+  z-index: 0;
+  animation: fade-slide-bottom 0.4s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+}
+
+@keyframes flip-horizontal-bottom {
+  0% {
+    -webkit-transform: rotateX(0);
+            transform: rotateX(0);
+  }
+  100% {
+    -webkit-transform: rotateX(-180deg);
+            transform: rotateX(-180deg);
+  }
+}
+
+@keyframes fade-slide-bottom {
+  0%{
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100%{
+
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
