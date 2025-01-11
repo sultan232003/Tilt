@@ -91,6 +91,8 @@ class Carousel {
     this.class_index = 0
     this.transition_animation = transition_animation
     this.animate_in = animate_in.toUpperCase()
+    this.dragDirection = 0
+    this.dragEnd = 0
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
@@ -292,6 +294,41 @@ class Carousel {
 
   ///////////////////////////////////////////////////////////////////////////////////////////
 
+  #carouselDragController(movecount) {
+    this.isDragging = false;
+    this.carousel_box.addEventListener("mousedown", (e) => {
+      this.dragStart = e.clientX;
+      this.isDragging = true;
+      this.onMouseMove = (e) => {
+        if (this.isDragging) {
+          this.dragDirection = this.dragStart - e.clientX;
+          this.finalDrag = this.dragDirection + this.dragEnd
+          this.carousel_box.style.setProperty("transform", `translateX(${-(this.finalDrag + this.carousel_move_offset + this.center_offset)}px)`);
+          if (this.cover) {
+            this.cardsDragged = this.dragDirection / (this.carousel_card_width + this.gap);
+          } else {
+            this.cardsDragged = this.dragDirection / (this.carousel_card_width.slice(movecount + this.visible_cards) + this.gap);
+          }
+        }
+      };
+      this.onMouseUp = () => {
+        this.isDragging = false;
+        this.carousel_box.removeEventListener("mousemove", this.onMouseMove);
+        document.removeEventListener("mouseup", this.onMouseUp);
+        this.dragEnd = this.finalDrag
+        this.count += Math.round(this.cardsDragged)
+        this.#moveUpdateHandler(this.count, 0)
+        print((this.finalDrag + this.carousel_move_offset + this.center_offset))
+        print(this.finalDrag - this.carousel_move)
+        // print(this.carousel_card_width.slice(movecount + this.visible_cards))
+      };
+      this.carousel_box.addEventListener("mousemove", this.onMouseMove);
+      document.addEventListener("mouseup", this.onMouseUp);
+    });
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
   #carouselMoveDefiner(movecount, movespeed) {
     this.carousel_box.style.setProperty("transition", `all ${this.transition_type} ${movespeed}ms`);
     this.carousel_move = 0;
@@ -347,93 +384,93 @@ class Carousel {
 
   ///////////////////////////////////////////////////////////////////////////////////////////
 
-  #animationInHandler() {
-    if (this.transition_animation) {
-      Array.from(this.carousel_cards).forEach(carousel_cards => {
-        carousel_cards.classList.remove("animate_in", "animate_out")
-        if (carousel_cards.classList.contains("active")) {
-          carousel_cards.classList.add("animate_in")
-          if (carousel_cards.previousElementSibling) {
-            carousel_cards.previousElementSibling.classList.add("animate_out")
-          }
-        }
-      })
-      const onTransitionEnd = (event) => {
-        if (event.propertyName === 'transform') {
-          Array.from(this.carousel_cards).forEach(carousel_cards => {
-            carousel_cards.classList.remove("animate_in", "animate_out")
-          })
-          this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
-        }
-      };
-      this.carousel_box.addEventListener("transitionend", onTransitionEnd);
-    }
-  }
+  // #animationInHandler() {
+  //   if (this.transition_animation) {
+  //     Array.from(this.carousel_cards).forEach(carousel_cards => {
+  //       carousel_cards.classList.remove("animate_in", "animate_out")
+  //       if (carousel_cards.classList.contains("active")) {
+  //         carousel_cards.classList.add("animate_in")
+  //         if (carousel_cards.previousElementSibling) {
+  //           carousel_cards.previousElementSibling.classList.add("animate_out")
+  //         }
+  //       }
+  //     })
+  //     const onTransitionEnd = (event) => {
+  //       if (event.propertyName === 'transform') {
+  //         Array.from(this.carousel_cards).forEach(carousel_cards => {
+  //           carousel_cards.classList.remove("animate_in", "animate_out")
+  //         })
+  //         this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
+  //       }
+  //     };
+  //     this.carousel_box.addEventListener("transitionend", onTransitionEnd);
+  //   }
+  // }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
 
-  #animationOutHandler() {
-    if (this.transition_animation) {
-      Array.from(this.carousel_cards).forEach(carousel_cards => {
-        carousel_cards.classList.remove("animate_in", "animate_out")
-        if (carousel_cards.classList.contains("active")) {
-          carousel_cards.classList.add("animate_in")
-        }
-        if (carousel_cards.classList.contains("animate_in") && carousel_cards.nextElementSibling) {
-          test()
-          carousel_cards.nextElementSibling.classList.add("animate_out")
-        }
-      })
-      const onTransitionEnd = (event) => {
-        if (event.propertyName === 'transform') {
-          Array.from(this.carousel_cards).forEach(carousel_cards => {
-            carousel_cards.classList.remove("animate_in", "animate_out")
-          })
-          this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
-        }
-      };
-      this.carousel_box.addEventListener("transitionend", onTransitionEnd);
-    }
+  // #animationOutHandler() {
+  //   if (this.transition_animation) {
+  //     Array.from(this.carousel_cards).forEach(carousel_cards => {
+  //       carousel_cards.classList.remove("animate_in", "animate_out")
+  //       if (carousel_cards.classList.contains("active")) {
+  //         carousel_cards.classList.add("animate_in")
+  //       }
+  //       if (carousel_cards.classList.contains("animate_in") && carousel_cards.nextElementSibling) {
+  //         test()
+  //         carousel_cards.nextElementSibling.classList.add("animate_out")
+  //       }
+  //     })
+  //     const onTransitionEnd = (event) => {
+  //       if (event.propertyName === 'transform') {
+  //         Array.from(this.carousel_cards).forEach(carousel_cards => {
+  //           carousel_cards.classList.remove("animate_in", "animate_out")
+  //         })
+  //         this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
+  //       }
+  //     };
+  //     this.carousel_box.addEventListener("transitionend", onTransitionEnd);
+  //   }
 
-  }
+  // }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
 
-  #animationClassHandler() {
-    Array.from(this.carousel_cards).forEach(carousel_cards => {
-      carousel_cards.classList.remove("animate_in", "animate_out")
-    })
+  // #animationClassHandler() {
+  //   Array.from(this.carousel_cards).forEach(carousel_cards => {
+  //     carousel_cards.classList.remove("animate_in", "animate_out")
+  //   })
 
-    if (this.transition_animation) {
-      if (this.visible_cards === 1) {
-        Array.from(this.carousel_cards).forEach(carousel_cards => {
-          switch (this.animate_in) {
-            case "DEFAULT":
-              if (carousel_cards.classList.contains("active")) {
-                carousel_cards.classList.add("animate_in")
-                if (carousel_cards.previousElementSibling) {
-                  carousel_cards.previousElementSibling.classList.add("animate_out")
-                }
-              }
-              break;
-          }
-        })
-      } else if (this.visible_cards > 1) {
+  //   if (this.transition_animation) {
+  //     if (this.visible_cards === 1) {
+  //       Array.from(this.carousel_cards).forEach(carousel_cards => {
+  //         switch (this.animate_in) {
+  //           case "DEFAULT":
+  //             if (carousel_cards.classList.contains("active")) {
+  //               carousel_cards.classList.add("animate_in")
+  //               if (carousel_cards.previousElementSibling) {
+  //                 carousel_cards.previousElementSibling.classList.add("animate_out")
+  //               }
+  //             }
+  //             break;
+  //         }
+  //       })
+  //     } else if (this.visible_cards > 1) {
 
-      }
-    }
+  //     }
+  //   }
 
-    const onTransitionEnd = (event) => {
-      if (event.propertyName === 'transform') {
-        Array.from(this.carousel_cards).forEach(carousel_cards => {
-          carousel_cards.classList.remove("animate_in", "animate_out")
-        })
-        this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
-      }
-    };
-    this.carousel_box.addEventListener("transitionend", onTransitionEnd);
+  //   const onTransitionEnd = (event) => {
+  //     if (event.propertyName === 'transform') {
+  //       Array.from(this.carousel_cards).forEach(carousel_cards => {
+  //         carousel_cards.classList.remove("animate_in", "animate_out")
+  //       })
+  //       this.carousel_box.removeEventListener('transitionend', onTransitionEnd);
+  //     }
+  //   };
+  //   this.carousel_box.addEventListener("transitionend", onTransitionEnd);
 
-  }
+  // }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -508,10 +545,10 @@ class Carousel {
 
   ///////////////////////////////////////////////////////////////////////////////////////////
 
-  #moveUpdateHandler() {
-    this.updateCarouselContent(this.count);
-    this.#indexCalculator(this.count)
-    this.updateCarouselPosition(this.count, this.transition_speed);
+  #moveUpdateHandler(movecount, movespeed) {
+    this.updateCarouselContent(movecount);
+    this.#indexCalculator(movecount)
+    this.updateCarouselPosition(movecount, movespeed);
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
@@ -523,13 +560,13 @@ class Carousel {
       if (!this.loop && this.carousel_card_number > 1) {
         if (this.count > 0 && this.count <= this.carousel_card_number - 1) {
           this.count--;
-          this.#moveUpdateHandler()
+          this.#moveUpdateHandler(this.count, this.transition_speed)
         }
       } else if (this.carousel_card_number > 1) {
         if (this.count >= 0 && this.count <= this.carousel_card_number - 1) {
           this.count--;
           this.count = (this.count < 0) ? (this.carousel_card_number - 1) : this.count;
-          this.#moveUpdateHandler()
+          this.#moveUpdateHandler(this.count, this.transition_speed)
         }
       }
 
@@ -538,22 +575,22 @@ class Carousel {
         this.carousel_cards[0].innerHTML = this.content[this.count];
       }
 
-      this.#animationOutHandler()
+      // this.#animationOutHandler()
     })
 
     this.next_btn.addEventListener("click", (e) => {
       if (!this.loop && this.carousel_card_number > 1) {
         if (this.count < this.remain_next) {
           this.count++;
-          this.#moveUpdateHandler()
+          this.#moveUpdateHandler(this.count, this.transition_speed)
         } else if (this.center && this.count < this.carousel_card_number - 1) {
           this.count++;
-          this.#moveUpdateHandler()
+          this.#moveUpdateHandler(this.count, this.transition_speed)
         }
       } else if (this.carousel_card_number > 1) {
         if (this.count < this.carousel_card_number) {
           this.count++;
-          this.#moveUpdateHandler()
+          this.#moveUpdateHandler(this.count, this.transition_speed)
         }
         ///////////////////////
         this.#indexCalculator(0)
@@ -564,7 +601,7 @@ class Carousel {
         this.carousel_cards[0].innerHTML = this.content[this.count];
       }
       // this.#animationClassHandler()
-      this.#animationInHandler()
+      // this.#animationInHandler()
     })
 
     Array.from(this.navigate_box.children).forEach((navigate_dots, index) => {
@@ -572,18 +609,18 @@ class Carousel {
         if (!this.loop) {
           if (index < this.remain_next + 1 && !this.center) {
             this.#indexCalculator(index)
-            this.updateCarouselPosition(this.count, this.navigate_speed);
             this.count = index;
+            this.updateCarouselPosition(this.count, this.navigate_speed);
           } else if (index < this.carousel_card_number && this.center) {
             this.#indexCalculator(index)
-            this.updateCarouselPosition(this.count, this.navigate_speed);
             this.count = index;
+            this.updateCarouselPosition(this.count, this.navigate_speed);
           }
         } else {
           index = (index == this.carousel_card_number) ? 0 : index;
           this.#indexCalculator(index)
-          this.updateCarouselPosition(this.count, this.navigate_speed);
           this.count = index;
+          this.updateCarouselPosition(this.count, this.navigate_speed);
         }
       })
     })
@@ -601,9 +638,10 @@ class Carousel {
       this.#centerOffsetCalculator(1)
       this.#indexCalculator(0)
       this.#carouselMoveDefiner(0)
-      this.#animationClassHandler()
+      // this.#animationClassHandler()
       this.move()
       this.updateCarouselPosition(0)
+      this.#carouselDragController(this.count)
     })
   }
 }
@@ -612,7 +650,7 @@ class Carousel {
 
 let carcont = ["center", "center", "center", "center", "center", "center"]
 let carcont2 = ["1", "2", "3", "4", "5", "6"]
-let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 1, gap: 30, overflow: true, navigate: true, loop: true, transition_speed: 2000, auto_height: false, navigate_speed: 100, center: true, padding: 40, animate_in: "Default", transition_animation: true })
+let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 4, gap: 30, overflow: true, navigate: true, loop: true, transition_speed: 2000, auto_height: false, navigate_speed: 100, center: false, padding: 40, animate_in: "Default", transition_animation: true })
 testcar.carouselUpdate()
 let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 3, gap: 15, overflow: true, navigate: true, loop: false, cover: false, autoplay: false, autoplay_time: 2000, auto_height: false, autoplay_speed: 2000, padding: 40, center: true })
 testcar2.carouselUpdate()
