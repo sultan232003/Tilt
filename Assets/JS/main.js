@@ -296,12 +296,14 @@ class Carousel {
 
   #carouselDragController(movecount) {
     this.isDragging = false;
+    this.dragOffset = 0;
     this.carousel_box.addEventListener("mousedown", (e) => {
+      this.carousel_box.style.setProperty("transition", `all ${this.transition_type} 0ms`);
       this.dragStart = e.clientX;
       this.isDragging = true;
       this.onMouseMove = (e) => {
         if (this.isDragging) {
-          this.dragDirection = this.dragStart - e.clientX;
+          this.dragDirection = this.dragStart - (e.clientX + this.dragOffset);
           this.finalDrag = this.dragDirection + this.dragEnd
           this.carousel_box.style.setProperty("transform", `translateX(${-(this.finalDrag + this.carousel_move_offset + this.center_offset)}px)`);
           if (this.cover) {
@@ -317,10 +319,23 @@ class Carousel {
         document.removeEventListener("mouseup", this.onMouseUp);
         this.dragEnd = this.finalDrag
         this.count += Math.round(this.cardsDragged)
-        this.#moveUpdateHandler(this.count, 0)
-        print((this.finalDrag + this.carousel_move_offset + this.center_offset))
-        print(this.finalDrag - this.carousel_move)
-        // print(this.carousel_card_width.slice(movecount + this.visible_cards))
+        if (this.count < 0 ||
+          (this.loop && this.count > this.carousel_card_number - 1) ||
+          (!this.loop && this.center && this.count > this.carousel_card_number - 1) ||
+          (!this.loop && !this.center && this.count > this.carousel_card_number - this.visible_cards)) {
+          if (this.loop) {
+            this.count = this.count < 0 ? this.carousel_card_number - 1 : 0;
+          } else {
+            const maxCount = this.center ? this.carousel_card_number - 1 : this.carousel_card_number - this.visible_cards;
+            this.count = Math.max(0, Math.min(this.count, maxCount));
+          }
+          this.finalDrag = this.count === 0 ? 0 : this.carousel_card_width * this.count + this.gap * (this.count - 1);
+          this.dragOffset = this.finalDrag;
+          this.dragEnd = this.finalDrag;
+        }
+        this.#moveUpdateHandler(this.count, this.transition_speed)
+        this.dragOffset = this.finalDrag - this.carousel_move;
+        // solve the problem of carousel moving just on click 
       };
       this.carousel_box.addEventListener("mousemove", this.onMouseMove);
       document.addEventListener("mouseup", this.onMouseUp);
@@ -486,7 +501,9 @@ class Carousel {
       Array.from(this.navigate_box.children).forEach(navigate_dots => {
         navigate_dots.style.setProperty("background", "#D6D6D6");
       })
-      this.navigate_box.children[movecount].style.setProperty("background", "#979797");
+      if (movecount >= 0) {
+        this.navigate_box.children[movecount].style.setProperty("background", "#979797");
+      }
     }
   };
 
@@ -650,9 +667,15 @@ class Carousel {
 
 let carcont = ["center", "center", "center", "center", "center", "center"]
 let carcont2 = ["1", "2", "3", "4", "5", "6"]
-let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 4, gap: 30, overflow: true, navigate: true, loop: true, transition_speed: 2000, auto_height: false, navigate_speed: 100, center: false, padding: 40, animate_in: "Default", transition_animation: true })
+let testcar = new Carousel({ carousel_box: carcardbox, want_controller: true, content: undefined, visible_cards: 4, gap: 30, overflow: true, navigate: true, loop: true, transition_speed: 2000, auto_height: false, navigate_speed: 100, center: true, padding: 40, animate_in: "Default", transition_animation: true })
 testcar.carouselUpdate()
 let testcar2 = new Carousel({ carousel_box: carcardbox2, want_controller: true, content: undefined, visible_cards: 3, gap: 15, overflow: true, navigate: true, loop: false, cover: false, autoplay: false, autoplay_time: 2000, auto_height: false, autoplay_speed: 2000, padding: 40, center: true })
 testcar2.carouselUpdate()
 let testcar3 = new Carousel({ carousel_box: carcardbox3, want_controller: true, content: carcont2, visible_cards: 1, gap: 5, overflow: false, navigate: false })
 testcar3.carouselUpdate()
+
+// loop center cover
+// true true true
+// true false true
+// false true true
+// false false true
