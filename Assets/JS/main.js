@@ -297,15 +297,20 @@ class Carousel {
   #carouselDragController(movecount) {
     this.isDragging = false;
     this.dragOffset = 0;
-    this.carousel_box.addEventListener("mousedown", (e) => {
+    this.dragcheckstart = 0;
+    this.dragcheckend = 0;
+
+    this.carousel_box.addEventListener("pointerdown", (e) => {
       this.carousel_box.style.setProperty("transition", `all ${this.transition_type} 0ms`);
       this.dragStart = e.clientX;
       this.isDragging = true;
-      this.onMouseMove = (e) => {
+
+      this.onPointerMove = (e) => {
         if (this.isDragging) {
           this.dragDirection = this.dragStart - (e.clientX + this.dragOffset);
-          this.finalDrag = this.dragDirection + this.dragEnd
+          this.finalDrag = this.dragDirection + this.dragEnd;
           this.carousel_box.style.setProperty("transform", `translateX(${-(this.finalDrag + this.carousel_move_offset + this.center_offset)}px)`);
+          this.dragcheckstart = e.clientX;
           if (this.cover) {
             this.cardsDragged = this.dragDirection / (this.carousel_card_width + this.gap);
           } else {
@@ -313,12 +318,20 @@ class Carousel {
           }
         }
       };
-      this.onMouseUp = () => {
+
+      this.onPointerUp = (e) => {
+        if (!Math.abs(this.dragcheckend - this.dragcheckstart) >= 1) {
+          this.cardsDragged = 0
+        }
+        this.dragcheckend = this.dragcheckstart
         this.isDragging = false;
-        this.carousel_box.removeEventListener("mousemove", this.onMouseMove);
-        document.removeEventListener("mouseup", this.onMouseUp);
-        this.dragEnd = this.finalDrag
-        this.count += Math.round(this.cardsDragged)
+        this.carousel_box.removeEventListener("pointermove", this.onPointerMove);
+        document.removeEventListener("pointerup", this.onPointerUp);
+        document.removeEventListener("pointercancel", this.onPointerUp);
+
+        this.dragEnd = this.finalDrag;
+        this.count += Math.round(this.cardsDragged);
+
         if (this.count < 0 ||
           (this.loop && this.count > this.carousel_card_number - 1) ||
           (!this.loop && this.center && this.count > this.carousel_card_number - 1) ||
@@ -333,14 +346,16 @@ class Carousel {
           this.dragOffset = this.finalDrag;
           this.dragEnd = this.finalDrag;
         }
-        this.#moveUpdateHandler(this.count, this.transition_speed)
+        this.#moveUpdateHandler(this.count, this.transition_speed);
         this.dragOffset = this.finalDrag - this.carousel_move;
-        // solve the problem of carousel moving just on click 
       };
-      this.carousel_box.addEventListener("mousemove", this.onMouseMove);
-      document.addEventListener("mouseup", this.onMouseUp);
+
+      this.carousel_box.addEventListener("pointermove", this.onPointerMove);
+      document.addEventListener("pointerup", this.onPointerUp);
+      document.addEventListener("pointercancel", this.onPointerUp);
     });
   }
+
 
   ///////////////////////////////////////////////////////////////////////////////////////////
 
