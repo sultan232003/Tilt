@@ -57,12 +57,65 @@ body {
   display: none;
 }
 
-.container {
-  width: 100%;
-  max-width: 1440px;
-  padding: 0px 15px;
-  box-sizing: border-box;
-  margin: 0px auto;
+@media and screen (max-width: 576px)
+{
+  .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    margin: 0px auto;
+  }
+}
+
+@media and screen (min-width: 576px) (max-width: 768px){
+  .container {
+    width: 100%;
+    max-width: 540px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    margin: 0px auto;
+  }
+}
+
+@media and screen (min-width: 768px) (max-width: 992px){
+  .container {
+    width: 100%;
+    max-width: 720px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    margin: 0px auto;
+  }
+}
+
+@media and screen (min-width: 992px) (max-width: 1200px){
+  .container {
+    width: 100%;
+    max-width: 960px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    margin: 0px auto;
+  }
+}
+
+@media and screen (min-width: 1200px) (max-width: 1400px) {
+  .container {
+    width: 100%;
+    max-width: 1140px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    margin: 0px auto;
+  }
+}
+
+@media and screen (min-width: 1400px) {
+  .container {
+    width: 100%;
+    max-width: 1440px;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    margin: 0px auto;
+  }
 }
 
 .row {
