@@ -2,12 +2,17 @@ function print(val) {
     console.log(val)
 }
 
+function test(val){
+    print(val || "working")
+}
+
 const shadowColors = [
     { name: "White", hex: "#FFFFFF", tag: "Light", text: "Black" },
     { name: "Black", hex: "#000000", tag: "Dark", text: "White" },
     { name: "Charcoal", hex: "#36454F", tag: "Dark", text: "White" },
     { name: "Cadet gray", hex: "#959DA5", tag: "Light", text: "Black" },
     { name: "Dim gray", hex: "#64646F", tag: "Dark", text: "White" },
+    { name: "Prussian blue", hex: "#26394d", tag: "Dark", text: "White" },
     { name: "Dark purple", hex: "#110c2e", tag: "Dark", text: "White" },
     { name: "Raisin black", hex: "#1F2632", tag: "Dark", text: "White" },
     { name: "Tea green", hex: "#CBEFBE", tag: "Light", text: "Black" },
@@ -618,4 +623,14 @@ class ColorList {
             })
         }
     }
+}
+
+const createTag = (tag, className = '', styles = {}, appendTo) => {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    Object.assign(el.style, styles);
+    if(appendTo){
+        appendTo.appendChild(el)
+    }
+    return el;
 }
