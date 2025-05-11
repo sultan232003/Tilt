@@ -57,280 +57,12 @@ body {
   display: none;
 }
 
-@media screen and (max-width: 576px) {
-  .container {
-    width: 100%;
-    max-width: 100%;
-    padding: 0px 15px;
-    box-sizing: border-box;
-    margin: 0px auto;
-  }
-
-  .grid-xsm-6 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .grid-xsm-5 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .grid-xsm-4 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .grid-xsm-3 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .grid-xsm-2 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-xsm-1 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-@media screen and (min-width: 576px) and (max-width: 768px) {
-  .container {
-    width: 100%;
-    max-width: 540px;
-    padding: 0px 15px;
-    box-sizing: border-box;
-    margin: 0px auto;
-  }
-
-  .grid-sm-6 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .grid-sm-5 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .grid-sm-4 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .grid-sm-3 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .grid-sm-2 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-sm-1 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-@media screen and (min-width: 768px) and (max-width: 992px) {
-  .container {
-    width: 100%;
-    max-width: 720px;
-    padding: 0px 15px;
-    box-sizing: border-box;
-    margin: 0px auto;
-  }
-
-  .grid-md-6 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .grid-md-5 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .grid-md-4 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .grid-md-3 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .grid-md-2 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-md-1 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-@media screen and (min-width: 992px) and (max-width: 1200px) {
-  .container {
-    width: 100%;
-    max-width: 960px;
-    padding: 0px 15px;
-    box-sizing: border-box;
-    margin: 0px auto;
-  }
-
-  .grid-l-6 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .grid-l-5 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .grid-l-4 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .grid-l-3 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .grid-l-2 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-l-1 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-@media screen and (min-width: 1200px) and (max-width: 1400px) {
-  .container {
-    width: 100%;
-    max-width: 1140px;
-    padding: 0px 15px;
-    box-sizing: border-box;
-    margin: 0px auto;
-  }
-
-  .grid-xl-6 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .grid-xl-5 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .grid-xl-4 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .grid-xl-3 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .grid-xl-2 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-xl-1 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-@media screen and (min-width: 1400px) {
-  .container {
-    width: 100%;
-    max-width: 1440px;
-    padding: 0px 15px;
-    box-sizing: border-box;
-    margin: 0px auto;
-  }
-
-  .grid-xxl-6 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .grid-xxl-5 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .grid-xxl-4 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .grid-xxl-3 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .grid-xxl-2 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-xxl-1 {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(1, 1fr);
-  }
+.container {
+  width: 100%;
+  max-width: 1440px;
+  padding: 0px 15px;
+  box-sizing: border-box;
+  margin: 0px auto;
 }
 
 .row {
@@ -777,6 +509,7 @@ body {
   justify-content: space-between;
   box-shadow: var(--shadow_box);
   opacity: 1;
+  position: relative;
 }
 
 .button_row_top {
@@ -1062,6 +795,28 @@ body {
   border: 0.5px solid var(--Alice_blue_2);
   flex-shrink: 0;
   background: var(--color_view_bg);
+}
+
+.shadow_value_change_control{
+  position: absolute;
+    height: 30px;
+    top: 50%;
+    width: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 5px;
+    color: var(--Russian_violet);
+    font-size: 15px;
+}
+
+.shadow_box:hover .shadow_value_change_control{
+  opacity: 1;
+  visibility: visible;
 }
 
 /* ////////////////////// */
@@ -1727,6 +1482,7 @@ body {
 #carcardbox3{
   width: fit-content;
   background: var(--Border);
+  overflow: hidden;
 }
 
 .cards{
@@ -1734,6 +1490,7 @@ body {
   height: 100px;
   background: red;
   transition: all ease 200ms;
+  user-select: none;
 }
 
 .cards.active{
