@@ -112,6 +112,22 @@ function hexToRgba(hex, alpha) {
     }
 }
 
+function hexToRgba2(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 6) hex += 'ff'; // add full alpha if missing
+    const bigint = parseInt(hex, 16);
+    return [
+        (bigint >> 24) & 255,
+        (bigint >> 16) & 255,
+        (bigint >> 8) & 255,
+        bigint & 255
+    ];
+}
+
+function rgbaToHex(r, g, b, a = 255) {
+    return '#' + [r, g, b, a].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
 function rgbaToHsla(r, g, b, a, percentage) {
     r /= 255;
     g /= 255;
@@ -145,6 +161,25 @@ function rgbaToHsla(r, g, b, a, percentage) {
     } else {
         return [Math.round(h).toFixed(2), Math.round(s * 100).toFixed(2), Math.round(l * 100).toFixed(2), a.toFixed(2)];
     }
+}
+
+function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+
+    if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+            case g: h = ((b - r) / d + 2); break;
+            case b: h = ((r - g) / d + 4); break;
+        }
+        h *= 60;
+    }
+
+    return [h, s, l];
 }
 
 function rgbToHsb(r, g, b, percentage) {
@@ -243,6 +278,24 @@ function rgbToCmyk(r, g, b) {
         y = (y - k) / (1 - k);
     }
     return [(c * 100).toFixed(1), (m * 100).toFixed(1), (y * 100).toFixed(1), (k * 100).toFixed(1)];
+}
+
+function hslToRgb(h, s, l) {
+    h /= 360;
+    const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+    };
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    const r = Math.round(hue2rgb(p, q, h + 1/3) * 255);
+    const g = Math.round(hue2rgb(p, q, h) * 255);
+    const b = Math.round(hue2rgb(p, q, h - 1/3) * 255);
+    return [r, g, b];
 }
 
 class Slider {
@@ -633,4 +686,26 @@ const createTag = (tag, className = '', styles = {}, appendTo) => {
         appendTo.appendChild(el)
     }
     return el;
+}
+
+function recolorShadow(shadowStr, newBaseHex) {
+    const baseRgb = hexToRgba2(newBaseHex);
+    const [baseH, baseS] = rgbToHsl(...baseRgb.slice(0, 3));
+
+    return shadowStr.replace(/#([0-9a-fA-F]{6,8})/g, (fullMatch, hex) => {
+        const rgba = hexToRgba2('#' + hex);
+        const [r, g, b, a] = rgba;
+
+        const isPureBlack = (r === 0 && g === 0 && b === 0);
+
+        if (isPureBlack) {
+            // Directly apply the new base RGB and preserve original alpha
+            return rgbaToHex(...baseRgb.slice(0, 3), a);
+        }
+
+        // Otherwise, map tone via lightness
+        const [, , lightness] = rgbToHsl(r, g, b);
+        const newRgb = hslToRgb(baseH, baseS, lightness);
+        return rgbaToHex(...newRgb, a);
+    });
 }
