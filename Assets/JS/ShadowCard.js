@@ -6,6 +6,9 @@ class ShadowCard {
         this.bgColor = bgColor || '#ffffff';
         this.HasMultipleShadows = hasMultipleShadows
         this.ColorName = colorName
+        this.mainShadowData = this.extractShadowPosition()
+        this.count = 0
+        this.maxCount = this.mainShadowData.length
     }
 
     createCard() {
@@ -18,7 +21,7 @@ class ShadowCard {
         this.ButtonRowTop = createTag("div", "button_row_top", {}, this.ShadowBox);
         this.ShadowBoxColorFormatBtn = createTag("button", "shadow_box_color_format_btn mac_3D_btn text-upper", {}, this.ButtonRowTop);
         this.extractHex()
-        this.ShadowBoxColorFormatBtn.setAttribute("shadow_code", "0px 25px 50px -12px");
+        this.ShadowBoxColorFormatBtn.setAttribute("shadow_code", this.shadowCode);
         this.ShadowBoxColorFormatBtn.setAttribute("hex_code", this.hexCode);
         this.ShadowBoxColorFormatBtn.setAttribute("alpha_value", this.alphaValue);
 
@@ -50,7 +53,6 @@ class ShadowCard {
             this.ColorFormatIndexValue.appendChild(p);
         });
         this.TempH3 = createTag("h3", "text-center text-upper", {}, this.ColorFormatData)
-        print(this.hexCode)
         this.TempH3.innerHTML = this.hexCode
         this.ColorAlpha = createTag("div", "color_alpha row row-col col-3 gap-10", {}, this.ColorFormat)
         this.ColorFormatIndexValue2 = createTag("div", "color_format_index_value row space-between align-center text-upper", {}, this.ColorAlpha);
@@ -64,12 +66,25 @@ class ShadowCard {
         this.TempDiv2 = createTag("div", "", {}, this.ColorValue);
         this.Line = createTag("hr", "", {}, this.TempDiv2);
         this.ShadowValue = createTag("div", "shadow_value row gap-5", {}, this.ColorValue)
-        const shadowData = [
-            { value: "0px", label: "X" },
-            { value: "25px", label: "Y" },
-            { value: "50px", label: "BLUR" },
-            { value: "-12px", label: "SPREAD" }
-        ];
+        let shadowData
+        if (!this.HasMultipleShadows) {
+            const shadow = this.mainShadowData[0];
+            shadowData = [
+                { value: `${shadow.xOffset}px`, label: "X" },
+                { value: `${shadow.yOffset}px`, label: "Y" },
+                { value: `${shadow.blurRadius}px`, label: "BLUR" },
+                { value: `${shadow.spreadRadius}px`, label: "SPREAD" }
+            ];
+            this.shadowCode = `${shadow.inset ? 'inset ' : ''}${shadowData.map(d => d.value).join(' ')}`;
+            this.ShadowBoxColorFormatBtn.setAttribute("shadow_code", this.shadowCode);
+        } else {
+            shadowData = [
+                { value: "0px", label: "X" },
+                { value: "25px", label: "Y" },
+                { value: "50px", label: "BLUR" },
+                { value: "-12px", label: "SPREAD" }
+            ];
+        }
         this.shadowFormatDataList = [];
         shadowData.forEach(({ value, label }, index) => {
             const ShadowFormatData = createTag("div", "shadow_format_data row row-col col-9 gap-10", {}, this.ShadowValue);
@@ -102,6 +117,7 @@ class ShadowCard {
         this.ShadowBoxCopyBtn.innerHTML = "Copy"
         if (this.HasMultipleShadows) {
             this.createController();
+            this.controllerFunction();
         }
 
         return this.Wrapper
@@ -111,110 +127,98 @@ class ShadowCard {
         this.ShadowValueChangeControl = createTag("div", "shadow_value_change_control", {}, this.ShadowBox)
         this.Prev = createTag("div", "prev", {}, this.ShadowValueChangeControl)
         this.PrevIcon = createTag("i", "fa-solid fa-caret-left", {}, this.Prev)
+        this.PrevIcon.style.opacity = "0.5";
         this.Next = createTag("div", "next", {}, this.ShadowValueChangeControl)
         this.NextIcon = createTag("i", "fa-solid fa-caret-right", {}, this.Next)
     }
 
     extractHex() {
         if (!this.HasMultipleShadows) {
-            this.hexMatch = this.shadowCode.match(/#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6})/);
-            if (this.hexMatch) {
-                this.hexCode = this.hexMatch[0].slice(0, 7);
-                this.alphaValue = this.hexMatch[0].slice(7, 9);
-            }
+            this.hexCode = this.mainShadowData[0].color.slice(0, 7);
+            this.alphaValue = this.mainShadowData[0].color.slice(7, 9);
+        } else {
+            this.hexCode = this.mainShadowData[0].color.slice(0, 7);
+            this.alphaValue = this.mainShadowData[0].color.slice(7, 9);
+            // above 2 line have bug and a temperory fix
         }
+        console.log(this.mainShadowData[0].color)
+    }
+
+    controllerFunction() {
+        this.Prev.addEventListener("click", (e) => {
+            if (this.count > 0) {
+                this.count--
+            }
+            this.PrevIcon.style.opacity = this.count === 0 ? "0.5" : "1";
+            this.NextIcon.style.opacity = this.count < this.maxCount - 1 ? "1" : "0.5";
+
+            console.log(this.count)
+            this.TempH3.innerHTML = this.mainShadowData[this.count].color.slice(0, 7)
+            this.TempH3_2.innerHTML = this.mainShadowData[this.count].color.slice(7, 9)
+            const keys = ["xOffset", "yOffset", "blurRadius", "spreadRadius"];
+            keys.forEach((key, i) => {
+                this.shadowFormatDataList[i].h3.innerHTML = `${this.mainShadowData[this.count][key]}px`;
+            });
+
+        })
+        this.Next.addEventListener("click", (e) => {
+            if (this.count < this.maxCount - 1) {
+                this.count++
+            }
+            this.NextIcon.style.opacity = this.count === this.maxCount - 1 ? "0.5" : "1";
+            this.PrevIcon.style.opacity = this.count > 0 ? "1" : "0.5";
+
+            console.log(this.count)
+            this.TempH3.innerHTML = this.mainShadowData[this.count].color.slice(0, 7)
+            this.TempH3_2.innerHTML = this.mainShadowData[this.count].color.slice(7, 9)
+            const keys = ["xOffset", "yOffset", "blurRadius", "spreadRadius"];
+            keys.forEach((key, i) => {
+                this.shadowFormatDataList[i].h3.innerHTML = `${this.mainShadowData[this.count][key]}px`;
+            });
+
+        })
+    }
+
+    extractShadowPosition() {
+        const shadows = this.shadowCode.split(/\s*,\s*/);
+
+        return shadows.map(shadow => {
+            const result = {
+                xOffset: 0,
+                yOffset: 0,
+                blurRadius: 0,
+                spreadRadius: 0,
+                inset: false,
+                color: "#000000ff"
+            };
+
+            if (shadow.includes('inset')) {
+                result.inset = true;
+                shadow = shadow.replace(/\binset\b/, '').trim();
+            }
+
+            const colorMatch = shadow.match(/#[0-9a-fA-F]{3,8}/);
+            if (colorMatch) {
+                result.color = colorMatch[0];
+                shadow = shadow.replace(result.color, '').trim();
+            }
+
+            const lengths = shadow.match(/-?\d+(\.\d+)?px/g) || [];
+            const [x, y, blur, spread] = lengths.map(v => parseFloat(v));
+
+            result.xOffset = x || 0;
+            result.yOffset = y || 0;
+            result.blurRadius = blur || 0;
+            result.spreadRadius = spread || 0;
+
+            return result;
+        });
     }
 
     mount(target) {
         target.appendChild(this.Wrapper)
     }
 }
-
-{/* <div>
-    <div class="shadow_box" style="--shadow_box: 0px 0px 0px 1px #0e3f7e0f, 0px 1px 1px -0.5px #2a334608, 0px 2px 2px -1px #2a33460a, 0px 3px 3px -1.5px #2a33460a, 0px 5px 5px -2.5px #2a334608, 0px 10px 10px -5px #2a334608, 0px 24px 24px -8px #2a334608; --color_view_bg:#ffffff;">
-        <div class="button_row_top">
-            <button class="shadow_box_color_format_btn mac_3D_btn text-upper" shadow_code="0px 25px 50px -12px"
-                hex_code="#000000" alpha_value="40">(HEX)</button>
-            <div class="format_list">
-                <div>(HEX)</div>
-                <div>(RGB)</div>
-                <div>(HSL)</div>
-                <div>(HSB)</div>
-                <div>(CSS)</div>
-                <div>(LCH)</div>
-                <div>(LAB)</div>
-                <div>(XYZ)</div>
-                <div>(CMYK)</div>
-            </div>
-            <div class="width-100 pos-rel">
-                <button class="shadow_box_shadow_color_btn mac_3D_btn text-caps">Black</button>
-                <div class="color_option_list width-100">
-                    <input type="text" placeholder="Custom" maxlength="6">
-                        <div class="color_option_list_box"></div>
-                </div>
-            </div>
-            <div class="btn_color_view" style="--color_view_bg:#000000;"></div>
-        </div>
-        <div class="color_value row row-col">
-            <div class="color_format row width-100 gap-5">
-                <div class="color_format_data row row-col width-100 gap-10">
-                    <div class="color_format_index_value row space-between align-center text-upper">
-                        <p>[</p>
-                        <p>HEX</p>
-                        <p>]</p>
-                    </div>
-                    <h3 class="text-center text-upper">#000000</h3>
-                </div>
-                <div class="color_alpha row row-col col-3 gap-10">
-                    <div class="color_format_index_value row space-between align-center text-upper">
-                        <p>[</p>
-                        <p>alpha</p>
-                        <p>]</p>
-                    </div>
-                    <h3 class="text-center text-upper">40</h3>
-                </div>
-            </div>
-            <div>
-                <hr>
-            </div>
-            <div class="shadow_value row gap-5">
-                <div class="shadow_format_data row row-col col-9 gap-10">
-                    <h3 class="text-center">0px</h3>
-                    <div class="color_format_index_value row space-between align-center text-upper">
-                        <p>[</p>
-                        <p>X</p>
-                        <p>]</p>
-                    </div>
-                </div>
-                <div class="shadow_format_data row row-col col-9 gap-10">
-                    <h3 class="text-center">25px</h3>
-                    <div class="color_format_index_value row space-between align-center text-upper">
-                        <p>[</p>
-                        <p>Y</p>
-                        <p>]</p>
-                    </div>
-                </div>
-                <div class="shadow_format_data row row-col col-9 gap-10">
-                    <h3 class="text-center">50px</h3>
-                    <div class="color_format_index_value row space-between align-center text-upper">
-                        <p>[</p>
-                        <p>BLUR</p>
-                        <p>]</p>
-                    </div>
-                </div>
-                <div class="shadow_format_data row row-col col-9 gap-10">
-                    <h3 class="text-center">-12px</h3>
-                    <div class="color_format_index_value row space-between align-center text-upper">
-                        <p>[</p>
-                        <p>SPREaD</p>
-                        <p>]</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div> */}
 
 const inputShadow = "5px 5px #f02eaa66, 10px 10px #f02eaa4d, 15px 15px #f02eaa33, 20px 20px #f02eaa1a, 25px 25px #f02eaa0d";
 const newBaseColor = "#228B22";
@@ -229,7 +233,7 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 { box_shadow: "0px 1px 4px #00000029", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "0px 3px 8px #0000003d", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "0px 2px 8px 0px #63636333", hasMultipleShadows: false, colorName: "Dim Gray" },
-{ box_shadow: "0px 1px 4px #00000029, 0px 0px 0px 3px #333333", hasMultipleShadows: true, colorName: "Multi" },
+{ box_shadow: "0px 1px 4px #00000029, 0px 0px 0px 3px #333333ff", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 1px 3px 0px #00000005, 0px 0px 0px 1px #1b1f2326", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 4px 12px #0000001a", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "0px 54px 55px #00000040, 0px -12px 30px #0000001f, 0px 4px 6px #0000001f, 0px 12px 13px #0000002b, 0px -3px 5px #00000017", hasMultipleShadows: true, colorName: "Multi" },
@@ -238,11 +242,8 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 { box_shadow: "0px 48px 100px 0px #110c2e26", hasMultipleShadows: false, colorName: "Dark Purple" },
 { box_shadow: "0px 50px 100px -20px #32325d40, 0px 30px 60px -30px #0000004c, inset 0px -2px 6px 0px #0a25403d", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "inset 0px 1px 1px 0px #FFFFFF1A, 0px 50px 100px -20px #32325D40, 0px 30px 60px -30px #0000004C", hasMultipleShadows: true, colorName: "Multi" },
-{ box_shadow: "0px 50px 100px -20px #32325d40, 0px 30px 60px -30px #0000004d", hasMultipleShadows: true, colorName: "Multi" },
-{ box_shadow: "0px 50px 100px -20px #32325d40, 0px 30px 60px -30px #0000004d", hasMultipleShadows: true, colorName: "Multi" },
-{ box_shadow: "0px 13px 27px -5px #32325d40, 0px 8px 16px -8px #0000004d", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 2px 5px -1px #32325d40, 0px 1px 3px -1px #0000004d", hasMultipleShadows: true, colorName: "Multi" },
-{ box_shadow: "0px 20px 30px -10px #26394d", hasMultipleShadows: false, colorName: "Prussian Blue" },
+{ box_shadow: "0px 20px 30px -10px #26394dff", hasMultipleShadows: false, colorName: "Prussian Blue" },
 { box_shadow: "0px 0px 0px 2px #06182c66, 0px 4px 6px -1px #06182ca6, inset 0px 1px 0px #ffffff14", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 6px 12px -2px #32325d40, 0px 3px 7px -3px #0000004d", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 13px 27px -5px #32325d40, 0px 8px 16px -8px #0000004d", hasMultipleShadows: true, colorName: "Multi" },
@@ -261,7 +262,7 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 { box_shadow: "0px 1px 3px 0px #0000001a, 0px 1px 2px 0px #0000000f", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 4px 6px -1px #0000001a, 0px 2px 4px -1px #0000000f", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 10px 15px -3px #0000001a, 0px 4px 6px -2px #0000000d", hasMultipleShadows: true, colorName: "Multi" },
-{ box_shadow: "0px 20px 25px -5px#0000001a, 0px 10px 10px -5px #0000000a", hasMultipleShadows: true, colorName: "Multi" },
+{ box_shadow: "0px 20px 25px -5px #0000001a, 0px 10px 10px -5px #0000000a", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 25px 50px -12px #00000040", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "inset 0px 2px 4px 0px #0000000f", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "0px 0px 5px 0px #0000001a, 0px 0px 1px 0px #0000001a", hasMultipleShadows: true, colorName: "Multi" },
@@ -310,7 +311,7 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 { box_shadow: "inset 0px -23px 25px 0px #0000002b, inset 0px -36px 30px 0px #00000026, inset 0px -79px 40px 0px #0000001a, 0px 2px 1px #0000000f, 0px 4px 2px #00000017, 0px 8px 4px #00000017, 0px 16px 8px #00000017, 0px 32px 16px #00000017", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 25px 20px -20px #00000073", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "0px 2px 4px #00000066, 0px 7px 13px -3px #0000004d, inset 0px -3px 0px #00000033", hasMultipleShadows: true, colorName: "Multi" },
-{ box_shadow: "0px 0px 0px 1px #0000000d, inset 0px 0px 0px 1px #d1d5db", hasMultipleShadows: true, colorName: "Multi" },
+{ box_shadow: "0px 0px 0px 1px #0000000d, inset 0px 0px 0px 1px #d1d5dbff", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "inset 0px -50px 36px -28px #00000059", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "0px 1px 1px #091e4240, 0px 0px 1px 1px #091e4221", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 4px 8px -2px #091e4240, 0px 0px 0px 1px #091e4214", hasMultipleShadows: true, colorName: "Multi" },
@@ -319,7 +320,6 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 ]
 
 const shadow_area_test = document.getElementsByClassName("shadow_area_test")[0]
-print(shadow_area_test)
 
 shadowList.forEach(shadow => {
     const shadow_test = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
