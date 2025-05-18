@@ -1,33 +1,37 @@
 class Shadow {
-    constructor(Shadow_box) {
+    constructor(Shadow_box, shadowCard) {
         this.Shadow_box = Shadow_box
+        this.ShadowCard = shadowCard
+        this.HasMultipleShadows = this.Shadow_box.getAttribute("hasMultipleShadows")
+        this.MainShadow = this.Shadow_box.getAttribute("main_shadow")
         this.Shadow_box_css = this.Shadow_box.getAttribute("style")
-        this.Format_btn = this.Shadow_box.children[0].children[0]
+        this.Format_btn = this.Shadow_box.querySelector('.shadow_box_color_format_btn')
         this.Shadow_css_code = this.Format_btn.getAttribute("shadow_code")
-        this.Format_list = this.Format_btn.nextElementSibling
+        this.Format_list = this.Shadow_box.querySelector('.format_list')
         this.Format_btn_child = this.Format_list.children
-        this.Color_format = this.Shadow_box.children[0].children[0].innerHTML.slice(1, -1)
-        this.Color_format_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[0]
-        this.Color_alpha_data = this.Format_btn.parentNode.nextElementSibling.children[0].children[1]
+        this.Color_format = this.Format_btn.innerHTML.slice(1, -1)
+        this.Color_format_data = this.Shadow_box.querySelector('.color_format_data')
+        this.Color_alpha_data = this.Shadow_box.querySelector('.color_alpha')
         this.Shadow_box_color_format_value = undefined
         this.hex_value = this.Format_btn.getAttribute("hex_code").substring(1)
         this.alpha_value = this.Format_btn.getAttribute("alpha_value")
         this.Shadow_box_alpha_value = this.alpha_value
-        this.Color_option_list = this.Shadow_box.children[0].children[2].children[1]
-        this.Shadow_box_shadow_color_btn = this.Shadow_box.children[0].children[2].children[0]
-        this.color_option_list_box = this.Color_option_list.children[1]
+        this.Color_option_list = this.Shadow_box.querySelector('.color_option_list')
+        this.Shadow_box_shadow_color_btn = this.Shadow_box.querySelector('.shadow_box_shadow_color_btn')
+        this.color_option_list_box = this.Shadow_box.querySelector('.color_option_list_box')
         this.color_view_box
         this.color_view
         this.color_name
-        this.color_output = this.Shadow_box_shadow_color_btn.parentNode.nextElementSibling
-        this.colorInput = this.Format_btn.nextElementSibling.nextElementSibling.children[1].children[0]
-        this.Bg_color_btn = this.Shadow_box.children[2].children[0].children[0]
-        this.Bg_color_list_box = this.Shadow_box.children[2].children[0].children[1]
-        this.Bg_color_input = this.Shadow_box.children[2].children[0].children[1].children[0].children[0]
-        this.Bg_color_input_pallete = this.Shadow_box.children[2].children[0].children[1].children[0].children[1]
-        this.Bg_color_list = this.Shadow_box.children[2].children[0].children[1].children[1]
-        this.Shadow_value = this.Shadow_box.children[1].children[2]
-        this.copy_btn = this.Shadow_box.children[2].children[1]
+        this.color_output = this.Shadow_box.querySelector('.btn_color_view')
+        this.colorInput = this.Shadow_box.querySelector('.custom_color_input')
+        this.Bg_color_btn = this.Shadow_box.querySelector('.shadow_box_bg_btn')
+        this.Bg_color_list_box = this.Shadow_box.querySelector('.shadow_box_bg_list_box')
+        this.Bg_color_input = this.Shadow_box.querySelector('.bg_color_input')
+        this.Bg_color_input_pallete = this.Shadow_box.querySelector('.bg_color_pallete')
+        this.Bg_color_list = this.Shadow_box.querySelector('.shadow_box_bg_list')
+        this.Shadow_value = this.Shadow_box.querySelector('.shadow_value')
+        this.UpdatedShadow
+        this.copy_btn = this.Shadow_box.querySelector('.shadow_box_copy_btn')
     }
 
     color_format_update() {
@@ -275,11 +279,20 @@ class Shadow {
                 if (this.Color_format === "HEX") {
                     this.Shadow_box.children[1].children[0].children[0].children[1].innerHTML = this.hex_value
                 }
+                this.UpdatedShadow = recolorShadow(this.MainShadow, this.hex_value)
                 this.colorUpdateGroup()
-                this.Shadow_box.style.setProperty("--shadow_box", this.Shadow_css_code + " #" + this.hex_value + this.alpha_value)
+
+                this.ShadowCard.mainShadowData = this.ShadowCard.extractShadowPosition(this.UpdatedShadow)
+                print(this.ShadowCard.mainShadowData)
+                print(this.ShadowCard.count)
+                this.ShadowCard.updateVisualShadowData(this.ShadowCard.count)   
+                // the above updateVisualShadowData doesn't work fix it 
+
+                this.Shadow_box.style.setProperty("--shadow_box", this.UpdatedShadow)
                 copyClipboard(this.copy_btn, `box-shadow: ${this.Shadow_css_code} #${this.hex_value}${this.alpha_value};`)
             })
         })
+        
         copyClipboard(this.copy_btn, `box-shadow: ${this.Shadow_css_code} #${this.hex_value}${this.alpha_value};`)
     }
 }
