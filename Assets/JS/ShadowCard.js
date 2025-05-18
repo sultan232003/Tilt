@@ -1,12 +1,13 @@
 class ShadowCard {
     constructor({ shadowCode: shadowCode, hexCode: hexCode, alphaValue: alphaValue, bgColor: bgColor, hasMultipleShadows: hasMultipleShadows, colorName: colorName }) {
         this.shadowCode = shadowCode || '0px 0px 0px 0px';
+        this.mainShadow = shadowCode
         this.hexCode = hexCode || '#000000';
         this.alphaValue = alphaValue || 'FF';
         this.bgColor = bgColor || '#ffffff';
         this.HasMultipleShadows = hasMultipleShadows
         this.ColorName = colorName
-        this.mainShadowData = this.extractShadowPosition()
+        this.mainShadowData = this.extractShadowPosition(this.shadowCode)
         this.count = 0
         this.maxCount = this.mainShadowData.length
     }
@@ -14,17 +15,16 @@ class ShadowCard {
     createCard() {
         this.Wrapper = createTag("div");
         this.ShadowBox = createTag("div", "shadow_box", {}, this.Wrapper);
-
         this.ShadowBox.style.setProperty("--shadow_box", this.shadowCode);
         this.ShadowBox.style.setProperty("--color_view_bg", "#ffffff");
-
+        this.ShadowBox.setAttribute("hasMultipleShadows", this.HasMultipleShadows)
+        this.ShadowBox.setAttribute("main_shadow", this.mainShadow);
         this.ButtonRowTop = createTag("div", "button_row_top", {}, this.ShadowBox);
         this.ShadowBoxColorFormatBtn = createTag("button", "shadow_box_color_format_btn mac_3D_btn text-upper", {}, this.ButtonRowTop);
         this.extractHex()
         this.ShadowBoxColorFormatBtn.setAttribute("shadow_code", this.shadowCode);
         this.ShadowBoxColorFormatBtn.setAttribute("hex_code", this.hexCode);
         this.ShadowBoxColorFormatBtn.setAttribute("alpha_value", this.alphaValue);
-
         this.ShadowBoxColorFormatBtn.innerHTML = "(HEX)"
         this.FormatList = createTag("div", "format_list", {}, this.ButtonRowTop);
         ["(HEX)", "(RGB)", "(HSL)", "(HSB)", "(CSS)", "(LCH)", "(LAB)", "(XYZ)", "(CMYK)"].forEach(FormatOptions => {
@@ -36,7 +36,7 @@ class ShadowCard {
         this.ShadowBoxShadowColorBtn = createTag("button", "shadow_box_shadow_color_btn mac_3D_btn text-caps", {}, this.TempDiv1);
         this.ShadowBoxShadowColorBtn.innerHTML = this.ColorName;
         this.ColorOptionList = createTag("div", "color_option_list width-100", {}, this.TempDiv1);
-        this.ColorOptionListInput = createTag("input", "", {}, this.ColorOptionList);
+        this.ColorOptionListInput = createTag("input", "custom_color_input", {}, this.ColorOptionList);
         this.ColorOptionListInput.type = "text";
         this.ColorOptionListInput.placeholder = "Custom";
         this.ColorOptionListInput.maxLength = 6;
@@ -66,25 +66,15 @@ class ShadowCard {
         this.TempDiv2 = createTag("div", "", {}, this.ColorValue);
         this.Line = createTag("hr", "", {}, this.TempDiv2);
         this.ShadowValue = createTag("div", "shadow_value row gap-5", {}, this.ColorValue)
-        let shadowData
-        if (!this.HasMultipleShadows) {
-            const shadow = this.mainShadowData[0];
-            shadowData = [
-                { value: `${shadow.xOffset}px`, label: "X" },
-                { value: `${shadow.yOffset}px`, label: "Y" },
-                { value: `${shadow.blurRadius}px`, label: "BLUR" },
-                { value: `${shadow.spreadRadius}px`, label: "SPREAD" }
-            ];
-            this.shadowCode = `${shadow.inset ? 'inset ' : ''}${shadowData.map(d => d.value).join(' ')}`;
-            this.ShadowBoxColorFormatBtn.setAttribute("shadow_code", this.shadowCode);
-        } else {
-            shadowData = [
-                { value: "0px", label: "X" },
-                { value: "25px", label: "Y" },
-                { value: "50px", label: "BLUR" },
-                { value: "-12px", label: "SPREAD" }
-            ];
-        }
+        const shadow = this.mainShadowData[0];
+        let shadowData = [
+            { value: `${shadow.xOffset}px`, label: "X" },
+            { value: `${shadow.yOffset}px`, label: "Y" },
+            { value: `${shadow.blurRadius}px`, label: "BLUR" },
+            { value: `${shadow.spreadRadius}px`, label: "SPREAD" }
+        ];
+        this.shadowCode = `${shadow.inset ? 'inset ' : ''}${shadowData.map(d => d.value).join(' ')}`;
+        this.ShadowBoxColorFormatBtn.setAttribute("shadow_code", this.shadowCode);
         this.shadowFormatDataList = [];
         shadowData.forEach(({ value, label }, index) => {
             const ShadowFormatData = createTag("div", "shadow_format_data row row-col col-9 gap-10", {}, this.ShadowValue);
@@ -139,49 +129,35 @@ class ShadowCard {
         } else {
             this.hexCode = this.mainShadowData[0].color.slice(0, 7);
             this.alphaValue = this.mainShadowData[0].color.slice(7, 9);
-            // above 2 line have bug and a temperory fix
         }
-        console.log(this.mainShadowData[0].color)
+    }
+
+    updateVisualShadowData(count) {
+        this.TempH3.innerHTML = this.mainShadowData[count].color.slice(0, 7)
+        this.TempH3_2.innerHTML = this.mainShadowData[count].color.slice(7, 9)
+        const keys = ["xOffset", "yOffset", "blurRadius", "spreadRadius"];
+        keys.forEach((key, i) => {
+            this.shadowFormatDataList[i].h3.innerHTML = `${this.mainShadowData[count][key]}px`;
+        });
     }
 
     controllerFunction() {
         this.Prev.addEventListener("click", (e) => {
-            if (this.count > 0) {
-                this.count--
-            }
+            this.count > 0 ? this.count-- : null;
             this.PrevIcon.style.opacity = this.count === 0 ? "0.5" : "1";
             this.NextIcon.style.opacity = this.count < this.maxCount - 1 ? "1" : "0.5";
-
-            console.log(this.count)
-            this.TempH3.innerHTML = this.mainShadowData[this.count].color.slice(0, 7)
-            this.TempH3_2.innerHTML = this.mainShadowData[this.count].color.slice(7, 9)
-            const keys = ["xOffset", "yOffset", "blurRadius", "spreadRadius"];
-            keys.forEach((key, i) => {
-                this.shadowFormatDataList[i].h3.innerHTML = `${this.mainShadowData[this.count][key]}px`;
-            });
-
+            this.updateVisualShadowData(this.count);
         })
         this.Next.addEventListener("click", (e) => {
-            if (this.count < this.maxCount - 1) {
-                this.count++
-            }
+            this.count < this.maxCount - 1 ? this.count++ : null;
             this.NextIcon.style.opacity = this.count === this.maxCount - 1 ? "0.5" : "1";
             this.PrevIcon.style.opacity = this.count > 0 ? "1" : "0.5";
-
-            console.log(this.count)
-            this.TempH3.innerHTML = this.mainShadowData[this.count].color.slice(0, 7)
-            this.TempH3_2.innerHTML = this.mainShadowData[this.count].color.slice(7, 9)
-            const keys = ["xOffset", "yOffset", "blurRadius", "spreadRadius"];
-            keys.forEach((key, i) => {
-                this.shadowFormatDataList[i].h3.innerHTML = `${this.mainShadowData[this.count][key]}px`;
-            });
-
+            this.updateVisualShadowData(this.count);
         })
     }
 
-    extractShadowPosition() {
-        const shadows = this.shadowCode.split(/\s*,\s*/);
-
+    extractShadowPosition(shadowCode) {
+        const shadows = shadowCode.split(/\s*,\s*/);
         return shadows.map(shadow => {
             const result = {
                 xOffset: 0,
@@ -191,26 +167,21 @@ class ShadowCard {
                 inset: false,
                 color: "#000000ff"
             };
-
             if (shadow.includes('inset')) {
                 result.inset = true;
                 shadow = shadow.replace(/\binset\b/, '').trim();
             }
-
             const colorMatch = shadow.match(/#[0-9a-fA-F]{3,8}/);
             if (colorMatch) {
                 result.color = colorMatch[0];
                 shadow = shadow.replace(result.color, '').trim();
             }
-
             const lengths = shadow.match(/-?\d+(\.\d+)?px/g) || [];
             const [x, y, blur, spread] = lengths.map(v => parseFloat(v));
-
             result.xOffset = x || 0;
             result.yOffset = y || 0;
             result.blurRadius = blur || 0;
             result.spreadRadius = spread || 0;
-
             return result;
         });
     }
@@ -283,7 +254,7 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 { box_shadow: "0px 12px 28px 0px #00000033, 0px 2px 4px 0px #0000001a, inset 0px 0px 0px 1px #ffffff0d", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 5px 15px 0px #00000026", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "0px 10px 10px -10px #2123261a", hasMultipleShadows: false, colorName: "Eerie Black" },
-{ box_shadow: "inset 3px 3px 6px 0px #ccdbe8, inset -3px -3px 6px 1px #ffffff80", hasMultipleShadows: true, colorName: "Multi" },
+{ box_shadow: "inset 3px 3px 6px 0px #ccdbe8ff, inset -3px -3px 6px 1px #ffffff80", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "6px 2px 16px 0px #88a5bf7a, -6px -2px 16px 0px #ffffffcc", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 1px 0px #11111a1a", hasMultipleShadows: false, colorName: "Rich Black" },
 { box_shadow: "0px 1px 0px #11111a0d, 0px 0px 8px #11111a1a", hasMultipleShadows: true, colorName: "Multi" },
@@ -306,7 +277,7 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 { box_shadow: "0px 22px 70px 4px #0000008f", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "0px 20px 30px #00000033", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "inset 0px 0px 0px 1px #ffffff33, 0px 0px 0px 1px #000000e6", hasMultipleShadows: true, colorName: "Multi" },
-{ box_shadow: "0px 0.0625em 0.0625em #00000040, 0px 0.125em 0.5em #00000040, inset 0px 0px 0px 1px #ffffff1a", hasMultipleShadows: true, colorName: "Multi" },
+{ box_shadow: "0px 1px 1px #00000040, 0px 2px 8px #00000040, inset 0px 0px 0px 1px #ffffff1a", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 3px 12px #00000017", hasMultipleShadows: false, colorName: "Black" },
 { box_shadow: "inset 0px -23px 25px 0px #0000002b, inset 0px -36px 30px 0px #00000026, inset 0px -79px 40px 0px #0000001a, 0px 2px 1px #0000000f, 0px 4px 2px #00000017, 0px 8px 4px #00000017, 0px 16px 8px #00000017, 0px 32px 16px #00000017", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 25px 20px -20px #00000073", hasMultipleShadows: false, colorName: "Black" },
@@ -320,10 +291,14 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 ]
 
 const shadow_area_test = document.getElementsByClassName("shadow_area_test")[0]
+let shadowCard
+const shadowCards = [];
 
 shadowList.forEach(shadow => {
-    const shadow_test = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
-    shadow_test.createCard();
-    shadow_test.extractHex()
-    shadow_test.mount(shadow_area_test);
+    shadowCard = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
+    shadowCard.createCard();
+    shadowCard.extractHex()
+    shadowCard.mount(shadow_area_test);
+    shadowCards.push(shadowCard);
 });
+print(shadowCards)
