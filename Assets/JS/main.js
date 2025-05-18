@@ -30,8 +30,8 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 const Shadow_box = document.getElementsByClassName("shadow_box")
 let Shadow_box_final
 
-Array.from(Shadow_box).forEach(Shadow_boxs => {
-  Shadow_box_final = new Shadow(Shadow_boxs)
+Array.from(Shadow_box).forEach((Shadow_boxs, index) => {
+  Shadow_box_final = new Shadow(Shadow_boxs, shadowCards[index])
   Shadow_box_final.Format_list_creator()
   Shadow_box_final.Color_Update()
 });
