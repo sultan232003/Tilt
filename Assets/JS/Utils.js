@@ -72,6 +72,22 @@ const shadowColors = [
     { name: "Beige", hex: "#F5F5DC", tag: "Light", text: "Black" },
     { name: "Antique White", hex: "#FAEBD7", tag: "Light", text: "Black" },
     { name: "White Smoke", hex: "#F5F5F5", tag: "Light", text: "Black" },
+    { name: "Delft Blue", hex: "#323269", tag: "Dark", text: "White" },
+    { name: "Hollywood Cerise", hex: "#f02eaa", tag: "Light", text: "Black" },
+    { name: "Columbia Blue", hex: "#ccdbe8", tag: "Light", text: "Black" },
+    { name: "Celtic Blue", hex: "#0366d6", tag: "Dark", text: "White" },
+    { name: "Air Superiority Blue", hex: "#88a5bf", tag: "Light", text: "Black" },
+    { name: "Yale Blue", hex: "#0e3f7e", tag: "Dark", text: "White" },
+    { name: "Oxford Blue", hex: "#091e42", tag: "Dark", text: "White" },
+    { name: "Dim Gray", hex: "#636363", tag: "Dark", text: "White" },
+    { name: "Space Cadet", hex: "#32325d", tag: "Dark", text: "White" },
+    { name: "Oxford Blue", hex: "#06182c", tag: "Dark", text: "White" },
+    { name: "Onyx", hex: "#3c4043", tag: "Dark", text: "White" },
+    { name: "Charcoal", hex: "#434755", tag: "Dark", text: "White" },
+    { name: "Eerie Black", hex: "#1b1f23", tag: "Dark", text: "White" },
+    { name: "Rich Black", hex: "#0e1e25", tag: "Dark", text: "White" },
+    { name: "Eerie Black", hex: "#212326", tag: "Dark", text: "White" },
+    { name: "Rich Black", hex: "#11111a", tag: "Dark", text: "White" },
     { name: "Gainsboro", hex: "#DCDCDC", tag: "Light", text: "Black" }
 ];
 
@@ -692,20 +708,39 @@ function recolorShadow(shadowStr, newBaseHex) {
     const baseRgb = hexToRgba2(newBaseHex);
     const [baseH, baseS] = rgbToHsl(...baseRgb.slice(0, 3));
 
-    return shadowStr.replace(/#([0-9a-fA-F]{6,8})/g, (fullMatch, hex) => {
-        const rgba = hexToRgba2('#' + hex);
-        const [r, g, b, a] = rgba;
+    const colorMatches = shadowStr.match(/#([0-9a-fA-F]{6,8})/g) || [];
 
-        const isPureBlack = (r === 0 && g === 0 && b === 0);
+    if (colorMatches.length === 1) {
+        const [r, g, b, a] = hexToRgba2(colorMatches[0]);
+        return shadowStr.replace(/#([0-9a-fA-F]{6,8})/g, rgbaToHex(...baseRgb.slice(0, 3), a));
+    }
 
-        if (isPureBlack) {
-            // Directly apply the new base RGB and preserve original alpha
+    const baseRgbList = colorMatches.map(hex => {
+        const [r, g, b] = hexToRgba2(hex).slice(0, 3);
+        return `${r},${g},${b}`;
+    });
+
+    const allSameBase = baseRgbList.every(rgb => rgb === baseRgbList[0]);
+
+    if (allSameBase) {
+        return shadowStr.replace(/#([0-9a-fA-F]{6,8})/g, (match, hex) => {
+            const [, , , a] = hexToRgba2('#' + hex);
+            return rgbaToHex(...baseRgb.slice(0, 3), a);
+        });
+    }
+
+    let matchIndex = 0;
+    return shadowStr.replace(/#([0-9a-fA-F]{6,8})/g, (match, hex) => {
+        const [r, g, b, a] = hexToRgba2('#' + hex);
+
+        if (matchIndex === 0) {
+            matchIndex++;
             return rgbaToHex(...baseRgb.slice(0, 3), a);
         }
 
-        // Otherwise, map tone via lightness
         const [, , lightness] = rgbToHsl(r, g, b);
         const newRgb = hslToRgb(baseH, baseS, lightness);
+        matchIndex++;
         return rgbaToHex(...newRgb, a);
     });
 }
