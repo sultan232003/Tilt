@@ -559,9 +559,10 @@ body {
 }
 
 .color_format.white p,
-.color_format.white h3 {
+.color_format.white h3,
+.shadow_value.white p,
+.shadow_value.white h3 {
   color: #ffffff;
-
 }
 
 .color_format_index_value.white {
@@ -583,18 +584,6 @@ body {
   font-size: 16px;
   font-weight: 600;
   line-height: 0.78;
-}
-
-.color_alpha h3.black,
-.color_format_data h3.black,
-.shadow_format_data h3.black {
-  color: var(--Russian_violet);
-}
-
-.color_alpha h3.white,
-.color_format_data h3.white,
-.shadow_format_data h3.white {
-  color: #ffffff;
 }
 
 .shadow_value {
