@@ -27,13 +27,17 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 
 // SHADOW BOX EFFECT CODE STARTS HERE
 
-const Shadow_box = document.getElementsByClassName("shadow_box")
-let Shadow_box_final
-
-Array.from(Shadow_box).forEach((Shadow_boxs, index) => {
-  Shadow_box_final = new Shadow(Shadow_boxs, shadowCards[index])
-  Shadow_box_final.Format_list_update()
-  Shadow_box_final.Color_Update()
+const shadow_area_grid = document.getElementsByClassName("shadow_area_grid")[0]
+let shadowCard
+const shadowCards = [];
+shadowList.forEach(shadow => {
+    shadowCard = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
+    shadowCard.createCard();
+    shadowCard.extractHex()
+    shadowCard.mount(shadow_area_grid);
+    shadowCard.formatListUpdate();
+    shadowCard.colorChanger()
+    shadowCards.push(shadowCard);
 });
 
 // SHADOW BOX EFFECT CODE ENDS HERE
