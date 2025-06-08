@@ -131,18 +131,13 @@ class ShadowCard {
     }
 
     ShadowValueColorUpdate() {
-        this.isLight = this.BgColorFinal.colorData.tag === "Light";
-        Array.from(this.ShadowValue.children).forEach(shadowValueChild => {
-            shadowValueChild.children[0].classList.toggle("black", this.isLight);
-            shadowValueChild.children[0].classList.toggle("white", !this.isLight);
-            shadowValueChild.children[1].classList.toggle("black", this.isLight);
-            shadowValueChild.children[1].classList.toggle("white", !this.isLight);
-        })
         if (this.ShadowValueChangeControl) {
             this.ShadowValueChangeControl.classList.toggle("white", !this.isLight);
         }
         this.ColorFormat.classList.toggle("black", this.isLight);
         this.ColorFormat.classList.toggle("white", !this.isLight);
+        this.ShadowValue.classList.toggle("black", this.isLight);
+        this.ShadowValue.classList.toggle("white", !this.isLight);
         this.ShadowBoxCopyBtn.classList.toggle("white", this.isLight)
     }
 
@@ -278,9 +273,13 @@ class ShadowCard {
 
         this.BgColorInput.addEventListener("keydown", (e) => {
             if (e.key === 'Enter') {
-                console.log(this.BgColorInput.value)
-                console.log(isLightColor(this.BgColorInput.value))
-
+                if (isLightColor(this.BgColorInput.value) === "Light") {
+                    this.isLight = true;
+                    // this.ShadowValueColorUpdate()
+                } else {
+                    this.isLight = false;
+                }
+                this.ShadowValueColorUpdate()
             }
         })
         this.BgColorFinal.customInput()
@@ -300,15 +299,13 @@ class ShadowCard {
         })
         copyClipboard(this.ShadowBoxCopyBtn, `box-shadow: ${this.UpdatedShadow};`)
 
-        this.BgColorObserver = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList') {
-                    this.threeColumnColor()
-                    this.ShadowValueColorUpdate()
-                }
-            });
-        });
-        this.BgColorObserver.observe(this.ShadowBoxBGButton, { childList: true, subtree: true });
+        Array.from(this.ShadowBoxBGList.children).forEach(ShadowBoxBGListChildren => {
+            ShadowBoxBGListChildren.addEventListener("click", () => {
+                this.threeColumnColor()
+                this.isLight = this.BgColorFinal.colorData.tag === "Light";
+                this.ShadowValueColorUpdate()
+            })
+        })
     }
 
     extractShadowPosition(shadowCode) {
