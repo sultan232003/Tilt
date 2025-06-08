@@ -8,12 +8,16 @@ class ShadowCard {
         this.HasMultipleShadows = hasMultipleShadows
         this.ColorName = colorName
         this.mainShadowData = this.extractShadowPosition(this.shadowCode)
+        this.colorUpdate(this.shadowCode)
         this.count = 0
         this.maxCount = this.mainShadowData.length
+        this.ColorFormatValue = 'HEX'
+        this.shadowBoxColorFormatValue = this.mainShadowData
+        this.UpdatedShadow = this.mainShadow
     }
 
     createCard() {
-        this.Wrapper = createTag("div");
+        this.Wrapper = createTag("div", "wrapper");
         this.ShadowBox = createTag("div", "shadow_box", {}, this.Wrapper);
         this.ShadowBox.style.setProperty("--shadow_box", this.shadowCode);
         this.ShadowBox.style.setProperty("--color_view_bg", "#ffffff");
@@ -32,6 +36,7 @@ class ShadowCard {
             FormatOptionsDiv.innerHTML = FormatOptions
             this.FormatList.appendChild(FormatOptionsDiv)
         });
+        this.FormatListChild = this.FormatList.children
         this.TempDiv1 = createTag("div", "width-100 pos-rel", {}, this.ButtonRowTop);
         this.ShadowBoxShadowColorBtn = createTag("button", "shadow_box_shadow_color_btn mac_3D_btn text-caps", {}, this.TempDiv1);
         this.ShadowBoxShadowColorBtn.innerHTML = this.ColorName;
@@ -39,7 +44,7 @@ class ShadowCard {
         this.ColorOptionListInput = createTag("input", "custom_color_input", {}, this.ColorOptionList);
         this.ColorOptionListInput.type = "text";
         this.ColorOptionListInput.placeholder = "Custom";
-        this.ColorOptionListInput.maxLength = 6;
+        this.ColorOptionListInput.maxLength = 9;
         this.ColorOptionListBox = createTag("div", "color_option_list_box", {}, this.ColorOptionList);
         this.BtnColorView = createTag("div", "btn_color_view", {}, this.ButtonRowTop);
         this.BtnColorView.style.setProperty("--color_view_bg", this.hexCode);
@@ -52,7 +57,7 @@ class ShadowCard {
             p.textContent = text;
             this.ColorFormatIndexValue.appendChild(p);
         });
-        this.TempH3 = createTag("h3", "text-center text-upper", {}, this.ColorFormatData)
+        this.TempH3 = createTag("h3", "temph3 text-center text-upper", {}, this.ColorFormatData)
         this.TempH3.innerHTML = this.hexCode
         this.ColorAlpha = createTag("div", "color_alpha row row-col col-3 gap-10", {}, this.ColorFormat)
         this.ColorFormatIndexValue2 = createTag("div", "color_format_index_value row space-between align-center text-upper", {}, this.ColorAlpha);
@@ -61,7 +66,7 @@ class ShadowCard {
             p.textContent = text;
             this.ColorFormatIndexValue2.appendChild(p);
         });
-        this.TempH3_2 = createTag("h3", "text-center text-upper", {}, this.ColorAlpha)
+        this.TempH3_2 = createTag("h3", "temph3_2 text-center text-upper", {}, this.ColorAlpha)
         this.TempH3_2.innerHTML = this.alphaValue
         this.TempDiv2 = createTag("div", "", {}, this.ColorValue);
         this.Line = createTag("hr", "", {}, this.TempDiv2);
@@ -109,6 +114,14 @@ class ShadowCard {
             this.createController();
             this.controllerFunction();
         }
+        this.ColorListFinal = new ColorList(this.ShadowBoxShadowColorBtn, this.ColorOptionListBox, this.ColorOptionList, "Full", this.ColorOptionListInput, false, false, "color_view", "color_value", this.BtnColorView, this.ShadowBoxColorFormatBtn, this.ShadowBoxShadowColorBtn)
+        this.ColorListFinal.create()
+        this.ColorListFinal.select()
+        this.BgColorFinal = new ColorList(this.ShadowBoxBGButton, this.ShadowBoxBGList, this.ShadowBoxBGListBox, "Full", this.BgColorInput, false, false, "color_view", "color_value", this.ShadowBox, this.ShadowBoxBGButton, this.ShadowBoxBGButton, this.BGColorPallete)
+        this.BgColorFinal.customizeColor("#ffffff", "White", "255,255,255", "Light", "Black")
+        this.BgColorFinal.create()
+        this.BgColorFinal.select()
+        this.BgColorFinal.customInput()
 
         return this.Wrapper
     }
@@ -133,8 +146,15 @@ class ShadowCard {
     }
 
     updateVisualShadowData(count) {
-        this.TempH3.innerHTML = this.mainShadowData[count].color.slice(0, 7)
-        this.TempH3_2.innerHTML = this.mainShadowData[count].color.slice(7, 9)
+        if (this.ColorFormatValue == "HEX") {
+            this.TempH3.innerHTML = this.mainShadowData[count].color.slice(0, 7)
+            this.TempH3_2.innerHTML = this.mainShadowData[count].color.slice(7, 9)
+        } else {
+            for (let i = 0; i < 3; i++) {
+                this.ColorFormatData.children[i].children[1].innerHTML = this.shadowBoxColorFormatValue[this.count].color[i];
+            }
+            this.TempH3_2.innerHTML = this.shadowBoxColorFormatValue[this.count].color[3];
+        }
         const keys = ["xOffset", "yOffset", "blurRadius", "spreadRadius"];
         keys.forEach((key, i) => {
             this.shadowFormatDataList[i].h3.innerHTML = `${this.mainShadowData[count][key]}px`;
@@ -154,6 +174,106 @@ class ShadowCard {
             this.PrevIcon.style.opacity = this.count > 0 ? "1" : "0.5";
             this.updateVisualShadowData(this.count);
         })
+    }
+
+    colorFormatChanger() {
+        const formatMap = { HEX: this.mainShadowData, RGB: this.RGBAShadowData, HSL: this.HSLAShadowData, HSB: this.HSBShadowData, XYZ: this.XYZShadowData, LAB: this.LABShadowData, LCH: this.LCHShadowData, CSS: this.CSSShadowData, CMYK: this.CMYKShadowData };
+        this.shadowBoxColorFormatValue = formatMap[this.ColorFormatValue] || null;
+    }
+
+    formatListUpdate() {
+        this.ShadowBoxColorFormatBtn.addEventListener("click", () => {
+            this.FormatList.classList.toggle("active")
+        })
+        document.addEventListener("click", (e) => {
+            if (e.target !== this.ShadowBoxColorFormatBtn) {
+                this.FormatList.classList.remove("active")
+            }
+        })
+        Array.from(this.FormatListChild).forEach(Format_list_childs => {
+            Format_list_childs.addEventListener("click", (e) => {
+                this.ColorFormatValue = e.target.innerHTML.slice(1, -1)
+                this.ShadowBoxColorFormatBtn.innerHTML = e.target.innerHTML
+                this.FormatList.classList.remove("active")
+                this.colorFormatChanger()
+                this.threeColumnColor()
+                this.oneColumnColor()
+            })
+        });
+    }
+
+    threeColumnColor() {
+        const Formats = ["RGB", "HSL", "HSB", "CSS", "LCH", "LAB", "XYZ", "CMYK"];
+        if (Formats.includes(this.ColorFormatValue)) {
+            this.ColorFormatData.classList.add("gap-5")
+            this.ColorFormatData.classList.remove("gap-10", "row-col")
+            // const isLight = this.BgColorFinal.colorData.tag === "Light" ? "black" : "white";
+            const isLight = "black";
+            this.ColorFormatData.innerHTML = [0, 1, 2].map(i => `
+                <div class="color_format_index_value_cols row row-col gap-10 col-4">
+                    <div class="color_format_index_value row space-between align-center text-upper ${isLight}">
+                        <p>[</p>
+                        <p>${this.ColorFormatValue[i]}</p>
+                        <p>]</p>
+                    </div>
+                    <h3 class="text-center text-upper ${isLight}">${this.shadowBoxColorFormatValue[this.count].color[i]}</h3>
+                </div>
+            `).join("");
+            this.TempH3_2.innerHTML = this.shadowBoxColorFormatValue[this.count].color[3]
+        }
+    }
+
+    oneColumnColor() {
+        if (this.ColorFormatValue == "HEX") {
+            this.ColorFormatData.classList.remove("gap-5")
+            this.ColorFormatData.classList.add("row-col", "gap-10")
+            // const isLight = this.BgColorFinal.colorData.tag === "Light" ? "black" : "white";
+            const isLight = "black";
+            const childDivs = this.ColorFormatData.querySelectorAll('.color_format_index_value_cols');
+            if (childDivs.length >= 1) {
+                for (let i = 0; i < 3; i++) {
+                    childDivs[i].remove();
+                }
+            }
+            this.ColorFormatIndexValue = createTag("div", "color_format_index_value row space-between align-center text-upper", {}, this.ColorFormatData);
+            ["[", "HEX", "]"].forEach(text => {
+                const p = document.createElement("p");
+                p.textContent = text;
+                this.ColorFormatIndexValue.appendChild(p);
+            });
+            this.TempH3 = createTag("h3", "temph3 text-center text-upper", {}, this.ColorFormatData)
+            this.TempH3.innerHTML = this.shadowBoxColorFormatValue[this.count].color.slice(0, 7);
+            this.TempH3_2.innerHTML = this.shadowBoxColorFormatValue[this.count].color.slice(7, 9);
+        }
+    }
+
+    colorChanger() {
+        // this.ColorOptionListInput.addEventListener("keydown", (e) => {
+        //     if (e.key === 'Enter') {
+        //         this.UpdatedShadow = recolorShadow(this.shadowCode, this.ColorOptionListInput.value)
+        //         console.log(this.shadowCode)
+        //         console.log(this.ColorOptionListInput.value)
+        //         console.log(this.UpdatedShadow)
+        //         this.shadowCode = this.UpdatedShadow
+        //         this.colorUpdate(this.UpdatedShadow)
+        //         this.ShadowBox.style.setProperty("--shadow_box", this.UpdatedShadow)
+        //         his.updateVisualShadowData(this.count);
+        //     }
+        // })
+        // this.ColorListFinal.customInput()
+
+        Array.from(this.ColorOptionList.children).forEach(color_view_boxes => {
+            color_view_boxes.addEventListener("click", (e) => {
+                this.hexCode = this.ShadowBoxColorFormatBtn.getAttribute("hex_code").substring(1)
+                this.UpdatedShadow = recolorShadow(this.mainShadow, this.hexCode)
+                this.colorUpdate(this.UpdatedShadow)
+                this.ShadowBox.style.setProperty("--shadow_box", this.UpdatedShadow)
+                this.shadowCode = this.UpdatedShadow
+                this.updateVisualShadowData(this.count)
+                copyClipboard(this.ShadowBoxCopyBtn, `box-shadow: ${this.UpdatedShadow};`)
+            })
+        })
+        copyClipboard(this.ShadowBoxCopyBtn, `box-shadow: ${this.UpdatedShadow};`)
     }
 
     extractShadowPosition(shadowCode) {
@@ -184,6 +304,99 @@ class ShadowCard {
             result.spreadRadius = spread || 0;
             return result;
         });
+    }
+
+    mergeRgbaColorsIntoShadowData(shadowDataArray, rgbaShadowCode) {
+        const rgbaMatches = rgbaShadowCode.match(/rgba\(\s*\d+,\s*\d+,\s*\d+,\s*[\d.]+\s*\)/g) || [];
+        return shadowDataArray.map((shadowObj, i) => {
+            const updated = { ...shadowObj };
+            if (rgbaMatches[i]) {
+                const [r, g, b, a] = rgbaMatches[i]
+                    .match(/[\d.]+/g)
+                    .map(Number);
+                updated.color = [r, g, b, a];
+            }
+            return updated;
+        });
+    }
+
+    convertShadowColorToHsla(shadowDataArray, percentage = false) {
+        return shadowDataArray.map(shadow => {
+            const [r, g, b, a] = shadow.color;
+            const hslaArray = rgbaToHsla(r, g, b, a, percentage);
+            return {
+                ...shadow,
+                color: hslaArray
+            };
+        });
+    }
+
+    convertShadowColorToHsb(shadowDataArray, percentage = false) {
+        return shadowDataArray.map(shadow => {
+            const [r, g, b, a] = shadow.color;
+            const hsbaArray = rgbToHsb(r, g, b, percentage, a);
+            return {
+                ...shadow,
+                color: hsbaArray
+            };
+        });
+    }
+
+    convertShadowColorToXyz(shadowDataArray, percentage = false) {
+        return shadowDataArray.map(shadow => {
+            const [r, g, b, a] = shadow.color;
+            const xyzArray = rgbToXyz(r, g, b, percentage);
+            return {
+                ...shadow,
+                color: [...xyzArray, a]
+            };
+        });
+    }
+
+    convertShadowColorToLab(shadowDataArray, percentage = false) {
+        return shadowDataArray.map(shadow => {
+            const [x, y, z, a] = shadow.color;
+            const labArray = xyzToLab(x.slice(0, -1), y.slice(0, -1), z.slice(0, -1), percentage);
+            return {
+                ...shadow,
+                color: [...labArray, a]
+            };
+        });
+    }
+
+    convertShadowColorToLch(shadowDataArray, percentage = false) {
+        return shadowDataArray.map(shadow => {
+            const [L, a, b, alpha] = shadow.color;
+            const lchArray = labToLch(L.slice(0, -1), a.slice(0, -1), b.slice(0, -1), percentage);
+            return {
+                ...shadow,
+                color: [...lchArray, alpha]
+            };
+        });
+    }
+
+    convertShadowColorToCmyk(shadowDataArray) {
+        return shadowDataArray.map(shadow => {
+            const [r, g, b] = shadow.color;
+            const cmykArray = rgbToCmyk(r, g, b);
+            return {
+                ...shadow,
+                color: cmykArray
+            };
+        });
+    }
+
+    colorUpdate(shadowcode) {
+        this.mainShadowData = this.extractShadowPosition(shadowcode)
+        this.mainRGBAShadow = convertBoxShadowHexToRgba(shadowcode)
+        this.RGBAShadowData = this.mergeRgbaColorsIntoShadowData(this.mainShadowData, this.mainRGBAShadow)
+        this.CSSShadowData = this.RGBAShadowData
+        this.HSLAShadowData = this.convertShadowColorToHsla(this.RGBAShadowData, true)
+        this.HSBShadowData = this.convertShadowColorToHsb(this.RGBAShadowData, true)
+        this.XYZShadowData = this.convertShadowColorToXyz(this.RGBAShadowData, true)
+        this.LABShadowData = this.convertShadowColorToLab(this.XYZShadowData, true)
+        this.LCHShadowData = this.convertShadowColorToLch(this.LABShadowData, true)
+        this.CMYKShadowData = this.convertShadowColorToCmyk(this.RGBAShadowData)
     }
 
     mount(target) {
@@ -299,6 +512,7 @@ shadowList.forEach(shadow => {
     shadowCard.createCard();
     shadowCard.extractHex()
     shadowCard.mount(shadow_area_test);
+    shadowCard.formatListUpdate();
+    shadowCard.colorChanger()
     shadowCards.push(shadowCard);
 });
-print(shadowCards)
