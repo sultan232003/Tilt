@@ -2,7 +2,7 @@ function print(val) {
     console.log(val)
 }
 
-function test(val){
+function test(val) {
     print(val || "working")
 }
 
@@ -140,6 +140,16 @@ function hexToRgba2(hex) {
     ];
 }
 
+function convertBoxShadowHexToRgba(boxShadow) {
+    return boxShadow.replace(/#([0-9a-fA-F]{8})(?!\w)/g, (match, hex) => {
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        const a = parseInt(hex.slice(6, 8), 16) / 255;
+        return `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`;
+    });
+}
+
 function rgbaToHex(r, g, b, a = 255) {
     return '#' + [r, g, b, a].map(x => x.toString(16).padStart(2, '0')).join('');
 }
@@ -198,7 +208,7 @@ function rgbToHsl(r, g, b) {
     return [h, s, l];
 }
 
-function rgbToHsb(r, g, b, percentage) {
+function rgbToHsb(r, g, b, percentage, alpha = null) {
     r /= 255;
     g /= 255;
     b /= 255;
@@ -224,11 +234,14 @@ function rgbToHsb(r, g, b, percentage) {
         }
         h /= 6;
     }
-    if (percentage) {
-        return [Math.round(h * 360) + "%", Math.round(s * 100) + "%", Math.round(v * 100) + "%"];
-    } else {
-        return [Math.round(h * 360), Math.round(s * 100), Math.round(v * 100)];
+    const hValue = percentage ? Math.round(h * 360) + "%" : Math.round(h * 360);
+    const sValue = percentage ? Math.round(s * 100) + "%" : Math.round(s * 100);
+    const vValue = percentage ? Math.round(v * 100) + "%" : Math.round(v * 100);
+    const result = [hValue, sValue, vValue];
+    if (alpha !== null) {
+        result.push(parseFloat(alpha.toFixed(2)));
     }
+    return result;
 }
 
 function rgbToXyz(r, g, b, percentage) {
@@ -301,16 +314,16 @@ function hslToRgb(h, s, l) {
     const hue2rgb = (p, q, t) => {
         if (t < 0) t += 1;
         if (t > 1) t -= 1;
-        if (t < 1/6) return p + (q - p) * 6 * t;
-        if (t < 1/2) return q;
-        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
         return p;
     };
     const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
     const p = 2 * l - q;
-    const r = Math.round(hue2rgb(p, q, h + 1/3) * 255);
+    const r = Math.round(hue2rgb(p, q, h + 1 / 3) * 255);
     const g = Math.round(hue2rgb(p, q, h) * 255);
-    const b = Math.round(hue2rgb(p, q, h - 1/3) * 255);
+    const b = Math.round(hue2rgb(p, q, h - 1 / 3) * 255);
     return [r, g, b];
 }
 
@@ -574,7 +587,7 @@ class ColorList {
         this.hexCodeTo = hexCodeTo
         this.nameTo = nameTo
         this.Palette = Palette
-        this.colorData = { hex: "000000", colorName: "black", rgb: "0,0,0", tag: "Dark", text: "White"}
+        this.colorData = { hex: "000000", colorName: "black", rgb: "0,0,0", tag: "Dark", text: "White" }
     }
 
     create() {
@@ -631,7 +644,7 @@ class ColorList {
     select() {
         Array.from(this.listbox.children).forEach(color_view_boxes => {
             color_view_boxes.addEventListener("click", (e) => {
-                this.customizeColor(color_view_boxes.children[0].getAttribute("hex_value"), color_view_boxes.children[1].innerHTML, hexToRgba(color_view_boxes.children[0].getAttribute("hex_value")).toString(),color_view_boxes.children[0].getAttribute("tag"),color_view_boxes.children[0].getAttribute("text"))
+                this.customizeColor(color_view_boxes.children[0].getAttribute("hex_value"), color_view_boxes.children[1].innerHTML, hexToRgba(color_view_boxes.children[0].getAttribute("hex_value")).toString(), color_view_boxes.children[0].getAttribute("tag"), color_view_boxes.children[0].getAttribute("text"))
                 if (this.colorOutput != undefined) {
                     this.colorOutput.style.setProperty(`--color_view_bg`, this.colorData.hex)
                 }
@@ -660,7 +673,8 @@ class ColorList {
             this.colorInput.addEventListener("keydown", (e) => {
                 if (e.key === 'Enter') {
                     this.hexCodeTo.setAttribute("hex_code", this.colorInput.value)
-                    this.customizeColor("#" + this.colorInput.value, "Custom", hexToRgba(this.colorInput.value).toString(),color_view_boxes.children[0].getAttribute("tag"),color_view_boxes.children[0].getAttribute("text"))
+                    // this.customizeColor("#" + this.colorInput.value, "Custom", hexToRgba(this.colorInput.value).toString(), this.listbox.children.children[0].getAttribute("tag"), this.listbox.children.children[0].getAttribute("text"))
+                    this.customizeColor("#" + this.colorInput.value, "Custom", hexToRgba(this.colorInput.value).toString(), "Light", "Black")
                     if (this.colorOutput != undefined) {
                         this.colorOutput.style.setProperty(`--color_view_bg`, "#" + this.colorInput.value)
                     }
@@ -698,7 +712,7 @@ const createTag = (tag, className = '', styles = {}, appendTo) => {
     const el = document.createElement(tag);
     if (className) el.className = className;
     Object.assign(el.style, styles);
-    if(appendTo){
+    if (appendTo) {
         appendTo.appendChild(el)
     }
     return el;
