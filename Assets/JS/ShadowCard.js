@@ -103,10 +103,6 @@ class ShadowCard {
         this.BgColorInput.setAttribute("type", "text");
         this.BgColorInput.setAttribute("placeholder", "Custom");
         this.BgColorInput.setAttribute("maxlength", "6");
-        this.BGColorPallete = createTag("input", "bg_color_pallete", { type: "color", value: "#000000", name: "" }, this.TempDiv4);
-        this.BGColorPallete.setAttribute("type", "color");
-        this.BGColorPallete.setAttribute("value", "#000000");
-        this.BGColorPallete.setAttribute("name", " ");
         this.ShadowBoxBGList = createTag("div", "shadow_box_bg_list", {}, this.ShadowBoxBGListBox);
         this.ShadowBoxCopyBtn = createTag("button", "shadow_box_copy_btn mac_3D_btn white", {}, this.ButtonRowBottom)
         this.ShadowBoxCopyBtn.innerHTML = "Copy"
@@ -117,11 +113,10 @@ class ShadowCard {
         this.ColorListFinal = new ColorList(this.ShadowBoxShadowColorBtn, this.ColorOptionListBox, this.ColorOptionList, "Full", this.ColorOptionListInput, false, false, "color_view", "color_value", this.BtnColorView, this.ShadowBoxColorFormatBtn, this.ShadowBoxShadowColorBtn)
         this.ColorListFinal.create()
         this.ColorListFinal.select()
-        this.BgColorFinal = new ColorList(this.ShadowBoxBGButton, this.ShadowBoxBGList, this.ShadowBoxBGListBox, "Full", this.BgColorInput, false, false, "color_view", "color_value", this.ShadowBox, this.ShadowBoxBGButton, this.ShadowBoxBGButton, this.BGColorPallete)
+        this.BgColorFinal = new ColorList(this.ShadowBoxBGButton, this.ShadowBoxBGList, this.ShadowBoxBGListBox, "Full", this.BgColorInput, false, false, "color_view", "color_value", this.ShadowBox, this.ShadowBoxBGButton, this.ShadowBoxBGButton)
         this.BgColorFinal.customizeColor("#ffffff", "White", "255,255,255", "Light", "Black")
         this.BgColorFinal.create()
         this.BgColorFinal.select()
-        this.BgColorFinal.customInput()
 
         return this.Wrapper
     }
@@ -133,6 +128,22 @@ class ShadowCard {
         this.PrevIcon.style.opacity = "0.5";
         this.Next = createTag("div", "next", {}, this.ShadowValueChangeControl)
         this.NextIcon = createTag("i", "fa-solid fa-caret-right", {}, this.Next)
+    }
+
+    ShadowValueColorUpdate() {
+        this.isLight = this.BgColorFinal.colorData.tag === "Light";
+        Array.from(this.ShadowValue.children).forEach(shadowValueChild => {
+            shadowValueChild.children[0].classList.toggle("black", this.isLight);
+            shadowValueChild.children[0].classList.toggle("white", !this.isLight);
+            shadowValueChild.children[1].classList.toggle("black", this.isLight);
+            shadowValueChild.children[1].classList.toggle("white", !this.isLight);
+        })
+        if (this.ShadowValueChangeControl) {
+            this.ShadowValueChangeControl.classList.toggle("white", !this.isLight);
+        }
+        this.ColorFormat.classList.toggle("black", this.isLight);
+        this.ColorFormat.classList.toggle("white", !this.isLight);
+        this.ShadowBoxCopyBtn.classList.toggle("white", this.isLight)
     }
 
     extractHex() {
@@ -195,9 +206,11 @@ class ShadowCard {
                 this.ColorFormatValue = e.target.innerHTML.slice(1, -1)
                 this.ShadowBoxColorFormatBtn.innerHTML = e.target.innerHTML
                 this.FormatList.classList.remove("active")
+                this.colorUpdate(this.UpdatedShadow)
                 this.colorFormatChanger()
                 this.threeColumnColor()
                 this.oneColumnColor()
+                this.updateVisualShadowData(this.count)
             })
         });
     }
@@ -205,10 +218,10 @@ class ShadowCard {
     threeColumnColor() {
         const Formats = ["RGB", "HSL", "HSB", "CSS", "LCH", "LAB", "XYZ", "CMYK"];
         if (Formats.includes(this.ColorFormatValue)) {
+            this.ColorFormatIndexValue2.children[1].innerHTML = "alpha"
             this.ColorFormatData.classList.add("gap-5")
             this.ColorFormatData.classList.remove("gap-10", "row-col")
-            // const isLight = this.BgColorFinal.colorData.tag === "Light" ? "black" : "white";
-            const isLight = "black";
+            const isLight = this.BgColorFinal.colorData.tag === "Light" ? "black" : "white";
             this.ColorFormatData.innerHTML = [0, 1, 2].map(i => `
                 <div class="color_format_index_value_cols row row-col gap-10 col-4">
                     <div class="color_format_index_value row space-between align-center text-upper ${isLight}">
@@ -221,14 +234,16 @@ class ShadowCard {
             `).join("");
             this.TempH3_2.innerHTML = this.shadowBoxColorFormatValue[this.count].color[3]
         }
+        if (this.ColorFormatValue == "CMYK") {
+            this.ColorFormatIndexValue2.children[1].innerHTML = "K"
+        }
     }
 
     oneColumnColor() {
         if (this.ColorFormatValue == "HEX") {
+            this.ColorFormatIndexValue2.children[1].innerHTML = "alpha"
             this.ColorFormatData.classList.remove("gap-5")
             this.ColorFormatData.classList.add("row-col", "gap-10")
-            // const isLight = this.BgColorFinal.colorData.tag === "Light" ? "black" : "white";
-            const isLight = "black";
             const childDivs = this.ColorFormatData.querySelectorAll('.color_format_index_value_cols');
             if (childDivs.length >= 1) {
                 for (let i = 0; i < 3; i++) {
@@ -248,19 +263,27 @@ class ShadowCard {
     }
 
     colorChanger() {
-        // this.ColorOptionListInput.addEventListener("keydown", (e) => {
-        //     if (e.key === 'Enter') {
-        //         this.UpdatedShadow = recolorShadow(this.shadowCode, this.ColorOptionListInput.value)
-        //         console.log(this.shadowCode)
-        //         console.log(this.ColorOptionListInput.value)
-        //         console.log(this.UpdatedShadow)
-        //         this.shadowCode = this.UpdatedShadow
-        //         this.colorUpdate(this.UpdatedShadow)
-        //         this.ShadowBox.style.setProperty("--shadow_box", this.UpdatedShadow)
-        //         his.updateVisualShadowData(this.count);
-        //     }
-        // })
-        // this.ColorListFinal.customInput()
+        this.ColorOptionListInput.addEventListener("keydown", (e) => {
+            if (e.key === 'Enter') {
+                this.UpdatedShadow = recolorShadow(this.shadowCode, this.ColorOptionListInput.value)
+                this.shadowCode = this.UpdatedShadow
+                this.colorUpdate(this.UpdatedShadow)
+                this.colorFormatChanger()
+                this.threeColumnColor()
+                this.ShadowBox.style.setProperty("--shadow_box", this.UpdatedShadow)
+                this.updateVisualShadowData(this.count);
+            }
+        })
+        this.ColorListFinal.customInput()
+
+        this.BgColorInput.addEventListener("keydown", (e) => {
+            if (e.key === 'Enter') {
+                console.log(this.BgColorInput.value)
+                console.log(isLightColor(this.BgColorInput.value))
+
+            }
+        })
+        this.BgColorFinal.customInput()
 
         Array.from(this.ColorOptionList.children).forEach(color_view_boxes => {
             color_view_boxes.addEventListener("click", (e) => {
@@ -269,24 +292,29 @@ class ShadowCard {
                 this.colorUpdate(this.UpdatedShadow)
                 this.ShadowBox.style.setProperty("--shadow_box", this.UpdatedShadow)
                 this.shadowCode = this.UpdatedShadow
+                this.colorFormatChanger()
+                this.threeColumnColor()
                 this.updateVisualShadowData(this.count)
                 copyClipboard(this.ShadowBoxCopyBtn, `box-shadow: ${this.UpdatedShadow};`)
             })
         })
         copyClipboard(this.ShadowBoxCopyBtn, `box-shadow: ${this.UpdatedShadow};`)
+
+        this.BgColorObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    this.threeColumnColor()
+                    this.ShadowValueColorUpdate()
+                }
+            });
+        });
+        this.BgColorObserver.observe(this.ShadowBoxBGButton, { childList: true, subtree: true });
     }
 
     extractShadowPosition(shadowCode) {
         const shadows = shadowCode.split(/\s*,\s*/);
         return shadows.map(shadow => {
-            const result = {
-                xOffset: 0,
-                yOffset: 0,
-                blurRadius: 0,
-                spreadRadius: 0,
-                inset: false,
-                color: "#000000ff"
-            };
+            const result = { xOffset: 0, yOffset: 0, blurRadius: 0, spreadRadius: 0, inset: false, color: "#000000ff" };
             if (shadow.includes('inset')) {
                 result.inset = true;
                 shadow = shadow.replace(/\binset\b/, '').trim();
@@ -324,10 +352,7 @@ class ShadowCard {
         return shadowDataArray.map(shadow => {
             const [r, g, b, a] = shadow.color;
             const hslaArray = rgbaToHsla(r, g, b, a, percentage);
-            return {
-                ...shadow,
-                color: hslaArray
-            };
+            return { ...shadow, color: hslaArray };
         });
     }
 
@@ -335,10 +360,7 @@ class ShadowCard {
         return shadowDataArray.map(shadow => {
             const [r, g, b, a] = shadow.color;
             const hsbaArray = rgbToHsb(r, g, b, percentage, a);
-            return {
-                ...shadow,
-                color: hsbaArray
-            };
+            return { ...shadow, color: hsbaArray };
         });
     }
 
@@ -346,10 +368,7 @@ class ShadowCard {
         return shadowDataArray.map(shadow => {
             const [r, g, b, a] = shadow.color;
             const xyzArray = rgbToXyz(r, g, b, percentage);
-            return {
-                ...shadow,
-                color: [...xyzArray, a]
-            };
+            return { ...shadow, color: [...xyzArray, a] };
         });
     }
 
@@ -357,10 +376,7 @@ class ShadowCard {
         return shadowDataArray.map(shadow => {
             const [x, y, z, a] = shadow.color;
             const labArray = xyzToLab(x.slice(0, -1), y.slice(0, -1), z.slice(0, -1), percentage);
-            return {
-                ...shadow,
-                color: [...labArray, a]
-            };
+            return { ...shadow, color: [...labArray, a] };
         });
     }
 
@@ -368,10 +384,7 @@ class ShadowCard {
         return shadowDataArray.map(shadow => {
             const [L, a, b, alpha] = shadow.color;
             const lchArray = labToLch(L.slice(0, -1), a.slice(0, -1), b.slice(0, -1), percentage);
-            return {
-                ...shadow,
-                color: [...lchArray, alpha]
-            };
+            return { ...shadow, color: [...lchArray, alpha] };
         });
     }
 
@@ -379,10 +392,7 @@ class ShadowCard {
         return shadowDataArray.map(shadow => {
             const [r, g, b] = shadow.color;
             const cmykArray = rgbToCmyk(r, g, b);
-            return {
-                ...shadow,
-                color: cmykArray
-            };
+            return { ...shadow, color: cmykArray };
         });
     }
 
@@ -403,12 +413,6 @@ class ShadowCard {
         target.appendChild(this.Wrapper)
     }
 }
-
-const inputShadow = "5px 5px #f02eaa66, 10px 10px #f02eaa4d, 15px 15px #f02eaa33, 20px 20px #f02eaa1a, 25px 25px #f02eaa0d";
-const newBaseColor = "#228B22";
-
-const newShadow = recolorShadow(inputShadow, newBaseColor);
-console.log(newShadow);
 
 const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: false, colorName: "Cadet Gray" },
 { box_shadow: "0px 7px 29px 0px #64646f33", hasMultipleShadows: false, colorName: "Dim Gray" },
@@ -502,17 +506,3 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 { box_shadow: "0px 0px 0px 1px #0e3f7e0a, 0px 1px 1px -0.5px #2a33450a, 0px 3px 3px -1.5px #2a33460a, 0px 6px 6px -3px #2a33460a, 0px 12px 12px -6px #0e3f7e0a, 0px 24px 24px -12px #0e3f7e0a", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 0px 0px 1px #0e3f7e0f, 0px 1px 1px -0.5px #2a334608, 0px 2px 2px -1px #2a33460a, 0px 3px 3px -1.5px #2a33460a, 0px 5px 5px -2.5px #2a334608, 0px 10px 10px -5px #2a334608, 0px 24px 24px -8px #2a334608", hasMultipleShadows: true, colorName: "Multi" }
 ]
-
-const shadow_area_test = document.getElementsByClassName("shadow_area_test")[0]
-let shadowCard
-const shadowCards = [];
-
-shadowList.forEach(shadow => {
-    shadowCard = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
-    shadowCard.createCard();
-    shadowCard.extractHex()
-    shadowCard.mount(shadow_area_test);
-    shadowCard.formatListUpdate();
-    shadowCard.colorChanger()
-    shadowCards.push(shadowCard);
-});
