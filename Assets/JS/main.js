@@ -27,21 +27,32 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 
 // SHADOW BOX EFFECT CODE STARTS HERE
 
-const shadow_area_grid = document.getElementsByClassName("shadow_area_grid")[0]
-let shadowCard
-const shadowCards = [];
-shadowList.forEach(shadow => {
-    shadowCard = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
-    shadowCard.createCard();
-    shadowCard.extractHex()
-    shadowCard.mount(shadow_area_grid);
-    shadowCard.formatListUpdate();
-    shadowCard.colorChanger()
-    shadowCards.push(shadowCard);
-});
+// const shadow_area_grid = document.getElementsByClassName("shadow_area_grid")[0]
+// let shadowCard
+// const shadowCards = [];
+// shadowList.forEach(shadow => {
+//     shadowCard = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
+//     shadowCard.createCard();
+//     shadowCard.extractHex()
+//     shadowCard.mount(shadow_area_grid);
+//     shadowCard.formatListUpdate();
+//     shadowCard.colorChanger()
+//     shadowCards.push(shadowCard);
+// });
 
 // SHADOW BOX EFFECT CODE ENDS HERE
 
+function copySVG() {
+  const svg = document.getElementById("card-svg");
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svg);
+
+  navigator.clipboard.writeText(svgString).then(() => {
+    alert("SVG copied! Paste it into Figma.");
+  }).catch(err => {
+    console.error("Copy failed", err);
+  });
+}
 
 
 
