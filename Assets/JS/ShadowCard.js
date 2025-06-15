@@ -275,7 +275,6 @@ class ShadowCard {
             if (e.key === 'Enter') {
                 if (isLightColor(this.BgColorInput.value) === "Light") {
                     this.isLight = true;
-                    // this.ShadowValueColorUpdate()
                 } else {
                     this.isLight = false;
                 }
@@ -503,3 +502,16 @@ const shadowList = [{ box_shadow: "0px 8px 24px #959da533", hasMultipleShadows: 
 { box_shadow: "0px 0px 0px 1px #0e3f7e0a, 0px 1px 1px -0.5px #2a33450a, 0px 3px 3px -1.5px #2a33460a, 0px 6px 6px -3px #2a33460a, 0px 12px 12px -6px #0e3f7e0a, 0px 24px 24px -12px #0e3f7e0a", hasMultipleShadows: true, colorName: "Multi" },
 { box_shadow: "0px 0px 0px 1px #0e3f7e0f, 0px 1px 1px -0.5px #2a334608, 0px 2px 2px -1px #2a33460a, 0px 3px 3px -1.5px #2a33460a, 0px 5px 5px -2.5px #2a334608, 0px 10px 10px -5px #2a334608, 0px 24px 24px -8px #2a334608", hasMultipleShadows: true, colorName: "Multi" }
 ]
+
+const shadow_area_grid = document.getElementsByClassName("shadow_area_grid")[0]
+let shadowCard
+const shadowCards = [];
+shadowList.forEach(shadow => {
+    shadowCard = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
+    shadowCard.createCard();
+    shadowCard.extractHex()
+    shadowCard.mount(shadow_area_grid);
+    shadowCard.formatListUpdate();
+    shadowCard.colorChanger()
+    shadowCards.push(shadowCard);
+});
