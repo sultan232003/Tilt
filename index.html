@@ -7,9 +7,16 @@
   <title>Document</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
   <link
     href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Pathway+Extreme:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap"
     rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grape+Nuts&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -21,9 +28,20 @@
 
 <body>
 
+
+  <nav class="Main_Nav">
+    <ul>
+      <li><a class="active" href="index.html">Home</a></li>
+      <li><a href="tilt.html">Tilt</a></li>
+      <li><a href="shadow.html">Shadow</a></li>
+    </ul>
+  </nav>
+
   <div class="BG"></div>
   <section class="Banner">
     <img src="Assets/Image/Banner.png" alt="" srcset="">
+    <!-- <button type="button" href="shadow.html">Shadow</button> -->
+    <a href="shadow.html">Go to About Page</a>
   </section>
 
   <section class="tilt_area">
@@ -559,7 +577,7 @@
 
 
 
-  <section class="shadow_area">
+  <!-- <section class="shadow_area">
     <div class="container">
       <div class="custom_shadow">
         <div class="row gap-10">
@@ -808,7 +826,7 @@
       </div>
       <div class="grid shadow_area_grid"></div>
     </div>
-  </section>
+  </section> -->
 
 
 
@@ -873,10 +891,27 @@
   <br>
   <br>
   <br>
+
+
+<svg id="card-svg" xmlns="http://www.w3.org/2000/svg" width="300" height="150">
+  <rect x="0" y="0" width="300" height="150" rx="15" ry="15" fill="#f3f3f3" stroke="#ccc" />
+  <text x="20" y="30" font-size="20" fill="#000" alignment-baseline="hanging">Title</text>
+  <text x="20" y="90" font-size="16" fill="#333">Some card content</text>
+</svg>
+<button onclick="copySVG()">Copy to Figma</button>
+
+
+
+
+
+
+
+
   <script src="Assets/JS/Utils.js"></script>
   <script src="Assets/JS/Tilt.js"></script>
-  <script src="Assets/JS/ShadowCard.js"></script>
-  <script src="Assets/JS/ShadowSandbox.js"></script>
+  <!-- <script src="Assets/JS/ShadowCard.js"></script> -->
+  <!-- <script src="Assets/JS/ShadowSandbox.js"></script> -->
   <script src="Assets/JS/main.js"></script>
 </body>
+
 </html>
