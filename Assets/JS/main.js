@@ -25,43 +25,6 @@ Array.from(Copy_btn).forEach(Copy_btns => {
 
 // TLIT EFFECT CODE ENDS HERE
 
-// SHADOW BOX EFFECT CODE STARTS HERE
-
-// const shadow_area_grid = document.getElementsByClassName("shadow_area_grid")[0]
-// let shadowCard
-// const shadowCards = [];
-// shadowList.forEach(shadow => {
-//     shadowCard = new ShadowCard({ shadowCode: shadow.box_shadow, hasMultipleShadows: shadow.hasMultipleShadows, colorName: shadow.colorName });
-//     shadowCard.createCard();
-//     shadowCard.extractHex()
-//     shadowCard.mount(shadow_area_grid);
-//     shadowCard.formatListUpdate();
-//     shadowCard.colorChanger()
-//     shadowCards.push(shadowCard);
-// });
-
-// SHADOW BOX EFFECT CODE ENDS HERE
-
-function copySVG() {
-  const svg = document.getElementById("card-svg");
-  const serializer = new XMLSerializer();
-  const svgString = serializer.serializeToString(svg);
-
-  navigator.clipboard.writeText(svgString).then(() => {
-    alert("SVG copied! Paste it into Figma.");
-  }).catch(err => {
-    console.error("Copy failed", err);
-  });
-}
-
-
-
-
-
-
-
-
-
 class Carousel {
   constructor({ carousel_box = undefined, want_controller = true, content = undefined, visible_cards = undefined, gap = 30, overflow = true, navigate = true, navigate_speed = 300, loop = false, cover = true, transition_speed = 300, transition_type = 'ease', autoplay = false, autoplay_time = 1000, autoplay_speed = 300, hover_Pause = true, auto_height = false, center = false, padding = 0, transition_animation = false, animate_in = "Default" }) {
     this.carousel_box = carousel_box;
