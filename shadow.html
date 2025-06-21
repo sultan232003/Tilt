@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shadow</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,19 +27,16 @@
 </head>
 
 <body>
-
-    <nav class="Main_Nav">
+  <nav class="Main_Nav">
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="tilt.html">Tilt</a></li>
       <li><a class="active" href="shadow.html">Shadow</a></li>
+      <li><a href="pixels.html">Pixels</a></li>
     </ul>
   </nav>
 
-
-
-
-      <section class="shadow_area">
+  <section class="shadow_area">
     <div class="container">
       <div class="custom_shadow">
         <div class="row gap-10">
@@ -49,7 +46,8 @@
                 <h5 class="input_label">Horizontal Length (x)</h5>
                 <div class="row gap-15 align-center">
                   <div class="row gap-5 align-center">
-                    <input type="number" min="-250" max="250" value="0" class="shadow_panel_custom_input" placeholder="Custom" id="horizontal_length_input">
+                    <input type="number" min="-250" max="250" value="0" class="shadow_panel_custom_input"
+                      placeholder="Custom" id="horizontal_length_input">
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
@@ -66,7 +64,8 @@
                 <h5 class="input_label">Vertical Length (y)</h5>
                 <div class="row gap-15 align-center">
                   <div class="row gap-5 align-center">
-                    <input type="number" min="-250" max="250" value="0" class="shadow_panel_custom_input" placeholder="Custom" id="vertical_length_input">
+                    <input type="number" min="-250" max="250" value="0" class="shadow_panel_custom_input"
+                      placeholder="Custom" id="vertical_length_input">
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
@@ -86,7 +85,8 @@
                 <h5 class="input_label">Blur Radius</h5>
                 <div class="row gap-15 align-center">
                   <div class="row gap-5 align-center">
-                    <input type="number" min="0" max="250" value="10" class="shadow_panel_custom_input" placeholder="Custom" id="blur_radius_input">
+                    <input type="number" min="0" max="250" value="10" class="shadow_panel_custom_input"
+                      placeholder="Custom" id="blur_radius_input">
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
@@ -103,7 +103,8 @@
                 <h5 class="input_label">Spread Radius</h5>
                 <div class="row gap-15 align-center">
                   <div class="row gap-5 align-center">
-                    <input type="number" min="-50" max="50" value="0" class="shadow_panel_custom_input" placeholder="Custom" id="spread_radius_input">
+                    <input type="number" min="-50" max="50" value="0" class="shadow_panel_custom_input"
+                      placeholder="Custom" id="spread_radius_input">
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
@@ -121,23 +122,27 @@
                   <h5 class="input_label">Shadow Color</h5>
                   <div class="row gap-5">
                     <div class="width-100 pos-rel">
-                      <button class="mac_3D_btn custom_shadow_panel_button" id="Shadow_color_btn" hex_code="#000000">Black</button>
+                      <button class="mac_3D_btn custom_shadow_panel_button" id="Shadow_color_btn"
+                        hex_code="#000000">Black</button>
                       <div class="custom_shadow_panel_button_color_list width-100" id="Shadow_color_btn_list">
                         <div class="width-100 row gap-5">
-                          <input type="text" placeholder="Custom" maxlength="6" id="Shadow_color_input" class="width-100">
+                          <input type="text" placeholder="Custom" maxlength="6" id="Shadow_color_input"
+                            class="width-100">
                           <input type="color" name="" id="Shadow_color_input_pallete" value="#000000">
                         </div>
                         <div id="Shadow_color_color_option_list_box"></div>
                       </div>
                     </div>
-                    <div class="custom_shadow_panel_button_output" id="Shadow_color_output" style="--color_view_bg:#000000;"></div>
+                    <div class="custom_shadow_panel_button_output" id="Shadow_color_output"
+                      style="--color_view_bg:#000000;"></div>
                   </div>
                 </div>
                 <div class="row row-col gap-12 width-100">
                   <h5 class="input_label">Box Color</h5>
                   <div class="row gap-5">
                     <div class="width-100 pos-rel">
-                      <button class="mac_3D_btn custom_shadow_panel_button" id="Box_color_btn" hex_code="#000000">White</button>
+                      <button class="mac_3D_btn custom_shadow_panel_button" id="Box_color_btn"
+                        hex_code="#000000">White</button>
                       <div class="custom_shadow_panel_button_color_list width-100" id="Box_color_btn_list">
                         <div class="width-100 row gap-5">
                           <input type="text" placeholder="Custom" maxlength="6" id="Box_color_input" class="width-100">
@@ -146,7 +151,8 @@
                         <div id="Box_color_color_option_list_box"></div>
                       </div>
                     </div>
-                    <div class="custom_shadow_panel_button_output" id="Box_color_output" style="--color_view_bg:#FFFFFF;"></div>
+                    <div class="custom_shadow_panel_button_output" id="Box_color_output"
+                      style="--color_view_bg:#FFFFFF;"></div>
                   </div>
                 </div>
               </div>
@@ -154,11 +160,13 @@
                 <h5 class="input_label">Opacity</h5>
                 <div class="row gap-15 align-center">
                   <div class="row gap-5 align-center">
-                    <input type="number" min="0" max="100" value="10" class="shadow_panel_custom_input" placeholder="Custom" id="opacity_input">
+                    <input type="number" min="0" max="100" value="10" class="shadow_panel_custom_input"
+                      placeholder="Custom" id="opacity_input">
                     <p>%</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
-                    <input type="range" min="0" max="100" value="10" class="slider_style" id="opacity" style="--slide_width: 100%">
+                    <input type="range" min="0" max="100" value="10" class="slider_style" id="opacity"
+                      style="--slide_width: 100%">
                     <div class="row space-between">
                       <p class="mini_label">0</p>
                       <p class="mini_label">100</p>
@@ -173,7 +181,8 @@
                 <h5 class="input_label">Distance</h5>
                 <div class="row gap-15 align-center">
                   <div class="row gap-5 align-center">
-                    <input type="number" min="0" max="250" value="0" class="shadow_panel_custom_input" placeholder="Custom" id="distance_input">
+                    <input type="number" min="0" max="250" value="0" class="shadow_panel_custom_input"
+                      placeholder="Custom" id="distance_input">
                     <p>px</p>
                   </div>
                   <div class="row row-col width-100 gap-8">
@@ -207,7 +216,8 @@
                   <h5 class="input_label">Radius</h5>
                   <div class="row gap-15 align-center">
                     <div class="row gap-5 align-center">
-                      <input type="number" min="0" max="105" value="10" class="shadow_panel_custom_input" placeholder="Custom" id="Radius_input">
+                      <input type="number" min="0" max="105" value="10" class="shadow_panel_custom_input"
+                        placeholder="Custom" id="Radius_input">
                       <p>px</p>
                     </div>
                     <div class="row row-col width-100 gap-8">
@@ -235,7 +245,9 @@
             <div class="shadow_sandbox_right_panel_box row gap-10">
               <div id="custom_shadow_sandbox" class="pos-rel">
                 <div id="custom_shadow_sandbox_inset"></div>
-                <div id="custom_shadow_sandbox_box" style="--horizontal_length: 0px; --vertical_length: 0px; --blur_radius: 10px; --spread_radius: 0px; --radius: 10px; --shadow_color:0,0,0  ; --opacity:10%; --box_color:#ffffff" class="box_outline box_border"></div>
+                <div id="custom_shadow_sandbox_box"
+                  style="--horizontal_length: 0px; --vertical_length: 0px; --blur_radius: 10px; --spread_radius: 0px; --radius: 10px; --shadow_color:0,0,0  ; --opacity:10%; --box_color:#ffffff"
+                  class="box_outline box_border"></div>
                 <div id="blur_ring" class="show_ui pos-abs">
                   <div id="left_stretch" class="blur_stretch pos-abs left width-5 height-100"></div>
                   <div id="top_stretch" class="blur_stretch pos-abs top width-100 height-5"></div>
@@ -269,16 +281,17 @@
                 </button>
               </div>
             </div>
-              <div id="shadow_controller" class="pos-abs show_ui">
-                <p id="opacity_ring_val">10</p>
-              </div>
-              <div id="opacity_ring" anchor="shadow_controller" class="show_ui">
-                <div id="inner_ring"></div>
-                <input type="range" min="0" max="100" value="10" id="shadow_controller_opacity_ring">
-              </div>
+            <div id="shadow_controller" class="pos-abs show_ui">
+              <p id="opacity_ring_val">10</p>
+            </div>
+            <div id="opacity_ring" anchor="shadow_controller" class="show_ui">
+              <div id="inner_ring"></div>
+              <input type="range" min="0" max="100" value="10" id="shadow_controller_opacity_ring">
+            </div>
             <div class="code_snippet">
               <p id="custom_shadow_code_snippet">
-                box-shadow: <span class="val">0</span>px <span class="val">0</span>px <span class="val">10</span>px <span class="val">0</span>px rgba(<span class="val">0,0,0,0.1</span>);`
+                box-shadow: <span class="val">0</span>px <span class="val">0</span>px <span class="val">10</span>px
+                <span class="val">0</span>px rgba(<span class="val">0,0,0,0.1</span>);`
               </p>
               <button class="copy_btn" id="custom_shadow_copy" default_tilt_data=class="tilt" second_tilt_data=""><i
                   class="fa-regular fa-copy"></i></button>
@@ -290,15 +303,9 @@
     </div>
   </section>
 
-
-
-
-
-
-
-
   <script src="Assets/JS/Utils.js"></script>
   <script src="Assets/JS/ShadowCard.js"></script>
   <script src="Assets/JS/ShadowSandbox.js"></script>
 </body>
+
 </html>
