@@ -758,3 +758,35 @@ function recolorShadow(shadowStr, newBaseHex) {
         return rgbaToHex(...newRgb, a);
     });
 }
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function interpolate2DGrid(rows, cols, start, end) {
+    const [x0, y0] = start;
+    const [x1, y1] = end;
+    const gx = x1 - x0;
+    const gy = y1 - y0;
+    const gLenSq = gx * gx + gy * gy;
+    const grid = [];
+    for (let y = 0; y < rows; y++) {
+        const row = [];
+        for (let x = 0; x < cols; x++) {
+            const dx = x - x0;
+            const dy = y - y0;
+            let t = (dx * gx + dy * gy) / gLenSq;
+            t = Math.max(0, Math.min(1, t));
+            row.push(Number(t.toFixed(2)));
+        }
+        grid.push(row);
+    }
+    return grid;
+}
+
+function drawPoint(p) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 10, 0, Math.PI * 2, false);
+    ctx.fill();
+    // ctx.closePath()
+}
