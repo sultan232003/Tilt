@@ -784,6 +784,65 @@ function interpolate2DGrid(rows, cols, start, end) {
     return grid;
 }
 
+function generateRadialGradient(rows, cols, center, edge) {
+  const grid = [];
+  const dx = edge.x - center.x;
+  const dy = edge.y - center.y;
+  const maxRadius = Math.sqrt(dx * dx + dy * dy);
+  const safeRadius = Math.max(1e-6, maxRadius);
+  for (let y = 0; y < rows; y++) {
+    const row = [];
+    for (let x = 0; x < cols; x++) {
+      const distX = x - center.x;
+      const distY = y - center.y;
+      const dist = Math.sqrt(distX * distX + distY * distY);
+      let t = dist / safeRadius;
+      t = Math.min(1, t);
+      row.push(Number(t.toFixed(2)));
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+
+function drawCustomRoundedRect(x, y, width, height, radius, roundedCorners) {
+    const corners = {
+        tl: roundedCorners.includes("tl"), tr: roundedCorners.includes("tr"), br: roundedCorners.includes("br"), bl: roundedCorners.includes("bl"),
+    };
+    ctx.beginPath();
+    if (corners.tl) {
+        ctx.moveTo(x + radius, y);
+    } else {
+        ctx.moveTo(x, y);
+    }
+    if (corners.tr) {
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    } else {
+        ctx.lineTo(x + width, y);
+    }
+    if (corners.br) {
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    } else {
+        ctx.lineTo(x + width, y + height);
+    }
+    if (corners.bl) {
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    } else {
+        ctx.lineTo(x, y + height);
+    }
+    if (corners.tl) {
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+    } else {
+        ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+}
+
 function drawPoint(p) {
     ctx.beginPath();
     ctx.arc(p.x, p.y, 10, 0, Math.PI * 2, false);
