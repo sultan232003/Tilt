@@ -40,15 +40,33 @@
 
 
 
-<section id="Pixles_Area">
+  <section id="Pixles_Area">
     <div class="container">
-        <div class="row">
-            <input type="range" id="Cell_Size" min="10" max="50" step="5">
-            <canvas id="gridCanvas" width="800" height="600"></canvas>
-            <input type="checkbox" id="Grid">
-        </div>
+      <div class="row">
+        <input type="range" id="Cell_Size" min="10" max="50" step="5">
+        <canvas id="gridCanvas" width="800" height="800"></canvas>
+        <input type="checkbox" id="Gradient_Type">
+        <input type="button" value="Download" id="Download_SVG">
+        <input type="range" name="Random" id="Ramdomness_Intensity" min="2" max="10">
+        <div id="Handle_Start"></div>
+        <div id="Handle_End"></div>
+        <label>
+          <input type="radio" class="Pattern_Radios" name="choice" value="Flat" checked="true">
+          Flat
+        </label><br>
+
+        <label>
+          <input type="radio" class="Pattern_Radios" name="choice" value="Random">
+          Random
+        </label><br>
+
+        <label>
+          <input type="radio" class="Pattern_Radios" name="choice" value="Joined">
+          Joined
+        </label>
+      </div>
     </div>
-</section>
+  </section>
 
 
 
