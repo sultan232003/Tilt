@@ -1621,3 +1621,17 @@ body {
     transform: translateY(100%);
   }
 }
+
+
+
+
+#Handle_Start,
+#Handle_End{
+  width: 20px;
+  height: 20px;
+  background-color: #15CC95;
+  border-radius: 50%;
+  border: 1px solid black;
+  position: absolute;
+  user-select: none;
+}
