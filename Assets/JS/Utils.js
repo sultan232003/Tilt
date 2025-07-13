@@ -806,9 +806,9 @@ function generateRadialGradient(rows, cols, center, edge) {
 }
 
 function drawCustomRoundedRect(x, y, width, height, radius, roundedCorners) {
-    const corners = {
-        tl: roundedCorners.includes("tl"), tr: roundedCorners.includes("tr"), br: roundedCorners.includes("br"), bl: roundedCorners.includes("bl"),
-    };
+    const ctx = canvas.getContext("2d");
+    const k = 0.5522847498;
+    const corners = { tl: roundedCorners.includes("tl"), tr: roundedCorners.includes("tr"), br: roundedCorners.includes("br"), bl: roundedCorners.includes("bl"), };
     ctx.beginPath();
     if (corners.tl) {
         ctx.moveTo(x + radius, y);
@@ -817,30 +817,30 @@ function drawCustomRoundedRect(x, y, width, height, radius, roundedCorners) {
     }
     if (corners.tr) {
         ctx.lineTo(x + width - radius, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.bezierCurveTo(x + width - radius + radius * k, y, x + width, y + radius - radius * k, x + width, y + radius);
     } else {
         ctx.lineTo(x + width, y);
     }
     if (corners.br) {
         ctx.lineTo(x + width, y + height - radius);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.bezierCurveTo(x + width, y + height - radius + radius * k, x + width - radius + radius * k, y + height, x + width - radius, y + height);
     } else {
         ctx.lineTo(x + width, y + height);
     }
     if (corners.bl) {
         ctx.lineTo(x + radius, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.bezierCurveTo(x + radius - radius * k, y + height, x, y + height - radius + radius * k, x, y + height - radius);
     } else {
         ctx.lineTo(x, y + height);
     }
     if (corners.tl) {
         ctx.lineTo(x, y + radius);
-        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.bezierCurveTo(x, y + radius - radius * k, x + radius - radius * k, y, x + radius, y);
     } else {
         ctx.lineTo(x, y);
     }
     ctx.closePath();
-    ctx.stroke();
+    ctx.fill();
 }
 
 function drawPoint(p) {
