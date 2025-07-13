@@ -107,8 +107,9 @@ function DrawPixels() {
                         if (Select_Col_State === 1) {
                             if (Pattern_Radios_SelectedValue == "Random") {
                                 gradient[y][x] = 0
-                            } else {
-                                
+                            } else if(Pattern_Radios_SelectedValue == "Joined" && gradient[y][x] >= 0.5){
+                                drawCustomRoundedRect(x * cellSize, (y * cellSize) + ((cellSize - gradient[y][x] * (cellSize))/2), gradient[y][x] * (cellSize) + ((cellSize - gradient[y][x] * (cellSize))/2), gradient[y][x] * (cellSize), gradient[y][x] * (cellSize / 2), ["tr", "br"]);
+                                drawCustomRoundedRect((x * cellSize) + ((cellSize - gradient[y][x-1] * (cellSize))/2) - cellSize, (y * cellSize) + ((cellSize - gradient[y][x] * (cellSize))/2), gradient[y][x-1] * (cellSize) + ((cellSize - gradient[y][x-1] * (cellSize))/2), gradient[y][x] * (cellSize), gradient[y][x] * (cellSize / 2), ["tl", "bl"]);
                             }
                         }
                     }
