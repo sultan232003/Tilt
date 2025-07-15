@@ -843,6 +843,26 @@ function drawCustomRoundedRect(x, y, width, height, radius, roundedCorners) {
     ctx.fill();
 }
 
+function collectOnes(arr) {
+    const result = [];
+    let i = 0;
+    while (i < arr.length) {
+        if (arr[i] === 1) {
+            const group = [];
+            const indices = [];
+            while (i < arr.length && arr[i] === 1) {
+                group.push(1);
+                indices.push(i);
+                i++;
+            }
+            result.push({ values: group, indices: indices });
+        } else {
+            i++;
+        }
+    }
+    return result;
+}
+
 function drawPoint(p) {
     ctx.beginPath();
     ctx.arc(p.x, p.y, 10, 0, Math.PI * 2, false);
