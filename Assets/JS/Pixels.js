@@ -107,9 +107,15 @@ function DrawPixels() {
                         if (Select_Col_State === 1) {
                             if (Pattern_Radios_SelectedValue == "Random") {
                                 gradient[y][x] = 0
-                            } else if(Pattern_Radios_SelectedValue == "Joined" && gradient[y][x] >= 0.5){
-                                drawCustomRoundedRect(x * cellSize, (y * cellSize) + ((cellSize - gradient[y][x] * (cellSize))/2), gradient[y][x] * (cellSize) + ((cellSize - gradient[y][x] * (cellSize))/2), gradient[y][x] * (cellSize), gradient[y][x] * (cellSize / 2), ["tr", "br"]);
-                                drawCustomRoundedRect((x * cellSize) + ((cellSize - gradient[y][x-1] * (cellSize))/2) - cellSize, (y * cellSize) + ((cellSize - gradient[y][x] * (cellSize))/2), gradient[y][x-1] * (cellSize) + ((cellSize - gradient[y][x-1] * (cellSize))/2), gradient[y][x] * (cellSize), gradient[y][x] * (cellSize / 2), ["tl", "bl"]);
+                            } else if (Pattern_Radios_SelectedValue == "Joined" && gradient[y][x] >= 0.5) {
+                                gradient[y][x] = 1
+
+                                // let Collected_Ones = collectOnes(gradient[y])
+                                // console.log(Collected_Ones)
+                                // ABOVE 2 LINES NOT WORKING PROPERLY
+
+                                drawCustomRoundedRect(x * cellSize, (y * cellSize) + ((cellSize - gradient[y][x] * (cellSize)) / 2), gradient[y][x] * (cellSize) + ((cellSize - gradient[y][x] * (cellSize)) / 2), gradient[y][x] * (cellSize), gradient[y][x] * (cellSize / 2), ["tr", "br"]);
+                                drawCustomRoundedRect((x * cellSize) + ((cellSize - gradient[y][x - 1] * (cellSize)) / 2) - cellSize, (y * cellSize) + ((cellSize - gradient[y][x] * (cellSize)) / 2), gradient[y][x - 1] * (cellSize) + ((cellSize - gradient[y][x - 1] * (cellSize)) / 2), gradient[y][x] * (cellSize), gradient[y][x] * (cellSize / 2), ["tl", "bl"]);
                             }
                         }
                     }
@@ -209,4 +215,16 @@ Download_SVG.addEventListener("click", () => {
     downloadSVG()
 })
 
-drawCustomRoundedRect(50, 50, 50, 50, 25, ["tl", "tr"]);
+
+
+
+
+
+
+
+
+
+const arr = [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1];
+
+
+console.log(collectOnes(arr));
