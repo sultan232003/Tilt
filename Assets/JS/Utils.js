@@ -843,19 +843,19 @@ function drawCustomRoundedRect(x, y, width, height, radius, roundedCorners) {
     ctx.fill();
 }
 
-function collectOnes(arr) {
+function collectOnes(arr, compare, row) {
     const result = [];
     let i = 0;
     while (i < arr.length) {
-        if (arr[i] === 1) {
+        if (arr[i] === compare) {
             const group = [];
             const indices = [];
-            while (i < arr.length && arr[i] === 1) {
+            while (i < arr.length && arr[i] === compare) {
                 group.push(1);
                 indices.push(i);
                 i++;
             }
-            result.push({ values: group, indices: indices });
+            result.push({ values: group, indices: indices, row: row });
         } else {
             i++;
         }
