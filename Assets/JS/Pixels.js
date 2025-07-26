@@ -11,7 +11,7 @@ const Handle_Start = document.getElementById("Handle_Start")
 const Handle_End = document.getElementById("Handle_End")
 const Ramdomness_Intensity = document.getElementById("Ramdomness_Intensity")
 const Pattern_Radios = document.querySelectorAll('.Pattern_Radios');
-let Pattern_Radios_SelectedValue;
+let Pattern_Radios_SelectedValue = "Flat";
 let Gradient_Type_State
 let cellSize = CellSize_Slider.value;
 let cols = Math.floor(canvas.width / cellSize);
@@ -29,9 +29,9 @@ Gradient_Type.addEventListener("input", (e) => {
     DrawPixels()
 })
 
-let Ramdomness_Intensity_Value = 5
+let Randomness_Intensity_Value = 5
 Ramdomness_Intensity.addEventListener("input", (e) => {
-    Ramdomness_Intensity_Value = e.target.value;
+    Randomness_Intensity_Value = e.target.value;
     DrawPixels()
 })
 
@@ -78,6 +78,7 @@ function getClickPoint(x, y) {
 }
 
 let gradient, radial_gradient, Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y, Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y, Gradient_Handle_Distance_X, Gradient_Handle_Distance_Y, maxDX, maxDY, Radial_Gradient_MaxRadius
+let Collected_Ones = []
 
 function DrawPixels() {
     ctx.clearRect(0, 0, width, height);
@@ -98,26 +99,23 @@ function DrawPixels() {
         gradient = interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]);
 
         // RAMDOMIZER
-        if (Pattern_Radios_SelectedValue == "Random" || Pattern_Radios_SelectedValue == "Joined") {
+        if (Pattern_Radios_SelectedValue === "Random" || Pattern_Radios_SelectedValue === "Joined") {
+            const isRandom = Pattern_Radios_SelectedValue === "Random";
+            const isJoined = Pattern_Radios_SelectedValue === "Joined";
             for (let y = 0; y < rows; y++) {
-                let Select_Row_State = Math.floor(Math.random() * 2)
-                if (Select_Row_State) {
+                if (Math.random() < 0.5) {
                     for (let x = 0; x < cols; x++) {
-                        let Select_Col_State = Math.floor(Math.random() * Ramdomness_Intensity_Value)
-                        if (Select_Col_State === 1) {
-                            if (Pattern_Radios_SelectedValue == "Random") {
-                                gradient[y][x] = 0
-                            } else if (Pattern_Radios_SelectedValue == "Joined" && gradient[y][x] >= 0.5) {
-                                gradient[y][x] = 1
-
-                                // let Collected_Ones = collectOnes(gradient[y])
-                                // console.log(Collected_Ones)
-                                // ABOVE 2 LINES NOT WORKING PROPERLY
-
-                                drawCustomRoundedRect(x * cellSize, (y * cellSize) + ((cellSize - gradient[y][x] * (cellSize)) / 2), gradient[y][x] * (cellSize) + ((cellSize - gradient[y][x] * (cellSize)) / 2), gradient[y][x] * (cellSize), gradient[y][x] * (cellSize / 2), ["tr", "br"]);
-                                drawCustomRoundedRect((x * cellSize) + ((cellSize - gradient[y][x - 1] * (cellSize)) / 2) - cellSize, (y * cellSize) + ((cellSize - gradient[y][x] * (cellSize)) / 2), gradient[y][x - 1] * (cellSize) + ((cellSize - gradient[y][x - 1] * (cellSize)) / 2), gradient[y][x] * (cellSize), gradient[y][x] * (cellSize / 2), ["tl", "bl"]);
+                        if (Math.floor(Math.random() * Randomness_Intensity_Value) === 1) {
+                            if (isRandom) {
+                                gradient[y][x] = 0;
+                            } else if (isJoined && gradient[y][x] === 1) {
+                                gradient[y][x] = 2;
+                                if (x > 0 && x !== 2) gradient[y][x - 1] = 2;
                             }
                         }
+                    }
+                    if (isJoined && gradient[y].includes(2)) {
+                        Collected_Ones.push(collectOnes(gradient[y], 2, y));
                     }
                 }
             }
@@ -127,28 +125,45 @@ function DrawPixels() {
 
         for (let y = 0; y < rows; y++) {
             for (let x = 0; x < cols; x++) {
-                if (gradient[y][x] > 0) {
+                if (gradient[y][x] > 0 && gradient[y][x] < 2) {
                     ctx.beginPath();
                     ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
                     ctx.fill();
+                } else if (gradient[x][y] == 2) {
+                    let i = 0
+                    while (i < Collected_Ones.length) {
+                        let j = 0
+                        while (j < Collected_Ones[i].length) {
+                            drawCustomRoundedRect(Collected_Ones[i][j].indices[0] * cellSize, Collected_Ones[i][j].row * cellSize, gradient[y][x] * (cellSize) * 0.5 * Collected_Ones[i][j].indices.length, gradient[y][x] * (cellSize) * 0.5, (gradient[y][x] * 0.5) * (cellSize / 2), ["tr", "br", "tl", "bl"]);
+                            j++
+                        }
+                        i++
+                    }
                 }
             }
         }
+        Collected_Ones = []
     } else {
         radial_gradient = generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y });
 
         // RAMDOMIZER
-        if (Pattern_Radios_SelectedValue == "Random" || Pattern_Radios_SelectedValue == "Joined") {
+        if (Pattern_Radios_SelectedValue === "Random" || Pattern_Radios_SelectedValue === "Joined") {
+            const isRandom = Pattern_Radios_SelectedValue === "Random";
+            const isJoined = Pattern_Radios_SelectedValue === "Joined";
             for (let y = 0; y < rows; y++) {
-                let Select_Row_State = Math.floor(Math.random() * 2)
-                if (Select_Row_State) {
+                if (Math.random() < 0.5) {
                     for (let x = 0; x < cols; x++) {
-                        let Select_Col_State = Math.floor(Math.random() * Ramdomness_Intensity_Value)
-                        if (Select_Col_State === 1) {
-                            if (Pattern_Radios_SelectedValue == "Random") {
-                                radial_gradient[y][x] = 0
+                        if (Math.floor(Math.random() * Randomness_Intensity_Value) === 1) {
+                            if (isRandom) {
+                                radial_gradient[y][x] = 0;
+                            } else if (isJoined && radial_gradient[y][x] === 1) {
+                                radial_gradient[y][x] = 2;
+                                if (x > 0 && x !== 2) radial_gradient[y][x - 1] = 2;
                             }
                         }
+                    }
+                    if (isJoined && radial_gradient[y].includes(2)) {
+                        Collected_Ones.push(collectOnes(radial_gradient[y], 2, y));
                     }
                 }
             }
@@ -158,11 +173,24 @@ function DrawPixels() {
 
         for (let y = 0; y < rows; y++) {
             for (let x = 0; x < cols; x++) {
-                ctx.beginPath();
-                ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), radial_gradient[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
-                ctx.fill();
+                if (radial_gradient[y][x] > 0 && radial_gradient[y][x] < 2) {
+                    ctx.beginPath();
+                    ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), radial_gradient[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
+                    ctx.fill();
+                } else if (radial_gradient[x][y] == 2) {
+                    let i = 0
+                    while (i < Collected_Ones.length) {
+                        let j = 0
+                        while (j < Collected_Ones[i].length) {
+                            drawCustomRoundedRect(Collected_Ones[i][j].indices[0] * cellSize, Collected_Ones[i][j].row * cellSize, radial_gradient[y][x] * (cellSize) * 0.5 * Collected_Ones[i][j].indices.length, radial_gradient[y][x] * (cellSize) * 0.5, (radial_gradient[y][x] * 0.5) * (cellSize / 2), ["tr", "br", "tl", "bl"]);
+                            j++
+                        }
+                        i++
+                    }
+                }
             }
         }
+        Collected_Ones = []
     }
 }
 
@@ -214,17 +242,3 @@ function downloadSVG() {
 Download_SVG.addEventListener("click", () => {
     downloadSVG()
 })
-
-
-
-
-
-
-
-
-
-
-const arr = [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1];
-
-
-console.log(collectOnes(arr));
