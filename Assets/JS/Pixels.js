@@ -77,7 +77,7 @@ function getClickPoint(x, y) {
     }
 }
 
-let gradient, radial_gradient, Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y, Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y, Gradient_Handle_Distance_X, Gradient_Handle_Distance_Y, maxDX, maxDY, Radial_Gradient_MaxRadius
+let gradient, radial_gradient, Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y, Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y, Gradient_Handle_Distance_X, Gradient_Handle_Distance_Y, maxDX, maxDY, Radial_Gradient_MaxRadius, Collected_Ones_SVG
 let Collected_Ones = []
 
 function DrawPixels() {
@@ -94,138 +94,104 @@ function DrawPixels() {
     maxDX = Math.max(Final_Gradient_Start_Handle_X, cols - Final_Gradient_Start_Handle_X);
     maxDY = Math.max(Final_Gradient_Start_Handle_Y, rows - Final_Gradient_Start_Handle_Y);
     Radial_Gradient_MaxRadius = Math.sqrt(maxDX * maxDX + maxDY * maxDY);
-
     if (!Gradient_Type_State) {
         gradient = interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]);
-
-        // RAMDOMIZER
-        if (Pattern_Radios_SelectedValue === "Random" || Pattern_Radios_SelectedValue === "Joined") {
-            const isRandom = Pattern_Radios_SelectedValue === "Random";
-            const isJoined = Pattern_Radios_SelectedValue === "Joined";
-            for (let y = 0; y < rows; y++) {
-                if (Math.random() < 0.5) {
-                    for (let x = 0; x < cols; x++) {
-                        if (Math.floor(Math.random() * Randomness_Intensity_Value) === 1) {
-                            if (isRandom) {
-                                gradient[y][x] = 0;
-                            } else if (isJoined && gradient[y][x] === 1) {
-                                gradient[y][x] = 2;
-                                if (x > 0 && x !== 2) gradient[y][x - 1] = 2;
-                            }
-                        }
-                    }
-                    if (isJoined && gradient[y].includes(2)) {
-                        Collected_Ones.push(collectOnes(gradient[y], 2, y));
-                    }
-                }
-            }
-        }
-
-        /////////////
-
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                if (gradient[y][x] > 0 && gradient[y][x] < 2) {
-                    ctx.beginPath();
-                    ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
-                    ctx.fill();
-                } else if (gradient[x][y] == 2) {
-                    let i = 0
-                    while (i < Collected_Ones.length) {
-                        let j = 0
-                        while (j < Collected_Ones[i].length) {
-                            drawCustomRoundedRect(Collected_Ones[i][j].indices[0] * cellSize, Collected_Ones[i][j].row * cellSize, gradient[y][x] * (cellSize) * 0.5 * Collected_Ones[i][j].indices.length, gradient[y][x] * (cellSize) * 0.5, (gradient[y][x] * 0.5) * (cellSize / 2), ["tr", "br", "tl", "bl"]);
-                            j++
-                        }
-                        i++
-                    }
-                }
-            }
-        }
-        Collected_Ones = []
     } else {
         radial_gradient = generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y });
-
-        // RAMDOMIZER
-        if (Pattern_Radios_SelectedValue === "Random" || Pattern_Radios_SelectedValue === "Joined") {
-            const isRandom = Pattern_Radios_SelectedValue === "Random";
-            const isJoined = Pattern_Radios_SelectedValue === "Joined";
-            for (let y = 0; y < rows; y++) {
-                if (Math.random() < 0.5) {
-                    for (let x = 0; x < cols; x++) {
-                        if (Math.floor(Math.random() * Randomness_Intensity_Value) === 1) {
-                            if (isRandom) {
-                                radial_gradient[y][x] = 0;
-                            } else if (isJoined && radial_gradient[y][x] === 1) {
-                                radial_gradient[y][x] = 2;
-                                if (x > 0 && x !== 2) radial_gradient[y][x - 1] = 2;
-                            }
-                        }
-                    }
-                    if (isJoined && radial_gradient[y].includes(2)) {
-                        Collected_Ones.push(collectOnes(radial_gradient[y], 2, y));
-                    }
-                }
-            }
-        }
-
-        ////////////
-
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                if (radial_gradient[y][x] > 0 && radial_gradient[y][x] < 2) {
-                    ctx.beginPath();
-                    ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), radial_gradient[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
-                    ctx.fill();
-                } else if (radial_gradient[x][y] == 2) {
-                    let i = 0
-                    while (i < Collected_Ones.length) {
-                        let j = 0
-                        while (j < Collected_Ones[i].length) {
-                            drawCustomRoundedRect(Collected_Ones[i][j].indices[0] * cellSize, Collected_Ones[i][j].row * cellSize, radial_gradient[y][x] * (cellSize) * 0.5 * Collected_Ones[i][j].indices.length, radial_gradient[y][x] * (cellSize) * 0.5, (radial_gradient[y][x] * 0.5) * (cellSize / 2), ["tr", "br", "tl", "bl"]);
-                            j++
-                        }
-                        i++
-                    }
-                }
-            }
-        }
-        Collected_Ones = []
     }
+    const isRandom = Pattern_Radios_SelectedValue === "Random";
+    const isJoined = Pattern_Radios_SelectedValue === "Joined";
+    if (isRandom || isJoined) {
+        const matrix = Gradient_Type_State ? radial_gradient : gradient;
+        for (let y = 0; y < rows; y++) {
+            if (Math.random() < 0.5) {
+                for (let x = 0; x < cols; x++) {
+                    if (Math.floor(Math.random() * Randomness_Intensity_Value) === 1) {
+                        if (isRandom) {
+                            matrix[y][x] = 0;
+                        } else if (isJoined && matrix[y][x] === 1) {
+                            matrix[y][x] = 2;
+                            if (x > 0 && x !== 2) matrix[y][x - 1] = 2;
+                        }
+                    }
+                }
+                if (isJoined && matrix[y].includes(2)) {
+                    Collected_Ones.push(collectOnes(matrix[y], 2, y));
+                }
+            }
+        }
+    }
+    const getGradientValue = (y, x) => Gradient_Type_State ? radial_gradient[y][x] : gradient[y][x];
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            const value = getGradientValue(y, x);
+            if (value > 0 && value < 2) {
+                ctx.beginPath();
+                ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), value * (cellSize / 2), 0, 2 * Math.PI, true);
+                ctx.fill();
+            }
+        }
+    }
+    Collected_Ones.forEach(rowData => {
+        rowData.forEach(cell => {
+            const { row, indices } = cell;
+            const col = indices[0];
+            const value = getGradientValue(row, col);
+            drawCustomRoundedRect(col * cellSize, row * cellSize, value * cellSize * 0.5 * indices.length, value * cellSize * 0.5, value * 0.5 * (cellSize / 2), ["tr", "br", "tl", "bl"]);
+        });
+    });
+    Collected_Ones_SVG = Collected_Ones;
+    Collected_Ones = [];
 }
 
 DrawPixels();
 
 function downloadSVG() {
     let Circles = []
-    if (!Gradient_Type_State) {
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                if (gradient[y][x] > 0) {
-                    Circles.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: gradient[y][x] * (cellSize / 2) })
-                }
-            }
-        }
-    } else {
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                Circles.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: radial_gradient[y][x] * (cellSize / 2) })
+    let Rects = []
+    const getGradientValue = (y, x) => Gradient_Type_State ? radial_gradient[y][x] : gradient[y][x];
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            const value = getGradientValue(y, x);
+            if (value > 0 && value < 2) {
+                Circles.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: value * (cellSize / 2) });
             }
         }
     }
+    Collected_Ones_SVG.forEach(rowData => {
+        rowData.forEach(cell => {
+            const { row, indices } = cell;
+            const x = indices[0] * cellSize;
+            const y = row * cellSize;
+            const width = getGradientValue(row, indices[0]) * cellSize * 0.5 * indices.length;
+            Rects.push({
+                x, y, rx: cellSize / 2, ry: cellSize / 2, width, height: cellSize
+            });
+        });
+    });
     const svgNS = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(svgNS, "svg");
     svg.setAttribute("width", "800");
     svg.setAttribute("height", "800");
     svg.setAttribute("viewBox", "0 0 800 800");
-    Circles.forEach(({ cx, cy, r }) => {
+    Circles.forEach(attrs => {
         const circle = document.createElementNS(svgNS, "circle");
-        circle.setAttribute("cx", cx);
-        circle.setAttribute("cy", cy);
-        circle.setAttribute("r", r);
+        ["cx", "cy", "r"].forEach(attr => {
+            if (attrs[attr] != null) circle.setAttribute(attr, attrs[attr]);
+        });
         circle.setAttribute("fill", "black");
         svg.appendChild(circle);
     });
+    if (Pattern_Radios_SelectedValue === "Joined") {
+        Rects.forEach(attrs => {
+            const rect = document.createElementNS(svgNS, "rect");
+            ["x", "y", "rx", "ry", "width", "height"].forEach(attr => {
+                if (attrs[attr] != null) rect.setAttribute(attr, attrs[attr]);
+            });
+            rect.setAttribute("fill", "black");
+            svg.appendChild(rect);
+        });
+    }
     const serializer = new XMLSerializer();
     const svgString = serializer.serializeToString(svg);
     const blob = new Blob([svgString], { type: "image/svg+xml" });
@@ -242,3 +208,53 @@ function downloadSVG() {
 Download_SVG.addEventListener("click", () => {
     downloadSVG()
 })
+
+let canvas2 = document.getElementById('canvas2');
+let ctx2 = canvas2.getContext('2d');
+function scanCanvas(interval = 25) {
+    const width = canvas2.width;
+    const height = canvas2.height;
+    const imageData = ctx2.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    const results = [];
+    for (let y = 0; y < height; y += interval) {
+        for (let x = 0; x < width; x += interval) {
+            const index = (y * width + x) * 4;
+            const r = data[index];
+            const g = data[index + 1];
+            const b = data[index + 2];
+            const a = data[index + 3];
+            // Only return if not white and not fully transparent
+            const isNotWhite = r !== 255 || g !== 255 || b !== 255;
+            const isOpaque = a !== 0;
+            if (isNotWhite && isOpaque) {
+                results.push({ x, y, r, g, b, a });
+            }
+        }
+    }
+    console.log(results);
+    return results; // You can return or use this array as needed
+}
+
+document.getElementById('uploadSVG').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (!file || !file.name.endsWith('.svg')) {
+        alert('Please upload a valid .svg file');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const svgText = e.target.result;
+        const img = new Image();
+        const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(svgBlob);
+        img.onload = function () {
+            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+            ctx2.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+        };
+        img.src = url;
+    };
+    reader.readAsText(file);
+    scanCanvas(cellSize)
+});
