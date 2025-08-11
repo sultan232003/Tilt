@@ -50,20 +50,59 @@
         <input type="range" name="Random" id="Ramdomness_Intensity" min="2" max="10">
         <div id="Handle_Start"></div>
         <div id="Handle_End"></div>
-        <label>
-          <input type="radio" class="Pattern_Radios" name="choice" value="Flat" checked="true">
-          Flat
-        </label><br>
 
-        <label>
-          <input type="radio" class="Pattern_Radios" name="choice" value="Random">
-          Random
-        </label><br>
+        <div class="row row-col space-between">
 
-        <label>
-          <input type="radio" class="Pattern_Radios" name="choice" value="Joined">
-          Joined
-        </label>
+          <div class="row">
+            <label>
+              <input type="radio" class="Pattern_Radios" name="choice" value="Flat" checked="true">
+              Flat
+            </label><br>
+
+            <label>
+              <input type="radio" class="Pattern_Radios" name="choice" value="Random">
+              Random
+            </label><br>
+
+            <label>
+              <input type="radio" class="Pattern_Radios" name="choice" value="Joined">
+              Joined
+            </label>
+          </div>
+
+          <div class="row">
+            <label>
+              <input type="radio" class="Gradient_Pattern" name="gradient_pattern" value="Circles" checked="true">
+              Circles
+            </label><br>
+            <label>
+              <input type="radio" class="Gradient_Pattern" name="gradient_pattern" value="Squares">
+              Squares
+            </label><br>
+            <label>
+              <input type="radio" class="Gradient_Pattern" name="gradient_pattern" value="Dithered">
+              Dithered
+            </label><br>
+          </div>
+
+          <div class="row">
+            <label>
+              <input type="radio" class="Pattern_Type" name="pattern" value="Blank" checked="true">
+              Blank
+            </label><br>
+
+            <label>
+              <input type="radio" class="Pattern_Type" name="pattern" value="Corners">
+              Corners
+            </label><br>
+
+            <label>
+              <input type="radio" class="Pattern_Type" name="pattern" value="Joined">
+              Joined
+            </label>
+          </div>
+        </div>
+
       </div>
       <input type="file" id="uploadSVG" accept=".svg" />
       <canvas id="canvas2" width="800" height="800"></canvas>
