@@ -11,7 +11,9 @@ const Handle_Start = document.getElementById("Handle_Start")
 const Handle_End = document.getElementById("Handle_End")
 const Ramdomness_Intensity = document.getElementById("Ramdomness_Intensity")
 const Pattern_Radios = document.querySelectorAll('.Pattern_Radios');
+const Gradient_Pattern_Radios = document.querySelectorAll('.Gradient_Pattern');
 let Pattern_Radios_SelectedValue = "Flat";
+let Gradient_Pattern_Radios_SelectedValue = "Circles";
 let Gradient_Type_State
 let cellSize = CellSize_Slider.value;
 let cols = Math.floor(canvas.width / cellSize);
@@ -38,6 +40,13 @@ Ramdomness_Intensity.addEventListener("input", (e) => {
 Pattern_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Pattern_Radios_SelectedValue = document.querySelector('.Pattern_Radios:checked').value;
+        DrawPixels()
+    });
+});
+
+Gradient_Pattern_Radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        Gradient_Pattern_Radios_SelectedValue = document.querySelector('.Gradient_Pattern:checked').value;
         DrawPixels()
     });
 });
@@ -126,9 +135,39 @@ function DrawPixels() {
         for (let x = 0; x < cols; x++) {
             const value = getGradientValue(y, x);
             if (value > 0 && value < 2) {
-                ctx.beginPath();
-                ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), value * (cellSize / 2), 0, 2 * Math.PI, true);
-                ctx.fill();
+                if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
+                    ctx.beginPath();
+                    ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), value * (cellSize / 2), 0, 2 * Math.PI, true);
+                    ctx.fill();
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
+                    const baseX = x * cellSize;
+                    const baseY = y * cellSize;
+                    const q = cellSize / 4;
+                    const tq = q * 3;
+                    const patterns = [
+                        [[q, tq, q, q]],
+                        [[q, tq, q, q], [tq, q, q, q]],
+                        [[q, tq, q, q], [tq, q, q, q], [tq, tq, q, q]],
+                        [[q, tq, q, q], [tq, q, q, q], [tq, tq, q, q], [q, q, q, q], [2 * q, 2 * q, q, q]],
+                        [[q, tq, q, q], [tq, q, q, q], [tq, tq, q, q], [q, q, q, q], [2 * q, 2 * q, q, q], [0, 0, q, q]],
+                        [[q, tq, q, q], [tq, q, q, q], [tq, tq, q, q], [q, q, q, q], [2 * q, 2 * q, q, q], [0, 0, q, q], [0, 2 * q, q, q], [2 * q, 0, q, q]],
+                        [[0, 0, q, q], [2 * q, 0, q, q], [q, q, q, q], [tq, q, q, q], [0, 2 * q, q, q], [2 * q, 2 * q, q, q], [q, tq, 3 * q, q]],
+                        [[2 * q, 0, q, q], [q, q, q, q], [tq, q, q, q], [2 * q, 2 * q, q, q], [q, tq, 3 * q, q], [0, 0, q, 3 * q]],
+                        [[0, 0, q, 3 * q], [0, tq, cellSize, q], [q, q, 3 * q, q], [2 * q, 0, q, 3 * q]],
+                        [[0, 0, q, q], [2 * q, 0, q, q], [tq, q, q, q], [tq, tq, q, q], [0, q, 3 * q, 3 * q]],
+                        [[0, 0, q, q], [2 * q, 0, 2 * q, 2 * q], [tq, tq, q, q], [0, q, 3 * q, 3 * q]],
+                        [[0, 0, cellSize, cellSize]],
+                    ];
+                    const partSize = 1 / patterns.length;
+                    const index = Math.ceil(value / partSize) - 1;
+                    if (index < 0 || index >= patterns.length) return;
+                    for (const [dx, dy, w, h] of patterns[index]) {
+                        ctx.fillRect(baseX + dx, baseY + dy, w, h);
+                    }
+                }
+            }
+            if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
+                drawRoundedRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1, Math.abs(value - 1) * (cellSize / 2))
             }
         }
     }
