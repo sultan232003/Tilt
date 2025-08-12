@@ -88,6 +88,8 @@ function getClickPoint(x, y) {
 
 let gradient, radial_gradient, Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y, Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y, Gradient_Handle_Distance_X, Gradient_Handle_Distance_Y, maxDX, maxDY, Radial_Gradient_MaxRadius, Collected_Ones_SVG
 let Collected_Ones = []
+let Dithered_Collection = []
+let Dithered_Collection_Final = []
 
 function DrawPixels() {
     ctx.clearRect(0, 0, width, height);
@@ -144,26 +146,159 @@ function DrawPixels() {
                     const baseY = y * cellSize;
                     const q = cellSize / 4;
                     const tq = q * 3;
-                    const patterns = [
-                        [[q, tq, q, q]],
-                        [[q, tq, q, q], [tq, q, q, q]],
-                        [[q, tq, q, q], [tq, q, q, q], [tq, tq, q, q]],
-                        [[q, tq, q, q], [tq, q, q, q], [tq, tq, q, q], [q, q, q, q], [2 * q, 2 * q, q, q]],
-                        [[q, tq, q, q], [tq, q, q, q], [tq, tq, q, q], [q, q, q, q], [2 * q, 2 * q, q, q], [0, 0, q, q]],
-                        [[q, tq, q, q], [tq, q, q, q], [tq, tq, q, q], [q, q, q, q], [2 * q, 2 * q, q, q], [0, 0, q, q], [0, 2 * q, q, q], [2 * q, 0, q, q]],
-                        [[0, 0, q, q], [2 * q, 0, q, q], [q, q, q, q], [tq, q, q, q], [0, 2 * q, q, q], [2 * q, 2 * q, q, q], [q, tq, 3 * q, q]],
-                        [[2 * q, 0, q, q], [q, q, q, q], [tq, q, q, q], [2 * q, 2 * q, q, q], [q, tq, 3 * q, q], [0, 0, q, 3 * q]],
-                        [[0, 0, q, 3 * q], [0, tq, cellSize, q], [q, q, 3 * q, q], [2 * q, 0, q, 3 * q]],
-                        [[0, 0, q, q], [2 * q, 0, q, q], [tq, q, q, q], [tq, tq, q, q], [0, q, 3 * q, 3 * q]],
-                        [[0, 0, q, q], [2 * q, 0, 2 * q, 2 * q], [tq, tq, q, q], [0, q, 3 * q, 3 * q]],
-                        [[0, 0, cellSize, cellSize]],
-                    ];
-                    const partSize = 1 / patterns.length;
+                    const partSize = 1 / 12;
                     const index = Math.ceil(value / partSize) - 1;
-                    if (index < 0 || index >= patterns.length) return;
-                    for (const [dx, dy, w, h] of patterns[index]) {
-                        ctx.fillRect(baseX + dx, baseY + dy, w, h);
+                    if (index < 0 || index >= 12) return;
+                    switch (index) {
+                        case 0:
+                            ctx.fillRect(baseX + q, baseY + tq, q, q);
+                            Dithered_Collection.push({ x: baseX + q, y: baseY + tq, width: q, height: q })
+                            break;
+                        case 1:
+                            ctx.fillRect(baseX + q, baseY + tq, q, q);
+                            ctx.fillRect(baseX + tq, baseY + q, q, q);
+                            Dithered_Collection.push(
+                                { x: baseX + q, y: baseY + tq, width: q, height: q }, 
+                                { x: baseX + tq, y: baseY + q, width: q, height: q })
+                            break;
+                        case 2:
+                            ctx.fillRect(baseX + q, baseY + tq, q, q);
+                            ctx.fillRect(baseX + tq, baseY + q, q, q);
+                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+                            Dithered_Collection.push(
+                                { x: baseX + q, y: baseY + tq, width: q, height: q }, 
+                                { x: baseX + tq, y: baseY + q, width: q, height: q }, 
+                                { x: baseX + tq, y: baseY + tq, width: q, height: q })
+                            break;
+                        case 3:
+                            ctx.fillRect(baseX + q, baseY + tq, q, q);
+                            ctx.fillRect(baseX + tq, baseY + q, q, q);
+                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+                            ctx.fillRect(baseX + q, baseY + q, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+                            Dithered_Collection.push(
+                                { x: baseX + q, y: baseY + tq, width: q, height: q }, 
+                                { x: baseX + tq, y: baseY + q, width: q, height: q }, 
+                                { x: baseX + tq, y: baseY + tq, width: q, height: q }, 
+                                { x: baseX + q, y: baseY + q, width: q, height: q }, 
+                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q })
+                            break;
+                        case 4:
+                            ctx.fillRect(baseX + q, baseY + tq, q, q);
+                            ctx.fillRect(baseX + tq, baseY + q, q, q);
+                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+                            ctx.fillRect(baseX + q, baseY + q, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+                            Dithered_Collection.push(
+                                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                                { x: baseX + q, y: baseY + q, width: q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
+                                { x: baseX + 0, y: baseY + 0, width: q, height: q }
+                            );
+                            break;
+                        case 5:
+                            ctx.fillRect(baseX + q, baseY + tq, q, q);
+                            ctx.fillRect(baseX + tq, baseY + q, q, q);
+                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+                            ctx.fillRect(baseX + q, baseY + q, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+                            ctx.fillRect(baseX + 0, baseY + 2 * q, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
+                            Dithered_Collection.push(
+                                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                                { x: baseX + q, y: baseY + q, width: q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
+                                { x: baseX + 0, y: baseY + 0, width: q, height: q },
+                                { x: baseX + 0, y: baseY + 2 * q, width: q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q }
+                            );
+                            break;
+                        case 6:
+                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
+                            ctx.fillRect(baseX + q, baseY + q, q, q);
+                            ctx.fillRect(baseX + tq, baseY + q, q, q);
+                            ctx.fillRect(baseX + 0, baseY + 2 * q, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+                            ctx.fillRect(baseX + q, baseY + tq, 3 * q, q);
+                            Dithered_Collection.push(
+                                { x: baseX + 0, y: baseY + 0, width: q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
+                                { x: baseX + q, y: baseY + q, width: q, height: q },
+                                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                                { x: baseX + 0, y: baseY + 2 * q, width: q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
+                                { x: baseX + q, y: baseY + tq, width: 3 * q, height: q }
+                            );
+                            break;
+                        case 7:
+                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
+                            ctx.fillRect(baseX + q, baseY + q, q, q);
+                            ctx.fillRect(baseX + tq, baseY + q, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+                            ctx.fillRect(baseX + q, baseY + tq, 3 * q, q);
+                            ctx.fillRect(baseX + 0, baseY + 0, q, 3 * q);
+                            Dithered_Collection.push(
+                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
+                                { x: baseX + q, y: baseY + q, width: q, height: q },
+                                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
+                                { x: baseX + q, y: baseY + tq, width: 3 * q, height: q },
+                                { x: baseX + 0, y: baseY + 0, width: q, height: 3 * q }
+                            );
+                            break;
+                        case 8:
+                            ctx.fillRect(baseX + 0, baseY + 0, q, 3 * q);
+                            ctx.fillRect(baseX + 0, baseY + tq, cellSize, q);
+                            ctx.fillRect(baseX + q, baseY + q, 3 * q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, 3 * q);
+                            Dithered_Collection.push(
+                                { x: baseX + 0, y: baseY + 0, width: q, height: 3 * q },
+                                { x: baseX + 0, y: baseY + tq, width: cellSize, height: q },
+                                { x: baseX + q, y: baseY + q, width: 3 * q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: 3 * q }
+                            )
+                            break;
+                        case 9:
+                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
+                            ctx.fillRect(baseX + tq, baseY + q, q, q);
+                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+                            ctx.fillRect(baseX + 0, baseY + q, 3 * q, 3 * q);
+                            Dithered_Collection.push(
+                                { x: baseX + 0, y: baseY + 0, width: q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
+                                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                                { x: baseX + 0, y: baseY + q, width: 3 * q, height: 3 * q }
+                            )
+                            break;
+                        case 10:
+                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+                            ctx.fillRect(baseX + 2 * q, baseY + 0, 2 * q, 2 * q);
+                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+                            ctx.fillRect(baseX + 0, baseY + q, 3 * q, 3 * q);
+                            Dithered_Collection.push(
+                                { x: baseX + 0, y: baseY + 0, width: q, height: q },
+                                { x: baseX + 2 * q, y: baseY + 0, width: 2 * q, height: 2 * q },
+                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                                { x: baseX + 0, y: baseY + q, width: 3 * q, height: 3 * q }
+                            )
+                            break;
+                        case 11:
+                            ctx.fillRect(baseX + 0, baseY + 0, cellSize, cellSize);
+                            Dithered_Collection.push({ x: baseX + 0, y: baseY + 0, width: cellSize, height: cellSize })
+                            break;
+                        default:
+                            break;
                     }
+
                 }
             }
             if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
@@ -181,6 +316,8 @@ function DrawPixels() {
     });
     Collected_Ones_SVG = Collected_Ones;
     Collected_Ones = [];
+    Dithered_Collection_Final = Dithered_Collection
+    Dithered_Collection = []
 }
 
 DrawPixels();
@@ -213,14 +350,16 @@ function downloadSVG() {
     svg.setAttribute("width", "800");
     svg.setAttribute("height", "800");
     svg.setAttribute("viewBox", "0 0 800 800");
-    Circles.forEach(attrs => {
-        const circle = document.createElementNS(svgNS, "circle");
-        ["cx", "cy", "r"].forEach(attr => {
-            if (attrs[attr] != null) circle.setAttribute(attr, attrs[attr]);
+    if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
+        Circles.forEach(attrs => {
+            const circle = document.createElementNS(svgNS, "circle");
+            ["cx", "cy", "r"].forEach(attr => {
+                if (attrs[attr] != null) circle.setAttribute(attr, attrs[attr]);
+            });
+            circle.setAttribute("fill", "black");
+            svg.appendChild(circle);
         });
-        circle.setAttribute("fill", "black");
-        svg.appendChild(circle);
-    });
+    }
     if (Pattern_Radios_SelectedValue === "Joined") {
         Rects.forEach(attrs => {
             const rect = document.createElementNS(svgNS, "rect");
@@ -230,6 +369,17 @@ function downloadSVG() {
             rect.setAttribute("fill", "black");
             svg.appendChild(rect);
         });
+    }
+    if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
+        Dithered_Collection_Final.forEach(Dithered => {
+            const rect = document.createElementNS(svgNS, "rect");
+            rect.setAttribute("x", Dithered.x)
+            rect.setAttribute("y", Dithered.y)
+            rect.setAttribute("width", Dithered.width)
+            rect.setAttribute("height", Dithered.height)
+            rect.setAttribute("fill", "black");
+            svg.appendChild(rect);
+        })
     }
     const serializer = new XMLSerializer();
     const svgString = serializer.serializeToString(svg);
