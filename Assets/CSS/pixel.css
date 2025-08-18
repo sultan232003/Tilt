@@ -1,0 +1,151 @@
+#Pixels_Box {
+    background: #ffffff;
+    box-shadow: 0px 1px 3px #D2D6D9;
+    padding: 16px;
+    border-radius: 20px;
+    gap: 16px;
+}
+
+#Pixels_Box p{
+    font-size: 14px;
+    color: var(--Muted_Text);
+    font-weight: 500;
+}
+
+#Gradient_Type_Toggle {
+    position: relative;
+    width: 54px;
+    height: 30px;
+    border-radius: 15px;
+    background: #F6F6F6;
+    box-shadow: inset 0px 1.5px 1.5px #0000000a, inset 0px 3px 6px #0000000a, inset 0px 0px 0px 0.75px #0000000f, inset 0px 0px 12px #00000005, 0px 1.5px 0px #ffffff, 0px 3px 6px #0000000a;
+}
+
+#Gradient_Type_Toggle_Slider {
+    position: relative;
+}
+
+#Gradient_Type_Toggle_Slider::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #070709;
+    box-shadow: 0px 17px 5px rgba(36, 36, 49, 0), 0px 11px 4px rgba(36, 36, 49, 0.01), 0px 6px 4px rgba(36, 36, 49, 0.05), 0px 3px 3px rgba(36, 36, 49, 0.09), 0px 1px 2px rgba(36, 36, 49, 0.1);
+    top: 3px;
+    left: 3px;
+    transition: all linear 50ms;
+}
+
+#Gradient_Type {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+}
+
+#Gradient_Type:checked+#Gradient_Type_Toggle_Slider::before {
+    left: 27px;
+}
+
+#Cell_Size,
+#Ramdomness_Intensity {
+    -webkit-appearance: none;
+    width: 150px;
+    height: 6px;
+    background: #F6F6F6;
+    box-shadow: inset 0px 1.5px 1.5px #0000000a, inset 0px 3px 6px #0000000a, inset 0px 0px 0px 0.75px #0000000f, inset 0px 0px 12px #00000005, 0px 1.5px 0px #ffffff, 0px 3px 6px #0000000a;
+    border-radius: 3px;
+}
+
+#Pattern_Radios_Options,
+#Canvas_Size_Radios_Options {
+    background: #F2F4F5;
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+    border-radius: 23px;
+    height: fit-content;
+}
+
+#Pattern_Radios_Options label,
+#Canvas_Size_Radios_Options label {
+    height: 38px;
+    padding: 0px 14px;
+    border-radius: 19px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #021526;
+    font-weight: 500;
+    transition: all linear 50ms;
+}
+
+#Canvas_Size_Radios_Options label {
+    width: 38px;
+    box-sizing: border-box;
+    padding: 0px 9px;
+}
+
+#Canvas_Size_Radios_Options label svg path {
+    fill: #6D7784;
+}
+
+.Pattern_Radios,
+.Canvas_Size_Radios,
+.Gradient_Pattern,
+.Pattern_Type {
+    display: none;
+}
+
+#Pattern_Radios_Tab_1:checked+label[for="Pattern_Radios_Tab_1"],
+#Pattern_Radios_Tab_2:checked+label[for="Pattern_Radios_Tab_2"],
+#Pattern_Radios_Tab_3:checked+label[for="Pattern_Radios_Tab_3"],
+#Canvas_Size_Radios_Tab_1:checked+label[for="Canvas_Size_Radios_Tab_1"],
+#Canvas_Size_Radios_Tab_2:checked+label[for="Canvas_Size_Radios_Tab_2"],
+#Gradient_Pattern_Radio_1:checked+label[for="Gradient_Pattern_Radio_1"],
+#Gradient_Pattern_Radio_2:checked+label[for="Gradient_Pattern_Radio_2"],
+#Gradient_Pattern_Radio_3:checked+label[for="Gradient_Pattern_Radio_3"],
+#Pattern_Type_Tab_1:checked+label[for="Pattern_Type_Tab_1"],
+#Pattern_Type_Tab_2:checked+label[for="Pattern_Type_Tab_2"],
+#Pattern_Type_Tab_3:checked+label[for="Pattern_Type_Tab_3"] {
+    background: #070709;
+    box-shadow: 0px 17px 5px rgba(36, 36, 49, 0), 0px 11px 4px rgba(36, 36, 49, 0.01), 0px 6px 4px rgba(36, 36, 49, 0.05), 0px 3px 3px rgba(36, 36, 49, 0.09), 0px 1px 2px rgba(36, 36, 49, 0.1);
+    color: #ffffff;
+}
+
+#Canvas_Size_Radios_Tab_1:checked+label[for="Canvas_Size_Radios_Tab_1"] svg path,
+#Canvas_Size_Radios_Tab_2:checked+label[for="Canvas_Size_Radios_Tab_2"] svg path {
+    fill: #ffffff;
+}
+
+#Download_SVG {
+    height: 54px;
+    padding: 0px 24px;
+    border-radius: 27px;
+    box-shadow: inset 0px 0px 0px 2px #ffffff, 0px 17px 5px rgba(36, 36, 49, 0), 0px 11px 4px rgba(36, 36, 49, 0.01), 0px 6px 4px rgba(36, 36, 49, 0.05), 0px 3px 3px rgba(36, 36, 49, 0.09), 0px 1px 2px rgba(36, 36, 49, 0.1);
+    background: url(../Image/Button_BG.png);
+    outline: none;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.Verticle_separator{
+    width: 1px;
+    height: 16px;
+    background-color: #D2D6D9;
+}
+
+#gridCanvas{
+    background: #FAFAFA;
+    border: 0.5px solid #D2D6D9;
+    border-radius: 15px;
+}
+
+.Hide_Element{
+    opacity: 0;
+    visibility: hidden;
+}
