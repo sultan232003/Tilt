@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Lato;
+  font-family: "manrope";
 }
 
 :root {
@@ -26,6 +27,7 @@
   --Mint: #15CC95;
   --Alice_blue_2: #D5DCE7;
   --Aquamarine: #9FF4DB;
+  --Muted_Text: #6D7784;
   --shadow_1: -137px 131px 53px rgba(85, 70, 255, 0), -88px 84px 49px rgba(85, 70, 255, 0.01), -49px 47px 41px rgba(85, 70, 255, 0.03), -22px 21px 30px rgba(85, 70, 255, 0.04), -5px 5px 17px rgba(85, 70, 255, 0.05);
   --shadow_2: 0px 99px 28px rgba(85, 70, 255, 0.01), 0px 64px 25px rgba(85, 70, 255, 0.06), 0px 36px 21px rgba(85, 70, 255, 0.2), 0px 16px 16px rgba(85, 70, 255, 0.34), 0px 4px 9px rgba(85, 70, 255, 0.39);
   --shadow_3: 40px 27px 13px rgba(85, 70, 255, 0), 26px 17px 12px rgba(85, 70, 255, 0.01), 14px 10px 10px rgba(85, 70, 255, 0.04), 6px 4px 8px rgba(85, 70, 255, 0.06), 2px 1px 4px rgba(85, 70, 255, 0.07);
@@ -41,8 +43,8 @@
 html,
 body {
   width: 100vw;
-  background-color: #FBFBFC;
-  background-image: url(../Image/Dot_BG.png);
+  background-color: #F0F3F5;
+  background-image: url(../Image/Grid_BG.png);
   background-repeat: repeat;
   align-items: center;
   justify-content: center;
@@ -59,7 +61,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1470px;
   padding: 0px 15px;
   box-sizing: border-box;
   margin: 0px auto;
@@ -86,6 +88,10 @@ body {
 
 .align-center {
   align-items: center;
+}
+
+.gap-32{
+  gap: 32px;
 }
 
 .gap-30 {
