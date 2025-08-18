@@ -7,13 +7,17 @@ const CanvasYOffset = canvas.getBoundingClientRect().y;
 const CellSize_Slider = document.getElementById("Cell_Size");
 const Gradient_Type = document.getElementById("Gradient_Type")
 const Download_SVG = document.getElementById("Download_SVG")
-const Handle_Start = document.getElementById("Handle_Start")
-const Handle_End = document.getElementById("Handle_End")
+//const Handle_Start = document.getElementById("Handle_Start")
+//const Handle_End = document.getElementById("Handle_End")
 const Ramdomness_Intensity = document.getElementById("Ramdomness_Intensity")
 const Pattern_Radios = document.querySelectorAll('.Pattern_Radios');
 const Gradient_Pattern_Radios = document.querySelectorAll('.Gradient_Pattern');
+const Pattern_Type_Radios = document.querySelectorAll('.Pattern_Type');
+const Fill_Type_Wrapper = document.getElementById("Fill_Type_Wrapper");
+const Randomness_Wrapper = document.getElementById("Randomness_Wrapper")
 let Pattern_Radios_SelectedValue = "Flat";
 let Gradient_Pattern_Radios_SelectedValue = "Circles";
+let Pattern_Type_Radios_SelectedValue = "Blank";
 let Gradient_Type_State
 let cellSize = CellSize_Slider.value;
 let cols = Math.floor(canvas.width / cellSize);
@@ -37,10 +41,23 @@ Ramdomness_Intensity.addEventListener("input", (e) => {
     DrawPixels()
 })
 
+Fill_Type_Wrapper.classList.add("Hide_Element")
+            Randomness_Wrapper.classList.add("Hide_Element")
+            Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
+
 Pattern_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Pattern_Radios_SelectedValue = document.querySelector('.Pattern_Radios:checked').value;
         DrawPixels()
+        if (Pattern_Radios_SelectedValue === "Random") {
+            Fill_Type_Wrapper.classList.remove("Hide_Element")
+            Randomness_Wrapper.classList.remove("Hide_Element")
+            Randomness_Wrapper.previousElementSibling.classList.remove("Hide_Element")
+        } else {
+            Fill_Type_Wrapper.classList.add("Hide_Element")
+            Randomness_Wrapper.classList.add("Hide_Element")
+            Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
+        }
     });
 });
 
@@ -51,13 +68,20 @@ Gradient_Pattern_Radios.forEach(radio => {
     });
 });
 
+Pattern_Type_Radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        Pattern_Type_Radios_SelectedValue = document.querySelector('.Pattern_Type:checked').value;
+        DrawPixels()
+    });
+});
+
 let GradientStartHandle = { x: 100, y: 100 };
 let GradientEndHandle = { x: 500, y: 500 };
 let clickPoint;
 
 document.body.addEventListener("mousedown", onMouseDown);
 function onMouseDown(e) {
-    clickPoint = getClickPoint(e.clientX - CanvasXOffset, e.clientY);
+    clickPoint = getClickPoint(e.clientX - CanvasXOffset, e.clientY - CanvasYOffset);
     if (clickPoint) {
         document.body.addEventListener("mousemove", onMouseMove);
         document.body.addEventListener("mouseup", onMouseUp);
@@ -65,7 +89,7 @@ function onMouseDown(e) {
 }
 function onMouseMove(e) {
     clickPoint.x = e.clientX - CanvasXOffset;
-    clickPoint.y = e.clientY;
+    clickPoint.y = e.clientY - CanvasYOffset;
     // Handle_Start.style.cssText = `top: ${clickPoint.y - 10}px; left: ${clickPoint.x + CanvasXOffset - 10}px;`
     DrawPixels();
 }
@@ -90,6 +114,7 @@ let gradient, radial_gradient, Final_Gradient_Start_Handle_X, Final_Gradient_Sta
 let Collected_Ones = []
 let Dithered_Collection = []
 let Dithered_Collection_Final = []
+const asciiChars = [" ", ".", "-", ":", "+", "c", "o", "e", "K", "Q", "D", "H", "B", "&", "8", "M", "W", "#", "%", "@"];
 
 function DrawPixels() {
     ctx.clearRect(0, 0, width, height);
@@ -158,7 +183,7 @@ function DrawPixels() {
                             ctx.fillRect(baseX + q, baseY + tq, q, q);
                             ctx.fillRect(baseX + tq, baseY + q, q, q);
                             Dithered_Collection.push(
-                                { x: baseX + q, y: baseY + tq, width: q, height: q }, 
+                                { x: baseX + q, y: baseY + tq, width: q, height: q },
                                 { x: baseX + tq, y: baseY + q, width: q, height: q })
                             break;
                         case 2:
@@ -166,8 +191,8 @@ function DrawPixels() {
                             ctx.fillRect(baseX + tq, baseY + q, q, q);
                             ctx.fillRect(baseX + tq, baseY + tq, q, q);
                             Dithered_Collection.push(
-                                { x: baseX + q, y: baseY + tq, width: q, height: q }, 
-                                { x: baseX + tq, y: baseY + q, width: q, height: q }, 
+                                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                                { x: baseX + tq, y: baseY + q, width: q, height: q },
                                 { x: baseX + tq, y: baseY + tq, width: q, height: q })
                             break;
                         case 3:
@@ -177,10 +202,10 @@ function DrawPixels() {
                             ctx.fillRect(baseX + q, baseY + q, q, q);
                             ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
                             Dithered_Collection.push(
-                                { x: baseX + q, y: baseY + tq, width: q, height: q }, 
-                                { x: baseX + tq, y: baseY + q, width: q, height: q }, 
-                                { x: baseX + tq, y: baseY + tq, width: q, height: q }, 
-                                { x: baseX + q, y: baseY + q, width: q, height: q }, 
+                                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                                { x: baseX + q, y: baseY + q, width: q, height: q },
                                 { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q })
                             break;
                         case 4:
@@ -298,7 +323,13 @@ function DrawPixels() {
                         default:
                             break;
                     }
-
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Text") {
+                    //ctx.font = `${cellSize}px monospace`;
+                    //ctx.fillStyle = 'black';
+                    //ctx.textAlign = 'left';
+                    //ctx.textBaseline = 'top';
+                    //const index = Math.min(Math.floor(value * asciiChars.length), asciiChars.length - 1);
+                    //ctx.fillText(asciiChars[index], x * cellSize, y * cellSize);
                 }
             }
             if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
@@ -413,7 +444,6 @@ function scanCanvas(interval = 25) {
             const g = data[index + 1];
             const b = data[index + 2];
             const a = data[index + 3];
-            // Only return if not white and not fully transparent
             const isNotWhite = r !== 255 || g !== 255 || b !== 255;
             const isOpaque = a !== 0;
             if (isNotWhite && isOpaque) {
@@ -422,7 +452,7 @@ function scanCanvas(interval = 25) {
         }
     }
     console.log(results);
-    return results; // You can return or use this array as needed
+    return results;
 }
 
 document.getElementById('uploadSVG').addEventListener('change', function (event) {
