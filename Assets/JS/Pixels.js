@@ -1,7 +1,7 @@
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
-const width = canvas.width;
-const height = canvas.height;
+let width = canvas.width;
+let height = canvas.height;
 const CanvasXOffset = canvas.getBoundingClientRect().x;
 const CanvasYOffset = canvas.getBoundingClientRect().y;
 const CellSize_Slider = document.getElementById("Cell_Size");
@@ -13,11 +13,16 @@ const Ramdomness_Intensity = document.getElementById("Ramdomness_Intensity")
 const Pattern_Radios = document.querySelectorAll('.Pattern_Radios');
 const Gradient_Pattern_Radios = document.querySelectorAll('.Gradient_Pattern');
 const Pattern_Type_Radios = document.querySelectorAll('.Pattern_Type');
+const Canvas_Size_Radios = document.querySelectorAll('.Canvas_Size_Radios');
 const Fill_Type_Wrapper = document.getElementById("Fill_Type_Wrapper");
 const Randomness_Wrapper = document.getElementById("Randomness_Wrapper")
+const Pixels_Canvas_Wrapper = document.getElementById("Pixels_Canvas_Wrapper")
 let Pattern_Radios_SelectedValue = "Flat";
 let Gradient_Pattern_Radios_SelectedValue = "Circles";
 let Pattern_Type_Radios_SelectedValue = "Blank";
+let Canvas_Size_Radios_SelectedValue = "Minimize";
+const Scale_Bar = document.getElementById("Scale_Bar");
+const Scale_Bar_Markings = document.getElementById("Scale_Bar_Markings");
 let Gradient_Type_State
 let cellSize = CellSize_Slider.value;
 let cols = Math.floor(canvas.width / cellSize);
@@ -42,8 +47,8 @@ Ramdomness_Intensity.addEventListener("input", (e) => {
 })
 
 Fill_Type_Wrapper.classList.add("Hide_Element")
-            Randomness_Wrapper.classList.add("Hide_Element")
-            Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
+Randomness_Wrapper.classList.add("Hide_Element")
+Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
 
 Pattern_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
@@ -72,6 +77,43 @@ Pattern_Type_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Pattern_Type_Radios_SelectedValue = document.querySelector('.Pattern_Type:checked').value;
         DrawPixels()
+    });
+});
+
+const Scale_Bar_Creator = () => {
+    Scale_Bar_Markings.innerHTML = "";
+    for (let i = 0; i <= Scale_Bar.getBoundingClientRect().width / 100; i++) {
+        let Scale_Bar_Measurement_Wrapper = createTag("div", "Scale_Bar_Measurement_Wrapper", {}, Scale_Bar_Markings)
+        let Scale_Bar_Measurement = createTag("div", "Scale_Bar_Measurement", {}, Scale_Bar_Measurement_Wrapper)
+        let Scale_Bar_Measurement_Value = createTag("span", "Scale_Bar_Measurement_Value", {}, Scale_Bar_Measurement_Wrapper)
+        Scale_Bar_Measurement_Value.innerHTML = i * 100
+        if ((Scale_Bar.getBoundingClientRect().width - (i * 100)) > 9) {
+            for (let j = 0; j < 9; j++) {
+                let Scale_Bar_Measurement_Short = createTag("div", "Scale_Bar_Measurement_Short", {}, Scale_Bar_Markings)
+            }
+        }
+    }
+}
+Scale_Bar.style.cssText = `width: ${canvas.width}px;`
+Scale_Bar_Creator()
+
+Canvas_Size_Radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        Canvas_Size_Radios_SelectedValue = document.querySelector('.Canvas_Size_Radios:checked').value;
+        if (Canvas_Size_Radios_SelectedValue === "Maximize") {
+            Pixels_Canvas_Wrapper.style.cssText = `width: 100%; height: 800px`
+            canvas.width = Pixels_Canvas_Wrapper.getBoundingClientRect().width
+            Scale_Bar.style.cssText = `width: ${canvas.width}px;`
+        } else {
+            Pixels_Canvas_Wrapper.style.cssText = `width: 800px; height: 800px`
+            canvas.width = Pixels_Canvas_Wrapper.getBoundingClientRect().width
+            Scale_Bar.style.cssText = `width: ${canvas.width}px;`
+        }
+        width = canvas.width;
+        cols = Math.floor(canvas.width / cellSize);
+        rows = Math.floor(canvas.height / cellSize);
+        DrawPixels()
+        Scale_Bar_Creator()
     });
 });
 
@@ -378,9 +420,9 @@ function downloadSVG() {
     });
     const svgNS = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("width", "800");
-    svg.setAttribute("height", "800");
-    svg.setAttribute("viewBox", "0 0 800 800");
+    svg.setAttribute("width", canvas.width);
+    svg.setAttribute("height", canvas.height);
+    svg.setAttribute("viewBox", `0 0 ${canvas.width} ${canvas.height}`);
     if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
         Circles.forEach(attrs => {
             const circle = document.createElementNS(svgNS, "circle");
