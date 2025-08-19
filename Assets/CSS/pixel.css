@@ -149,3 +149,40 @@
     opacity: 0;
     visibility: hidden;
 }
+
+#Scale_Bar{
+    background: #EBEBEB;
+    height: 1px;
+    width: 100%;
+}
+
+.Scale_Bar_Measurement,
+.Scale_Bar_Measurement_Short{
+    width: 1px;
+    height: 8px;
+    background: #EBEBEB;
+}
+
+.Scale_Bar_Measurement_Short{
+height: 4px;
+min-width: 1px;
+}
+
+.Scale_Bar_Measurement_Value{
+    color: #D2DADF;
+    font-size: 8px;
+    line-height: 8px;
+}
+
+.Scale_Bar_Measurement_Wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 1px;
+    align-items: center;
+}
+
+#Scale_Bar_Markings{
+    display: flex;
+    gap: 9px;
+}
