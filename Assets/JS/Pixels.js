@@ -19,7 +19,7 @@ const Randomness_Wrapper = document.getElementById("Randomness_Wrapper")
 const Pixels_Canvas_Wrapper = document.getElementById("Pixels_Canvas_Wrapper")
 let Pattern_Radios_SelectedValue = "Flat";
 let Gradient_Pattern_Radios_SelectedValue = "Circles";
-let Pattern_Type_Radios_SelectedValue = "Blank";
+let Pattern_Type_Radios_SelectedValue = "Resize";
 let Canvas_Size_Radios_SelectedValue = "Minimize";
 const Scale_Bar = document.getElementById("Scale_Bar");
 const Scale_Bar_Markings = document.getElementById("Scale_Bar_Markings");
@@ -50,19 +50,27 @@ Fill_Type_Wrapper.classList.add("Hide_Element")
 Randomness_Wrapper.classList.add("Hide_Element")
 Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
 
+const Fill_Type_Handler = () => {
+    if (Pattern_Radios_SelectedValue === "Random") {
+        Randomness_Wrapper.classList.remove("Hide_Element")
+        Randomness_Wrapper.previousElementSibling.classList.remove("Hide_Element")
+        if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
+            Fill_Type_Wrapper.classList.remove("Hide_Element")
+        } else {
+            Fill_Type_Wrapper.classList.add("Hide_Element")
+        }
+    } else {
+        Fill_Type_Wrapper.classList.add("Hide_Element")
+        Randomness_Wrapper.classList.add("Hide_Element")
+        Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
+    }
+}
+
 Pattern_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Pattern_Radios_SelectedValue = document.querySelector('.Pattern_Radios:checked').value;
         DrawPixels()
-        if (Pattern_Radios_SelectedValue === "Random") {
-            Fill_Type_Wrapper.classList.remove("Hide_Element")
-            Randomness_Wrapper.classList.remove("Hide_Element")
-            Randomness_Wrapper.previousElementSibling.classList.remove("Hide_Element")
-        } else {
-            Fill_Type_Wrapper.classList.add("Hide_Element")
-            Randomness_Wrapper.classList.add("Hide_Element")
-            Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
-        }
+        Fill_Type_Handler()
     });
 });
 
@@ -70,6 +78,7 @@ Gradient_Pattern_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Gradient_Pattern_Radios_SelectedValue = document.querySelector('.Gradient_Pattern:checked').value;
         DrawPixels()
+        Fill_Type_Handler()
     });
 });
 
@@ -84,12 +93,12 @@ const Scale_Bar_Creator = () => {
     Scale_Bar_Markings.innerHTML = "";
     for (let i = 0; i <= Scale_Bar.getBoundingClientRect().width / 100; i++) {
         let Scale_Bar_Measurement_Wrapper = createTag("div", "Scale_Bar_Measurement_Wrapper", {}, Scale_Bar_Markings)
-        let Scale_Bar_Measurement = createTag("div", "Scale_Bar_Measurement", {}, Scale_Bar_Measurement_Wrapper)
+        createTag("div", "Scale_Bar_Measurement", {}, Scale_Bar_Measurement_Wrapper)
         let Scale_Bar_Measurement_Value = createTag("span", "Scale_Bar_Measurement_Value", {}, Scale_Bar_Measurement_Wrapper)
         Scale_Bar_Measurement_Value.innerHTML = i * 100
         if ((Scale_Bar.getBoundingClientRect().width - (i * 100)) > 9) {
             for (let j = 0; j < 9; j++) {
-                let Scale_Bar_Measurement_Short = createTag("div", "Scale_Bar_Measurement_Short", {}, Scale_Bar_Markings)
+                createTag("div", "Scale_Bar_Measurement_Short", {}, Scale_Bar_Markings)
             }
         }
     }
@@ -152,10 +161,207 @@ function getClickPoint(x, y) {
     }
 }
 
+const Circles_Effect_Creator = (x, y, gradient) => {
+    ctx.beginPath();
+    ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
+    ctx.fill();
+    Circles_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: gradient[y][x] * (cellSize / 2) })
+}
+
+const Dithered_Effect_Creator = (x, y, value) => {
+    const baseX = x * cellSize;
+    const baseY = y * cellSize;
+    const q = cellSize / 4;
+    const tq = q * 3;
+    const partSize = 1 / 12;
+    const index = Math.ceil(value[y][x] / partSize) - 1;
+    if (index < 0 || index >= 12) return;
+    switch (index) {
+        case 0:
+            ctx.fillRect(baseX + q, baseY + tq, q, q);
+            Dithered_Collection.push({ x: baseX + q, y: baseY + tq, width: q, height: q })
+            break;
+        case 1:
+            ctx.fillRect(baseX + q, baseY + tq, q, q);
+            ctx.fillRect(baseX + tq, baseY + q, q, q);
+            Dithered_Collection.push(
+                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                { x: baseX + tq, y: baseY + q, width: q, height: q })
+            break;
+        case 2:
+            ctx.fillRect(baseX + q, baseY + tq, q, q);
+            ctx.fillRect(baseX + tq, baseY + q, q, q);
+            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+            Dithered_Collection.push(
+                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                { x: baseX + tq, y: baseY + tq, width: q, height: q })
+            break;
+        case 3:
+            ctx.fillRect(baseX + q, baseY + tq, q, q);
+            ctx.fillRect(baseX + tq, baseY + q, q, q);
+            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+            ctx.fillRect(baseX + q, baseY + q, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+            Dithered_Collection.push(
+                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                { x: baseX + q, y: baseY + q, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q })
+            break;
+        case 4:
+            ctx.fillRect(baseX + q, baseY + tq, q, q);
+            ctx.fillRect(baseX + tq, baseY + q, q, q);
+            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+            ctx.fillRect(baseX + q, baseY + q, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+            Dithered_Collection.push(
+                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                { x: baseX + q, y: baseY + q, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
+                { x: baseX + 0, y: baseY + 0, width: q, height: q }
+            );
+            break;
+        case 5:
+            ctx.fillRect(baseX + q, baseY + tq, q, q);
+            ctx.fillRect(baseX + tq, baseY + q, q, q);
+            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+            ctx.fillRect(baseX + q, baseY + q, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+            ctx.fillRect(baseX + 0, baseY + 2 * q, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
+            Dithered_Collection.push(
+                { x: baseX + q, y: baseY + tq, width: q, height: q },
+                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                { x: baseX + q, y: baseY + q, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
+                { x: baseX + 0, y: baseY + 0, width: q, height: q },
+                { x: baseX + 0, y: baseY + 2 * q, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q }
+            );
+            break;
+        case 6:
+            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
+            ctx.fillRect(baseX + q, baseY + q, q, q);
+            ctx.fillRect(baseX + tq, baseY + q, q, q);
+            ctx.fillRect(baseX + 0, baseY + 2 * q, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+            ctx.fillRect(baseX + q, baseY + tq, 3 * q, q);
+            Dithered_Collection.push(
+                { x: baseX + 0, y: baseY + 0, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
+                { x: baseX + q, y: baseY + q, width: q, height: q },
+                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                { x: baseX + 0, y: baseY + 2 * q, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
+                { x: baseX + q, y: baseY + tq, width: 3 * q, height: q }
+            );
+            break;
+        case 7:
+            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
+            ctx.fillRect(baseX + q, baseY + q, q, q);
+            ctx.fillRect(baseX + tq, baseY + q, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
+            ctx.fillRect(baseX + q, baseY + tq, 3 * q, q);
+            ctx.fillRect(baseX + 0, baseY + 0, q, 3 * q);
+            Dithered_Collection.push(
+                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
+                { x: baseX + q, y: baseY + q, width: q, height: q },
+                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
+                { x: baseX + q, y: baseY + tq, width: 3 * q, height: q },
+                { x: baseX + 0, y: baseY + 0, width: q, height: 3 * q }
+            );
+            break;
+        case 8:
+            ctx.fillRect(baseX + 0, baseY + 0, q, 3 * q);
+            ctx.fillRect(baseX + 0, baseY + tq, cellSize, q);
+            ctx.fillRect(baseX + q, baseY + q, 3 * q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 0, q, 3 * q);
+            Dithered_Collection.push(
+                { x: baseX + 0, y: baseY + 0, width: q, height: 3 * q },
+                { x: baseX + 0, y: baseY + tq, width: cellSize, height: q },
+                { x: baseX + q, y: baseY + q, width: 3 * q, height: q },
+                { x: baseX + 2 * q, y: baseY + 0, width: q, height: 3 * q }
+            )
+            break;
+        case 9:
+            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
+            ctx.fillRect(baseX + tq, baseY + q, q, q);
+            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+            ctx.fillRect(baseX + 0, baseY + q, 3 * q, 3 * q);
+            Dithered_Collection.push(
+                { x: baseX + 0, y: baseY + 0, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
+                { x: baseX + tq, y: baseY + q, width: q, height: q },
+                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                { x: baseX + 0, y: baseY + q, width: 3 * q, height: 3 * q }
+            )
+            break;
+        case 10:
+            ctx.fillRect(baseX + 0, baseY + 0, q, q);
+            ctx.fillRect(baseX + 2 * q, baseY + 0, 2 * q, 2 * q);
+            ctx.fillRect(baseX + tq, baseY + tq, q, q);
+            ctx.fillRect(baseX + 0, baseY + q, 3 * q, 3 * q);
+            Dithered_Collection.push(
+                { x: baseX + 0, y: baseY + 0, width: q, height: q },
+                { x: baseX + 2 * q, y: baseY + 0, width: 2 * q, height: 2 * q },
+                { x: baseX + tq, y: baseY + tq, width: q, height: q },
+                { x: baseX + 0, y: baseY + q, width: 3 * q, height: 3 * q }
+            )
+            break;
+        case 11:
+            ctx.fillRect(baseX + 0, baseY + 0, cellSize, cellSize);
+            Dithered_Collection.push({ x: baseX + 0, y: baseY + 0, width: cellSize, height: cellSize })
+            break;
+        default:
+            break;
+    }
+}
+
+const Square_Effect_Creator = (x, y, gradient) => {
+    drawRoundedRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1, Math.abs(gradient[y][x] - 1) * (cellSize / 2))
+    Squared_Collection.push({ x: x * cellSize, y: y * cellSize, size: cellSize - 1, radius: Math.abs(gradient[y][x] - 1) * (cellSize / 2) })
+}
+
+const Randomizer = () => {
+    const x = Math.floor(Math.random() * cols);
+    const y = Math.floor(Math.random() * rows);
+    const chance = 1 / Randomness_Intensity_Value;
+    if (Math.random() < chance) {
+        return { x, y };
+    }
+    return null;
+}
+
+const Reducer = (gradient, value, x, y) => {
+    if (gradient[y][x] > value) {
+        gradient[y][x] = Number((gradient[y][x] - value).toFixed(2));
+    }
+}
+
+const Multiplier = (gradient, value, x, y) => {
+    gradient[y][x] = gradient[y][x] * value;
+}
+
 let gradient, radial_gradient, Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y, Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y, Gradient_Handle_Distance_X, Gradient_Handle_Distance_Y, maxDX, maxDY, Radial_Gradient_MaxRadius, Collected_Ones_SVG
 let Collected_Ones = []
+let Circles_Collection = []
+let Circles_Collection_Final = []
 let Dithered_Collection = []
 let Dithered_Collection_Final = []
+let Squared_Collection = []
+let Squared_Collection_Final = []
+let Corners_Collection = []
+let Corners_Collection_Final = []
 const asciiChars = [" ", ".", "-", ":", "+", "c", "o", "e", "K", "Q", "D", "H", "B", "&", "8", "M", "W", "#", "%", "@"];
 
 function DrawPixels() {
@@ -175,196 +381,52 @@ function DrawPixels() {
     if (!Gradient_Type_State) {
         gradient = interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]);
     } else {
-        radial_gradient = generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y });
+        gradient = generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y });
     }
-    const isRandom = Pattern_Radios_SelectedValue === "Random";
-    const isJoined = Pattern_Radios_SelectedValue === "Joined";
-    if (isRandom || isJoined) {
-        const matrix = Gradient_Type_State ? radial_gradient : gradient;
-        for (let y = 0; y < rows; y++) {
-            if (Math.random() < 0.5) {
-                for (let x = 0; x < cols; x++) {
-                    if (Math.floor(Math.random() * Randomness_Intensity_Value) === 1) {
-                        if (isRandom) {
-                            matrix[y][x] = 0;
-                        } else if (isJoined && matrix[y][x] === 1) {
-                            matrix[y][x] = 2;
-                            if (x > 0 && x !== 2) matrix[y][x - 1] = 2;
-                        }
-                    }
-                }
-                if (isJoined && matrix[y].includes(2)) {
-                    Collected_Ones.push(collectOnes(matrix[y], 2, y));
-                }
-            }
-        }
-    }
-    const getGradientValue = (y, x) => Gradient_Type_State ? radial_gradient[y][x] : gradient[y][x];
+
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
-            const value = getGradientValue(y, x);
-            if (value > 0 && value < 2) {
-                if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
-                    ctx.beginPath();
-                    ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), value * (cellSize / 2), 0, 2 * Math.PI, true);
-                    ctx.fill();
-                } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
-                    const baseX = x * cellSize;
-                    const baseY = y * cellSize;
-                    const q = cellSize / 4;
-                    const tq = q * 3;
-                    const partSize = 1 / 12;
-                    const index = Math.ceil(value / partSize) - 1;
-                    if (index < 0 || index >= 12) return;
-                    switch (index) {
-                        case 0:
-                            ctx.fillRect(baseX + q, baseY + tq, q, q);
-                            Dithered_Collection.push({ x: baseX + q, y: baseY + tq, width: q, height: q })
-                            break;
-                        case 1:
-                            ctx.fillRect(baseX + q, baseY + tq, q, q);
-                            ctx.fillRect(baseX + tq, baseY + q, q, q);
-                            Dithered_Collection.push(
-                                { x: baseX + q, y: baseY + tq, width: q, height: q },
-                                { x: baseX + tq, y: baseY + q, width: q, height: q })
-                            break;
-                        case 2:
-                            ctx.fillRect(baseX + q, baseY + tq, q, q);
-                            ctx.fillRect(baseX + tq, baseY + q, q, q);
-                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
-                            Dithered_Collection.push(
-                                { x: baseX + q, y: baseY + tq, width: q, height: q },
-                                { x: baseX + tq, y: baseY + q, width: q, height: q },
-                                { x: baseX + tq, y: baseY + tq, width: q, height: q })
-                            break;
-                        case 3:
-                            ctx.fillRect(baseX + q, baseY + tq, q, q);
-                            ctx.fillRect(baseX + tq, baseY + q, q, q);
-                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
-                            ctx.fillRect(baseX + q, baseY + q, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
-                            Dithered_Collection.push(
-                                { x: baseX + q, y: baseY + tq, width: q, height: q },
-                                { x: baseX + tq, y: baseY + q, width: q, height: q },
-                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
-                                { x: baseX + q, y: baseY + q, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q })
-                            break;
-                        case 4:
-                            ctx.fillRect(baseX + q, baseY + tq, q, q);
-                            ctx.fillRect(baseX + tq, baseY + q, q, q);
-                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
-                            ctx.fillRect(baseX + q, baseY + q, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
-                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
-                            Dithered_Collection.push(
-                                { x: baseX + q, y: baseY + tq, width: q, height: q },
-                                { x: baseX + tq, y: baseY + q, width: q, height: q },
-                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
-                                { x: baseX + q, y: baseY + q, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
-                                { x: baseX + 0, y: baseY + 0, width: q, height: q }
-                            );
-                            break;
-                        case 5:
-                            ctx.fillRect(baseX + q, baseY + tq, q, q);
-                            ctx.fillRect(baseX + tq, baseY + q, q, q);
-                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
-                            ctx.fillRect(baseX + q, baseY + q, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
-                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
-                            ctx.fillRect(baseX + 0, baseY + 2 * q, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
-                            Dithered_Collection.push(
-                                { x: baseX + q, y: baseY + tq, width: q, height: q },
-                                { x: baseX + tq, y: baseY + q, width: q, height: q },
-                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
-                                { x: baseX + q, y: baseY + q, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
-                                { x: baseX + 0, y: baseY + 0, width: q, height: q },
-                                { x: baseX + 0, y: baseY + 2 * q, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q }
-                            );
-                            break;
-                        case 6:
-                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
-                            ctx.fillRect(baseX + q, baseY + q, q, q);
-                            ctx.fillRect(baseX + tq, baseY + q, q, q);
-                            ctx.fillRect(baseX + 0, baseY + 2 * q, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
-                            ctx.fillRect(baseX + q, baseY + tq, 3 * q, q);
-                            Dithered_Collection.push(
-                                { x: baseX + 0, y: baseY + 0, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
-                                { x: baseX + q, y: baseY + q, width: q, height: q },
-                                { x: baseX + tq, y: baseY + q, width: q, height: q },
-                                { x: baseX + 0, y: baseY + 2 * q, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
-                                { x: baseX + q, y: baseY + tq, width: 3 * q, height: q }
-                            );
-                            break;
-                        case 7:
-                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
-                            ctx.fillRect(baseX + q, baseY + q, q, q);
-                            ctx.fillRect(baseX + tq, baseY + q, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 2 * q, q, q);
-                            ctx.fillRect(baseX + q, baseY + tq, 3 * q, q);
-                            ctx.fillRect(baseX + 0, baseY + 0, q, 3 * q);
-                            Dithered_Collection.push(
-                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
-                                { x: baseX + q, y: baseY + q, width: q, height: q },
-                                { x: baseX + tq, y: baseY + q, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q },
-                                { x: baseX + q, y: baseY + tq, width: 3 * q, height: q },
-                                { x: baseX + 0, y: baseY + 0, width: q, height: 3 * q }
-                            );
-                            break;
-                        case 8:
-                            ctx.fillRect(baseX + 0, baseY + 0, q, 3 * q);
-                            ctx.fillRect(baseX + 0, baseY + tq, cellSize, q);
-                            ctx.fillRect(baseX + q, baseY + q, 3 * q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, 3 * q);
-                            Dithered_Collection.push(
-                                { x: baseX + 0, y: baseY + 0, width: q, height: 3 * q },
-                                { x: baseX + 0, y: baseY + tq, width: cellSize, height: q },
-                                { x: baseX + q, y: baseY + q, width: 3 * q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: 3 * q }
-                            )
-                            break;
-                        case 9:
-                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
-                            ctx.fillRect(baseX + tq, baseY + q, q, q);
-                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
-                            ctx.fillRect(baseX + 0, baseY + q, 3 * q, 3 * q);
-                            Dithered_Collection.push(
-                                { x: baseX + 0, y: baseY + 0, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 0, width: q, height: q },
-                                { x: baseX + tq, y: baseY + q, width: q, height: q },
-                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
-                                { x: baseX + 0, y: baseY + q, width: 3 * q, height: 3 * q }
-                            )
-                            break;
-                        case 10:
-                            ctx.fillRect(baseX + 0, baseY + 0, q, q);
-                            ctx.fillRect(baseX + 2 * q, baseY + 0, 2 * q, 2 * q);
-                            ctx.fillRect(baseX + tq, baseY + tq, q, q);
-                            ctx.fillRect(baseX + 0, baseY + q, 3 * q, 3 * q);
-                            Dithered_Collection.push(
-                                { x: baseX + 0, y: baseY + 0, width: q, height: q },
-                                { x: baseX + 2 * q, y: baseY + 0, width: 2 * q, height: 2 * q },
-                                { x: baseX + tq, y: baseY + tq, width: q, height: q },
-                                { x: baseX + 0, y: baseY + q, width: 3 * q, height: 3 * q }
-                            )
-                            break;
-                        case 11:
-                            ctx.fillRect(baseX + 0, baseY + 0, cellSize, cellSize);
-                            Dithered_Collection.push({ x: baseX + 0, y: baseY + 0, width: cellSize, height: cellSize })
-                            break;
-                        default:
-                            break;
+            if (gradient[y][x] > 0 && gradient[y][x] < 2) {
+                if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random" && Pattern_Type_Radios_SelectedValue === "Joined") {
+                    let random_val = Randomizer()
+                    if (random_val && gradient[random_val.y][random_val.x] === 1) {
+                        gradient[random_val.y][random_val.x] = 2;
+                        if (random_val.x > 0 && random_val.x !== 2) gradient[random_val.y][random_val.x - 1] = 2;
                     }
+                    Circles_Effect_Creator(x, y, gradient)
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random" && Pattern_Type_Radios_SelectedValue === "Corners") {
+                    gradient[y][x] = { size: gradient[y][x], corner: "CIRCLE" }
+                    Corners_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: gradient[y][x].size * (cellSize / 2), corner: "CIRCLE" })
+                    let random_val = Randomizer()
+                    if (random_val && gradient[random_val.y][random_val.x] === 1) {
+                        const corners = ["TR", "TL", "BR", "BL"];
+                        gradient[random_val.y][random_val.x] = { size: gradient[random_val.y][random_val.x], corner: corners[Math.floor(Math.random() * 4)] }
+                        Corners_Collection.push({ x: random_val.x * cellSize, y: random_val.y * cellSize, size: gradient[random_val.y][random_val.x].size, corner: gradient[random_val.y][random_val.x].corner })
+                        drawQuarterCircle(ctx, random_val.x * cellSize, random_val.y * cellSize, gradient[random_val.y][random_val.x].size * cellSize, gradient[random_val.y][random_val.x].corner, cellSize)
+                    }
+                    if (gradient[y][x].corner === "CIRCLE") {
+                        ctx.beginPath();
+                        ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x].size * (cellSize / 2), 0, 2 * Math.PI, true);
+                        ctx.fill();
+                    }
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random") {
+                    let random_val = Randomizer()
+                    if (random_val && Pattern_Type_Radios_SelectedValue === "Resize") {
+                        Reducer(gradient, 1 / 2, random_val.x, random_val.y)
+                    } else if (random_val && Pattern_Type_Radios_SelectedValue === "Blank") {
+                        Multiplier(gradient, 0, random_val.x, random_val.y)
+                    }
+                    Circles_Effect_Creator(x, y, gradient)
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
+                    Circles_Effect_Creator(x, y, gradient)
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered" && Pattern_Radios_SelectedValue === "Random") {
+                    let random_val = Randomizer()
+                    if (random_val) {
+                        Reducer(gradient, 1 / 12, random_val.x, random_val.y)
+                    }
+                    Dithered_Effect_Creator(x, y, gradient)
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
+                    Dithered_Effect_Creator(x, y, gradient)
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Text") {
                     //ctx.font = `${cellSize}px monospace`;
                     //ctx.fillStyle = 'black';
@@ -374,45 +436,50 @@ function DrawPixels() {
                     //ctx.fillText(asciiChars[index], x * cellSize, y * cellSize);
                 }
             }
-            if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
-                drawRoundedRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1, Math.abs(value - 1) * (cellSize / 2))
+            if (Gradient_Pattern_Radios_SelectedValue === "Squares" && Pattern_Radios_SelectedValue === "Random") {
+                let random_val = Randomizer()
+                if (random_val) {
+                    Reducer(gradient, 1 / 3, random_val.x, random_val.y)
+                }
+                Square_Effect_Creator(x, y, gradient)
+            } else if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
+                Square_Effect_Creator(x, y, gradient)
             }
+        }
+        if (Pattern_Type_Radios_SelectedValue === "Joined" && gradient[y].includes(2)) {
+            Collected_Ones.push(collectOnes(gradient[y], 2, y));
         }
     }
     Collected_Ones.forEach(rowData => {
         rowData.forEach(cell => {
             const { row, indices } = cell;
             const col = indices[0];
-            const value = getGradientValue(row, col);
+            const value = gradient[row][col];
             drawCustomRoundedRect(col * cellSize, row * cellSize, value * cellSize * 0.5 * indices.length, value * cellSize * 0.5, value * 0.5 * (cellSize / 2), ["tr", "br", "tl", "bl"]);
         });
     });
     Collected_Ones_SVG = Collected_Ones;
     Collected_Ones = [];
+    Circles_Collection_Final = Circles_Collection
+    Circles_Collection = []
     Dithered_Collection_Final = Dithered_Collection
     Dithered_Collection = []
+    Squared_Collection_Final = Squared_Collection
+    Squared_Collection = []
+    Corners_Collection_Final = Corners_Collection
+    Corners_Collection = []
 }
 
 DrawPixels();
 
 function downloadSVG() {
-    let Circles = []
     let Rects = []
-    const getGradientValue = (y, x) => Gradient_Type_State ? radial_gradient[y][x] : gradient[y][x];
-    for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-            const value = getGradientValue(y, x);
-            if (value > 0 && value < 2) {
-                Circles.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: value * (cellSize / 2) });
-            }
-        }
-    }
     Collected_Ones_SVG.forEach(rowData => {
         rowData.forEach(cell => {
             const { row, indices } = cell;
             const x = indices[0] * cellSize;
             const y = row * cellSize;
-            const width = getGradientValue(row, indices[0]) * cellSize * 0.5 * indices.length;
+            const width = gradient[row][indices[0]] * cellSize * 0.5 * indices.length
             Rects.push({
                 x, y, rx: cellSize / 2, ry: cellSize / 2, width, height: cellSize
             });
@@ -424,16 +491,16 @@ function downloadSVG() {
     svg.setAttribute("height", canvas.height);
     svg.setAttribute("viewBox", `0 0 ${canvas.width} ${canvas.height}`);
     if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
-        Circles.forEach(attrs => {
+        Circles_Collection_Final.forEach(Circles => {
             const circle = document.createElementNS(svgNS, "circle");
-            ["cx", "cy", "r"].forEach(attr => {
-                if (attrs[attr] != null) circle.setAttribute(attr, attrs[attr]);
-            });
+            circle.setAttribute("cx", Circles.cx);
+            circle.setAttribute("cy", Circles.cy);
+            circle.setAttribute("r", Circles.r);
             circle.setAttribute("fill", "black");
             svg.appendChild(circle);
         });
     }
-    if (Pattern_Radios_SelectedValue === "Joined") {
+    if (Pattern_Type_Radios_SelectedValue === "Joined") {
         Rects.forEach(attrs => {
             const rect = document.createElementNS(svgNS, "rect");
             ["x", "y", "rx", "ry", "width", "height"].forEach(attr => {
@@ -443,6 +510,32 @@ function downloadSVG() {
             svg.appendChild(rect);
         });
     }
+    if (Pattern_Type_Radios_SelectedValue === "Corners") {
+        Corners_Collection_Final.forEach(Corner => {
+            if(Corner.corner === "CIRCLE"){
+                const circle = document.createElementNS(svgNS, "circle");
+                circle.setAttribute("cx", Corner.cx);
+                circle.setAttribute("cy", Corner.cy);
+                circle.setAttribute("r", Corner.r);
+                circle.setAttribute("fill", "black");
+                svg.appendChild(circle);
+            } else {
+                test()
+                const path = document.createElementNS(svgNS, "path");
+                if(Corner.corner === "TL"){
+                    path.setAttribute("d",`M ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} L ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} Z`)
+                } else if(Corner.corner === "TR"){
+                    path.setAttribute("d",`M ${parseInt(Corner.x)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} Z`)
+                } else if(Corner.corner === "BR"){
+                    path.setAttribute("d",`M ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x)} ${parseInt(Corner.y)} Z`)
+                } else {
+                    path.setAttribute("d",`M ${parseInt(Corner.x)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 0 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} Z`)
+                }
+                path.setAttribute("fill", "black");
+            svg.appendChild(path);
+            }
+        })
+    }
     if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
         Dithered_Collection_Final.forEach(Dithered => {
             const rect = document.createElementNS(svgNS, "rect");
@@ -450,6 +543,19 @@ function downloadSVG() {
             rect.setAttribute("y", Dithered.y)
             rect.setAttribute("width", Dithered.width)
             rect.setAttribute("height", Dithered.height)
+            rect.setAttribute("fill", "black");
+            svg.appendChild(rect);
+        })
+    }
+    if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
+        Squared_Collection_Final.forEach(Squares => {
+            const rect = document.createElementNS(svgNS, "rect");
+            rect.setAttribute("x", Squares.x)
+            rect.setAttribute("y", Squares.y)
+            rect.setAttribute("rx", Squares.radius)
+            rect.setAttribute("ry", Squares.radius)
+            rect.setAttribute("width", Squares.size)
+            rect.setAttribute("height", Squares.size)
             rect.setAttribute("fill", "black");
             svg.appendChild(rect);
         })
