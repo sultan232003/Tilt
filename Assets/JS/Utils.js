@@ -760,7 +760,7 @@ function recolorShadow(shadowStr, newBaseHex) {
 }
 
 function lerp(a, b, t) {
-  return a + (b - a) * t;
+    return a + (b - a) * t;
 }
 
 function interpolate2DGrid(rows, cols, start, end) {
@@ -785,24 +785,24 @@ function interpolate2DGrid(rows, cols, start, end) {
 }
 
 function generateRadialGradient(rows, cols, center, edge) {
-  const grid = [];
-  const dx = edge.x - center.x;
-  const dy = edge.y - center.y;
-  const maxRadius = Math.sqrt(dx * dx + dy * dy);
-  const safeRadius = Math.max(1e-6, maxRadius);
-  for (let y = 0; y < rows; y++) {
-    const row = [];
-    for (let x = 0; x < cols; x++) {
-      const distX = x - center.x;
-      const distY = y - center.y;
-      const dist = Math.sqrt(distX * distX + distY * distY);
-      let t = dist / safeRadius;
-      t = Math.min(1, t);
-      row.push(Number(t.toFixed(2)));
+    const grid = [];
+    const dx = edge.x - center.x;
+    const dy = edge.y - center.y;
+    const maxRadius = Math.sqrt(dx * dx + dy * dy);
+    const safeRadius = Math.max(1e-6, maxRadius);
+    for (let y = 0; y < rows; y++) {
+        const row = [];
+        for (let x = 0; x < cols; x++) {
+            const distX = x - center.x;
+            const distY = y - center.y;
+            const dist = Math.sqrt(distX * distX + distY * distY);
+            let t = dist / safeRadius;
+            t = Math.min(1, t);
+            row.push(Number(t.toFixed(2)));
+        }
+        grid.push(row);
     }
-    grid.push(row);
-  }
-  return grid;
+    return grid;
 }
 
 function drawCustomRoundedRect(x, y, width, height, radius, roundedCorners) {
@@ -864,19 +864,44 @@ function collectOnes(arr, compare, row) {
 }
 
 function drawRoundedRect(x, y, width, height, radius) {
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-  ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.fill();
 }
+
+function drawQuarterCircle(ctx, x, y, radius, corner, cellSize) {
+    const startAngles = { TL: Math.PI, TR: 1.5 * Math.PI, BR: 0, BL: 0.5 * Math.PI };
+    const startAngle = startAngles[corner];
+    const endAngle = startAngle + 0.5 * Math.PI;
+    if (corner === "TL") {
+        final_x = parseInt(x) + parseInt(cellSize);
+        final_y = parseInt(y) + parseInt(cellSize);
+    } else if (corner === "TR") {
+        final_x = x
+        final_y = parseInt(y) + parseInt(cellSize);
+    } else if (corner === "BL") {
+        final_x = parseInt(x) + parseInt(cellSize);
+        final_y = y
+    } else {
+        final_x = x
+        final_y = y
+    }
+    ctx.beginPath();
+    ctx.moveTo(final_x, final_y);
+    ctx.arc(final_x, final_y, radius, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fill();
+}
+
 
 function drawPoint(p) {
     ctx.beginPath();
@@ -884,4 +909,3 @@ function drawPoint(p) {
     ctx.fill();
     // ctx.closePath()
 }
-
