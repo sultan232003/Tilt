@@ -876,6 +876,7 @@ function drawRoundedRect(x, y, width, height, radius) {
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
     ctx.fill();
+    ctx.fillStyle = Color_Radios_SelectedValue
 }
 
 function drawQuarterCircle(ctx, x, y, radius, corner, cellSize) {
