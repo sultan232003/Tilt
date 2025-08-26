@@ -65,34 +65,77 @@
               <input type="range" id="Cell_Size" min="10" max="50" step="5">
             </div>
           </div>
-          <div id="Pixels_Top_Row_Right" class="row gap-10">
-            <div class="row align-center gap-10">
-              <p>Pattern Mode</p>
-              <div class="row" id="Pattern_Radios_Options">
-                <input type="radio" class="Pattern_Radios" id="Pattern_Radios_Tab_1" name="choice" value="Flat"
+          <div id="Pixels_Top_Row_Right" class="row gap-32 align-center">
+            <div id="Tools_Expand_Wrapper" class="row gap-10 align-center">
+              <div id="Tools_Expand_Button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+                  <path
+                    d="M8.21973 3.96979C8.51262 3.67689 8.98738 3.67689 9.28027 3.96979C9.57314 4.26268 9.57316 4.73745 9.28027 5.03033L5.31055 9.00006L9.28027 12.9698C9.57314 13.2627 9.57316 13.7375 9.28027 14.0303C8.98739 14.3232 8.51261 14.3232 8.21973 14.0303L3.18945 9.00006L8.21973 3.96979ZM14.2197 3.96979C14.5126 3.6769 14.9874 3.67692 15.2803 3.96979C15.573 4.26269 15.5731 4.73748 15.2803 5.03033L11.3105 9.00006L15.2803 12.9698C15.573 13.2627 15.5731 13.7375 15.2803 14.0303C14.9874 14.3232 14.5126 14.3231 14.2197 14.0303L9.18945 9.00006L14.2197 3.96979Z"
+                    fill="#6D7784" />
+                </svg>
+              </div>
+              <div id="Tools_Expand_Box">
+                <input type="radio" class="Tools_Radios" id="Tools_Radios_Tab_1" name="Tools" value="Colors"
                   checked="true">
-                <label for="Pattern_Radios_Tab_1">Flat</label>
-                <input type="radio" class="Pattern_Radios" id="Pattern_Radios_Tab_2" name="choice" value="Random">
-                <label for="Pattern_Radios_Tab_2">Random</label>
+                <label for="Tools_Radios_Tab_1" class="pos-rel">Colors</label>
+                  <div id="Color_Box" class="row row-col gap-16">
+                    <div class="row row-col gap-6">
+                      <div class="row gap-6">
+                        <input type="radio" class="Color_Radios" id="Colors_Radios_Tab_1" name="Colors" value="#000000"
+                          checked="true">
+                        <label for="Colors_Radios_Tab_1" class="Color_Options" style="--Color_Option: #000000"></label>
+                        <input type="radio" class="Color_Radios" id="Colors_Radios_Tab_2" name="Colors" value="#F4A261">
+                        <label for="Colors_Radios_Tab_2" class="Color_Options" style="--Color_Option: #F4A261"></label>
+                        <input type="radio" class="Color_Radios" id="Colors_Radios_Tab_3" name="Colors" value="#F6D365">
+                        <label for="Colors_Radios_Tab_3" class="Color_Options" style="--Color_Option: #F6D365"></label>
+                        <input type="radio" class="Color_Radios" id="Colors_Radios_Tab_4" name="Colors" value="#81C784">
+                        <label for="Colors_Radios_Tab_4" class="Color_Options" style="--Color_Option: #81C784"></label>
+                      </div>
+                      <div class="row gap-6">
+                        <input type="radio" class="Color_Radios" id="Colors_Radios_Tab_5" name="Colors" value="#64B5F6">
+                        <label for="Colors_Radios_Tab_5" class="Color_Options" style="--Color_Option: #64B5F6"></label>
+                        <input type="radio" class="Color_Radios" id="Colors_Radios_Tab_6" name="Colors" value="#BA9DD9">
+                        <label for="Colors_Radios_Tab_6" class="Color_Options" style="--Color_Option: #BA9DD9"></label>
+                        <input type="radio" class="Color_Radios" id="Colors_Radios_Tab_7" name="Colors" value="#E57373">
+                        <label for="Colors_Radios_Tab_7" class="Color_Options" style="--Color_Option: #E57373"></label>
+                        <input type="radio" class="Color_Radios" id="Colors_Radios_Tab_8" name="Colors" value="#F5F5F5">
+                        <label for="Colors_Radios_Tab_8" class="Color_Options" style="--Color_Option: #F5F5F5"></label>
+                      </div>
+                    </div>
+                  </div>
+                <input type="radio" class="Tools_Radios" id="Tools_Radios_Tab_2" name="Tools" value="More">
+                <label for="Tools_Radios_Tab_2">More</label>
               </div>
             </div>
-            <div class="row" id="Canvas_Size_Radios_Options">
-              <input type="radio" class="Canvas_Size_Radios" id="Canvas_Size_Radios_Tab_1" name="Canvas_Size"
-                value="Minimize" checked="true">
-              <label for="Canvas_Size_Radios_Tab_1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                  viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M2.66699 12.333C5.42814 12.3332 7.66682 14.5719 7.66699 17.333V17.5C7.66682 18.052 7.219 18.4998 6.66699 18.5C6.11482 18.5 5.66717 18.0521 5.66699 17.5V17.333C5.66682 15.6764 4.32357 14.3332 2.66699 14.333H2.5C1.94787 14.3328 1.5 13.8852 1.5 13.333C1.50017 12.781 1.94797 12.3332 2.5 12.333H2.66699ZM17.5 12.333C18.052 12.3332 18.4998 12.781 18.5 13.333C18.5 13.8852 18.0521 14.3328 17.5 14.333H17.333C15.6764 14.3332 14.3332 15.6764 14.333 17.333V17.5C14.3328 18.0521 13.8852 18.5 13.333 18.5C12.781 18.4998 12.3332 18.052 12.333 17.5V17.333C12.3332 14.5719 14.5719 12.3332 17.333 12.333H17.5ZM6.66699 1.5C7.219 1.5002 7.66682 1.94799 7.66699 2.5V2.66699C7.66682 5.42815 5.42814 7.66679 2.66699 7.66699H2.5C1.94797 7.66682 1.50017 7.21902 1.5 6.66699C1.5 6.11482 1.94787 5.66717 2.5 5.66699H2.66699C4.32357 5.66679 5.66682 4.32358 5.66699 2.66699V2.5C5.66717 1.94787 6.11482 1.5 6.66699 1.5ZM13.333 1.5C13.8852 1.5 14.3328 1.94787 14.333 2.5V2.66699C14.3332 4.32358 15.6764 5.66679 17.333 5.66699H17.5C18.0521 5.66717 18.5 6.11482 18.5 6.66699C18.4998 7.21902 18.052 7.66682 17.5 7.66699H17.333C14.5719 7.66679 12.3332 5.42815 12.333 2.66699V2.5C12.3332 1.94799 12.781 1.5002 13.333 1.5Z"
-                    fill="#6D7784" />
-                </svg></label>
-              <input type="radio" class="Canvas_Size_Radios" id="Canvas_Size_Radios_Tab_2" name="Canvas_Size"
-                value="Maximize">
-              <label for="Canvas_Size_Radios_Tab_2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                  viewBox="0 0 20 20" fill="currentColor">
-                  <path
-                    d="M2.5 12.333C3.05218 12.333 3.49982 12.7809 3.5 13.333V13.5C3.5 15.1569 4.84315 16.5 6.5 16.5H6.66699C7.21913 16.5002 7.66699 16.9478 7.66699 17.5C7.66699 18.0522 7.21913 18.4998 6.66699 18.5H6.5C3.73858 18.5 1.5 16.2614 1.5 13.5V13.333C1.50018 12.7809 1.94782 12.333 2.5 12.333ZM17.5 12.333C18.0522 12.333 18.4998 12.7809 18.5 13.333V13.5C18.5 16.2614 16.2614 18.5 13.5 18.5H13.333C12.7809 18.4998 12.333 18.0522 12.333 17.5C12.333 16.9478 12.7809 16.5002 13.333 16.5H13.5C15.1569 16.5 16.5 15.1569 16.5 13.5V13.333C16.5002 12.7809 16.9478 12.333 17.5 12.333ZM6.66699 1.5C7.21913 1.50018 7.66699 1.94782 7.66699 2.5C7.66699 3.05218 7.21913 3.49982 6.66699 3.5H6.5C4.84315 3.5 3.5 4.84315 3.5 6.5V6.66699C3.49982 7.21913 3.05218 7.66699 2.5 7.66699C1.94782 7.66699 1.50018 7.21913 1.5 6.66699V6.5C1.5 3.73858 3.73858 1.5 6.5 1.5H6.66699ZM13.5 1.5C16.2614 1.5 18.5 3.73858 18.5 6.5V6.66699C18.4998 7.21913 18.0522 7.66699 17.5 7.66699C16.9478 7.66699 16.5002 7.21913 16.5 6.66699V6.5C16.5 4.84315 15.1569 3.5 13.5 3.5H13.333C12.7809 3.49982 12.333 3.05218 12.333 2.5C12.333 1.94782 12.7809 1.50018 13.333 1.5H13.5Z"
-                    fill="white" />
-                </svg></label>
+            <div class="row gap-10">
+              <div class="row align-center gap-10">
+                <p>Pattern Mode</p>
+                <div class="row" id="Pattern_Radios_Options">
+                  <input type="radio" class="Pattern_Radios" id="Pattern_Radios_Tab_1" name="choice" value="Flat"
+                    checked="true">
+                  <label for="Pattern_Radios_Tab_1">Flat</label>
+                  <input type="radio" class="Pattern_Radios" id="Pattern_Radios_Tab_2" name="choice" value="Random">
+                  <label for="Pattern_Radios_Tab_2">Random</label>
+                </div>
+              </div>
+              <div class="row" id="Canvas_Size_Radios_Options">
+                <input type="radio" class="Canvas_Size_Radios" id="Canvas_Size_Radios_Tab_1" name="Canvas_Size"
+                  value="Minimize" checked="true">
+                <label for="Canvas_Size_Radios_Tab_1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                    viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M2.66699 12.333C5.42814 12.3332 7.66682 14.5719 7.66699 17.333V17.5C7.66682 18.052 7.219 18.4998 6.66699 18.5C6.11482 18.5 5.66717 18.0521 5.66699 17.5V17.333C5.66682 15.6764 4.32357 14.3332 2.66699 14.333H2.5C1.94787 14.3328 1.5 13.8852 1.5 13.333C1.50017 12.781 1.94797 12.3332 2.5 12.333H2.66699ZM17.5 12.333C18.052 12.3332 18.4998 12.781 18.5 13.333C18.5 13.8852 18.0521 14.3328 17.5 14.333H17.333C15.6764 14.3332 14.3332 15.6764 14.333 17.333V17.5C14.3328 18.0521 13.8852 18.5 13.333 18.5C12.781 18.4998 12.3332 18.052 12.333 17.5V17.333C12.3332 14.5719 14.5719 12.3332 17.333 12.333H17.5ZM6.66699 1.5C7.219 1.5002 7.66682 1.94799 7.66699 2.5V2.66699C7.66682 5.42815 5.42814 7.66679 2.66699 7.66699H2.5C1.94797 7.66682 1.50017 7.21902 1.5 6.66699C1.5 6.11482 1.94787 5.66717 2.5 5.66699H2.66699C4.32357 5.66679 5.66682 4.32358 5.66699 2.66699V2.5C5.66717 1.94787 6.11482 1.5 6.66699 1.5ZM13.333 1.5C13.8852 1.5 14.3328 1.94787 14.333 2.5V2.66699C14.3332 4.32358 15.6764 5.66679 17.333 5.66699H17.5C18.0521 5.66717 18.5 6.11482 18.5 6.66699C18.4998 7.21902 18.052 7.66682 17.5 7.66699H17.333C14.5719 7.66679 12.3332 5.42815 12.333 2.66699V2.5C12.3332 1.94799 12.781 1.5002 13.333 1.5Z"
+                      fill="#6D7784" />
+                  </svg></label>
+                <input type="radio" class="Canvas_Size_Radios" id="Canvas_Size_Radios_Tab_2" name="Canvas_Size"
+                  value="Maximize">
+                <label for="Canvas_Size_Radios_Tab_2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                    viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      d="M2.5 12.333C3.05218 12.333 3.49982 12.7809 3.5 13.333V13.5C3.5 15.1569 4.84315 16.5 6.5 16.5H6.66699C7.21913 16.5002 7.66699 16.9478 7.66699 17.5C7.66699 18.0522 7.21913 18.4998 6.66699 18.5H6.5C3.73858 18.5 1.5 16.2614 1.5 13.5V13.333C1.50018 12.7809 1.94782 12.333 2.5 12.333ZM17.5 12.333C18.0522 12.333 18.4998 12.7809 18.5 13.333V13.5C18.5 16.2614 16.2614 18.5 13.5 18.5H13.333C12.7809 18.4998 12.333 18.0522 12.333 17.5C12.333 16.9478 12.7809 16.5002 13.333 16.5H13.5C15.1569 16.5 16.5 15.1569 16.5 13.5V13.333C16.5002 12.7809 16.9478 12.333 17.5 12.333ZM6.66699 1.5C7.21913 1.50018 7.66699 1.94782 7.66699 2.5C7.66699 3.05218 7.21913 3.49982 6.66699 3.5H6.5C4.84315 3.5 3.5 4.84315 3.5 6.5V6.66699C3.49982 7.21913 3.05218 7.66699 2.5 7.66699C1.94782 7.66699 1.50018 7.21913 1.5 6.66699V6.5C1.5 3.73858 3.73858 1.5 6.5 1.5H6.66699ZM13.5 1.5C16.2614 1.5 18.5 3.73858 18.5 6.5V6.66699C18.4998 7.21913 18.0522 7.66699 17.5 7.66699C16.9478 7.66699 16.5002 7.21913 16.5 6.66699V6.5C16.5 4.84315 15.1569 3.5 13.5 3.5H13.333C12.7809 3.49982 12.333 3.05218 12.333 2.5C12.333 1.94782 12.7809 1.50018 13.333 1.5H13.5Z"
+                      fill="white" />
+                  </svg></label>
+              </div>
             </div>
           </div>
         </div>
