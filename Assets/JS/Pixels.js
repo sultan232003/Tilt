@@ -17,10 +17,12 @@ const Canvas_Size_Radios = document.querySelectorAll('.Canvas_Size_Radios');
 const Fill_Type_Wrapper = document.getElementById("Fill_Type_Wrapper");
 const Randomness_Wrapper = document.getElementById("Randomness_Wrapper")
 const Pixels_Canvas_Wrapper = document.getElementById("Pixels_Canvas_Wrapper")
+const Color_Box = document.getElementById("Color_Box")
 let Pattern_Radios_SelectedValue = "Flat";
 let Gradient_Pattern_Radios_SelectedValue = "Circles";
 let Pattern_Type_Radios_SelectedValue = "Resize";
 let Canvas_Size_Radios_SelectedValue = "Minimize";
+let Color_Radios_SelectedValue = "Black";
 const Scale_Bar = document.getElementById("Scale_Bar");
 const Scale_Bar_Markings = document.getElementById("Scale_Bar_Markings");
 let Gradient_Type_State
@@ -85,6 +87,44 @@ Gradient_Pattern_Radios.forEach(radio => {
 Pattern_Type_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Pattern_Type_Radios_SelectedValue = document.querySelector('.Pattern_Type:checked').value;
+        DrawPixels()
+    });
+});
+
+const Color_Tool_Option_List = [{ Theme_Name: "Sunset Glow", Theme_Colors: [{ Color_Tab_Number: "9", Color_Value: "#FF6B6B" }, { Color_Tab_Number: "10", Color_Value: "#FFD93D" }, { Color_Tab_Number: "11", Color_Value: "#FF9F1C" }, { Color_Tab_Number: "12", Color_Value: "#FF8FAB" }] },
+{ Theme_Name: "Forest Calm", Theme_Colors: [{ Color_Tab_Number: "13", Color_Value: "#35524A" }, { Color_Tab_Number: "14", Color_Value: "#627C68" }, { Color_Tab_Number: "15", Color_Value: "#A3B18A" }, { Color_Tab_Number: "16", Color_Value: "#E6E8E6" }] },
+{ Theme_Name: "Ocean Breeze", Theme_Colors: [{ Color_Tab_Number: "17", Color_Value: "#00A8E8" }, { Color_Tab_Number: "18", Color_Value: "#007EA7" }, { Color_Tab_Number: "19", Color_Value: "#003459" }, { Color_Tab_Number: "20", Color_Value: "#003459" }] },
+{ Theme_Name: "Retro Pop", Theme_Colors: [{ Color_Tab_Number: "21", Color_Value: "#F94144" }, { Color_Tab_Number: "22", Color_Value: "#F94144" }, { Color_Tab_Number: "23", Color_Value: "#F9C74F" }, { Color_Tab_Number: "24", Color_Value: "#43AA8B" }] },
+{ Theme_Name: "Muted Vintage", Theme_Colors: [{ Color_Tab_Number: "25", Color_Value: "#A26769" }, { Color_Tab_Number: "26", Color_Value: "#A26769" }, { Color_Tab_Number: "27", Color_Value: "#A26769" }, { Color_Tab_Number: "28", Color_Value: "#A26769" }] },
+{ Theme_Name: "Cyberpunk", Theme_Colors: [{ Color_Tab_Number: "29", Color_Value: "#0F0F0F" }, { Color_Tab_Number: "30", Color_Value: "#FF00FF" }, { Color_Tab_Number: "31", Color_Value: "#00FFFF" }, { Color_Tab_Number: "32", Color_Value: "#FFEA00" }] },
+{ Theme_Name: "Dark UI", Theme_Colors: [{ Color_Tab_Number: "33", Color_Value: "#1F1F1F" }, { Color_Tab_Number: "34", Color_Value: "#3F3F3F" }, { Color_Tab_Number: "35", Color_Value: "#A6A6A6" }, { Color_Tab_Number: "36", Color_Value: "#00ADB5" }] },
+{ Theme_Name: "Pastel Dreams", Theme_Colors: [{ Color_Tab_Number: "37", Color_Value: "#FFB6B9" }, { Color_Tab_Number: "38", Color_Value: "#FAE3D9" }, { Color_Tab_Number: "39", Color_Value: "#BBDED6" }, { Color_Tab_Number: "40", Color_Value: "#61C0BF" }] },
+{ Theme_Name: "Beige & Sand", Theme_Colors: [{ Color_Tab_Number: "41", Color_Value: "#F5F5DC" }, { Color_Tab_Number: "42", Color_Value: "#EED6C4" }, { Color_Tab_Number: "43", Color_Value: "#C7B198" }, { Color_Tab_Number: "44", Color_Value: "#A68A64" }] },
+{ Theme_Name: "Gradient Sky", Theme_Colors: [{ Color_Tab_Number: "45", Color_Value: "#3A1C71" }, { Color_Tab_Number: "46", Color_Value: "#D76D77" }, { Color_Tab_Number: "47", Color_Value: "#FFAF7B" }, { Color_Tab_Number: "48", Color_Value: "#F88F70" }] }]
+
+Color_Tool_Option_List.forEach(theme => {
+    const Color_Theme_Box = createTag("div", "row row-col gap-10", "", Color_Box)
+    const Color_Theme_Name = createTag("p", "Color_Theme_Name", "", Color_Theme_Box)
+    Color_Theme_Name.innerHTML = theme.Theme_Name
+    const Color_Theme_Options_Wrapper = createTag("div", "row gap-6", "", Color_Theme_Box)
+    theme.Theme_Colors.forEach(colors => {
+        const Color_Radios_Element = createTag("input", "Color_Radios", "", Color_Theme_Options_Wrapper)
+        Color_Radios_Element.setAttribute("type", "radio")
+        Color_Radios_Element.setAttribute("id", `Colors_Radios_Tab_${colors.Color_Tab_Number}`)
+        Color_Radios_Element.setAttribute("name", "Colors")
+        Color_Radios_Element.setAttribute("value", colors.Color_Value)
+        const Color_Radios_Label = createTag("label", "Color_Options", "", Color_Theme_Options_Wrapper)
+        Color_Radios_Label.setAttribute("for", `Colors_Radios_Tab_${colors.Color_Tab_Number}`)
+        Color_Radios_Label.setAttribute("style", `--Color_Option: ${colors.Color_Value}`)
+    })
+})
+
+const Color_Radios = document.querySelectorAll('.Color_Radios');
+
+Color_Radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        Color_Radios_SelectedValue = document.querySelector('.Color_Radios:checked').value;
+        print(Color_Radios_SelectedValue)
         DrawPixels()
     });
 });
@@ -165,6 +205,7 @@ const Circles_Effect_Creator = (x, y, gradient) => {
     ctx.beginPath();
     ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
     ctx.fill();
+    ctx.fillStyle = Color_Radios_SelectedValue
     Circles_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: gradient[y][x] * (cellSize / 2) })
 }
 
@@ -325,6 +366,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
         default:
             break;
     }
+    ctx.fillStyle = Color_Radios_SelectedValue
 }
 
 const Square_Effect_Creator = (x, y, gradient) => {
@@ -408,6 +450,7 @@ function DrawPixels() {
                         ctx.beginPath();
                         ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x].size * (cellSize / 2), 0, 2 * Math.PI, true);
                         ctx.fill();
+                        ctx.fillStyle = Color_Radios_SelectedValue
                     }
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random") {
                     let random_val = Randomizer()
@@ -496,7 +539,7 @@ function downloadSVG() {
             circle.setAttribute("cx", Circles.cx);
             circle.setAttribute("cy", Circles.cy);
             circle.setAttribute("r", Circles.r);
-            circle.setAttribute("fill", "black");
+            circle.setAttribute("fill", Color_Radios_SelectedValue);
             svg.appendChild(circle);
         });
     }
@@ -506,33 +549,33 @@ function downloadSVG() {
             ["x", "y", "rx", "ry", "width", "height"].forEach(attr => {
                 if (attrs[attr] != null) rect.setAttribute(attr, attrs[attr]);
             });
-            rect.setAttribute("fill", "black");
+            rect.setAttribute("fill", Color_Radios_SelectedValue);
             svg.appendChild(rect);
         });
     }
     if (Pattern_Type_Radios_SelectedValue === "Corners") {
         Corners_Collection_Final.forEach(Corner => {
-            if(Corner.corner === "CIRCLE"){
+            if (Corner.corner === "CIRCLE") {
                 const circle = document.createElementNS(svgNS, "circle");
                 circle.setAttribute("cx", Corner.cx);
                 circle.setAttribute("cy", Corner.cy);
                 circle.setAttribute("r", Corner.r);
-                circle.setAttribute("fill", "black");
+                circle.setAttribute("fill", Color_Radios_SelectedValue);
                 svg.appendChild(circle);
             } else {
                 test()
                 const path = document.createElementNS(svgNS, "path");
-                if(Corner.corner === "TL"){
-                    path.setAttribute("d",`M ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} L ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} Z`)
-                } else if(Corner.corner === "TR"){
-                    path.setAttribute("d",`M ${parseInt(Corner.x)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} Z`)
-                } else if(Corner.corner === "BR"){
-                    path.setAttribute("d",`M ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x)} ${parseInt(Corner.y)} Z`)
+                if (Corner.corner === "TL") {
+                    path.setAttribute("d", `M ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} L ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} Z`)
+                } else if (Corner.corner === "TR") {
+                    path.setAttribute("d", `M ${parseInt(Corner.x)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} Z`)
+                } else if (Corner.corner === "BR") {
+                    path.setAttribute("d", `M ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 1 ${parseInt(Corner.x)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x)} ${parseInt(Corner.y)} Z`)
                 } else {
-                    path.setAttribute("d",`M ${parseInt(Corner.x)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 0 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} Z`)
+                    path.setAttribute("d", `M ${parseInt(Corner.x)} ${parseInt(Corner.y)} A ${parseInt(cellSize)} ${parseInt(cellSize)} 0 0 0 ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y) + parseInt(cellSize)} L ${parseInt(Corner.x) + parseInt(cellSize)} ${parseInt(Corner.y)} Z`)
                 }
-                path.setAttribute("fill", "black");
-            svg.appendChild(path);
+                path.setAttribute("fill", Color_Radios_SelectedValue);
+                svg.appendChild(path);
             }
         })
     }
@@ -543,7 +586,7 @@ function downloadSVG() {
             rect.setAttribute("y", Dithered.y)
             rect.setAttribute("width", Dithered.width)
             rect.setAttribute("height", Dithered.height)
-            rect.setAttribute("fill", "black");
+            rect.setAttribute("fill", Color_Radios_SelectedValue);
             svg.appendChild(rect);
         })
     }
@@ -556,7 +599,7 @@ function downloadSVG() {
             rect.setAttribute("ry", Squares.radius)
             rect.setAttribute("width", Squares.size)
             rect.setAttribute("height", Squares.size)
-            rect.setAttribute("fill", "black");
+            rect.setAttribute("fill", Color_Radios_SelectedValue);
             svg.appendChild(rect);
         })
     }
