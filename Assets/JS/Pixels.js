@@ -14,6 +14,7 @@ const Pattern_Radios = document.querySelectorAll('.Pattern_Radios');
 const Gradient_Pattern_Radios = document.querySelectorAll('.Gradient_Pattern');
 const Pattern_Type_Radios = document.querySelectorAll('.Pattern_Type');
 const Canvas_Size_Radios = document.querySelectorAll('.Canvas_Size_Radios');
+const Tools_Radios = document.querySelectorAll('.Tools_Radios');
 const Fill_Type_Wrapper = document.getElementById("Fill_Type_Wrapper");
 const Randomness_Wrapper = document.getElementById("Randomness_Wrapper")
 const Pixels_Canvas_Wrapper = document.getElementById("Pixels_Canvas_Wrapper")
@@ -23,6 +24,7 @@ let Gradient_Pattern_Radios_SelectedValue = "Circles";
 let Pattern_Type_Radios_SelectedValue = "Resize";
 let Canvas_Size_Radios_SelectedValue = "Minimize";
 let Color_Radios_SelectedValue = "Black";
+let Tools_Radios_SelectedValue = "Colors";
 const Scale_Bar = document.getElementById("Scale_Bar");
 const Scale_Bar_Markings = document.getElementById("Scale_Bar_Markings");
 let Gradient_Type_State
@@ -124,7 +126,13 @@ const Color_Radios = document.querySelectorAll('.Color_Radios');
 Color_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Color_Radios_SelectedValue = document.querySelector('.Color_Radios:checked').value;
-        print(Color_Radios_SelectedValue)
+        DrawPixels()
+    });
+});
+
+Tools_Radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        Tools_Radios_SelectedValue = document.querySelector('.Tools_Radios:checked').value;
         DrawPixels()
     });
 });
@@ -169,6 +177,9 @@ Canvas_Size_Radios.forEach(radio => {
 let GradientStartHandle = { x: 100, y: 100 };
 let GradientEndHandle = { x: 500, y: 500 };
 let clickPoint;
+let extraPoints = [];
+let points = []
+let draggingExtraIndex = null;
 
 document.body.addEventListener("mousedown", onMouseDown);
 function onMouseDown(e) {
@@ -176,12 +187,31 @@ function onMouseDown(e) {
     if (clickPoint) {
         document.body.addEventListener("mousemove", onMouseMove);
         document.body.addEventListener("mouseup", onMouseUp);
+    } else if (Tools_Radios_SelectedValue === "Add Point") {
+        let check = isOnLine(e.clientX - CanvasXOffset, e.clientY - CanvasYOffset, GradientStartHandle, GradientEndHandle);
+        if (check.hit) {
+            extraPoints.push({ x: e.clientX - CanvasXOffset, y: e.clientY - CanvasYOffset, t: check.t });
+            DrawPixels();
+        }
+    } else if (Tools_Radios_SelectedValue === "Move Point") {
+        let idx = getExtraPointIndex(e.clientX - CanvasXOffset, e.clientY - CanvasYOffset);
+        if (idx !== -1) {
+            draggingExtraIndex = idx;
+            document.body.addEventListener("mousemove", onMouseMoveExtra);
+            document.body.addEventListener("mouseup", onMouseUpExtra);
+            return;
+        }
     }
 }
 function onMouseMove(e) {
     clickPoint.x = e.clientX - CanvasXOffset;
     clickPoint.y = e.clientY - CanvasYOffset;
-    // Handle_Start.style.cssText = `top: ${clickPoint.y - 10}px; left: ${clickPoint.x + CanvasXOffset - 10}px;`
+    extraPoints.forEach(extraPoints => {
+        let x = GradientStartHandle.x + extraPoints.t * (GradientEndHandle.x - GradientStartHandle.x);
+        let y = GradientStartHandle.y + extraPoints.t * (GradientEndHandle.y - GradientStartHandle.y);
+        extraPoints.x = Math.floor(x);
+        extraPoints.y = Math.floor(y);
+    });
     DrawPixels();
 }
 function onMouseUp(e) {
@@ -189,7 +219,8 @@ function onMouseUp(e) {
     document.body.removeEventListener("mouseup", onMouseUp);
 }
 function getClickPoint(x, y) {
-    let points = [GradientStartHandle, GradientEndHandle];
+    points[0] = GradientStartHandle;
+    points[1] = GradientEndHandle;
     for (let i = 0; i < points.length; i++) {
         let p = points[i],
             DistantX = p.x - x,
@@ -199,6 +230,36 @@ function getClickPoint(x, y) {
             return p;
         }
     }
+}
+function onMouseMoveExtra(e) {
+    if (draggingExtraIndex !== null) {
+        let check = isOnLine(e.clientX - CanvasXOffset, e.clientY - CanvasYOffset, GradientStartHandle, GradientEndHandle);
+        if (check.hit) {
+            extraPoints[draggingExtraIndex].t = check.t;
+            DrawPixels();
+        }
+        extraPoints.forEach(extraPoints => {
+            let x = GradientStartHandle.x + extraPoints.t * (GradientEndHandle.x - GradientStartHandle.x);
+            let y = GradientStartHandle.y + extraPoints.t * (GradientEndHandle.y - GradientStartHandle.y);
+            extraPoints.x = Math.floor(x);
+            extraPoints.y = Math.floor(y);
+        });
+    }
+}
+function onMouseUpExtra(e) {
+    draggingExtraIndex = null;
+    document.body.removeEventListener("mousemove", onMouseMoveExtra);
+    document.body.removeEventListener("mouseup", onMouseUpExtra);
+}
+function getExtraPointIndex(x, y) {
+    for (let i = 0; i < extraPoints.length; i++) {
+        let t = extraPoints[i].t;
+        let px = GradientStartHandle.x + t * (GradientEndHandle.x - GradientStartHandle.x);
+        let py = GradientStartHandle.y + t * (GradientEndHandle.y - GradientStartHandle.y);
+        let dx = x - px, dy = y - py;
+        if (dx * dx + dy * dy < 10 * 10) return i;
+    }
+    return -1;
 }
 
 const Circles_Effect_Creator = (x, y, gradient) => {
@@ -408,9 +469,6 @@ const asciiChars = [" ", ".", "-", ":", "+", "c", "o", "e", "K", "Q", "D", "H", 
 
 function DrawPixels() {
     ctx.clearRect(0, 0, width, height);
-    drawPoint(GradientStartHandle);
-    drawPoint(GradientEndHandle);
-
     Final_Gradient_Start_Handle_X = Math.floor(GradientStartHandle.x / cellSize);
     Final_Gradient_Start_Handle_Y = Math.floor(GradientStartHandle.y / cellSize);
     Final_Gradient_End_Handle_X = Math.floor(GradientEndHandle.x / cellSize);
@@ -422,6 +480,7 @@ function DrawPixels() {
     Radial_Gradient_MaxRadius = Math.sqrt(maxDX * maxDX + maxDY * maxDY);
     if (!Gradient_Type_State) {
         gradient = interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]);
+        // gradient = interpolatePiecewise(rows, cols, [[Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [10, 10], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]]);
     } else {
         gradient = generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y });
     }
@@ -511,6 +570,24 @@ function DrawPixels() {
     Squared_Collection = []
     Corners_Collection_Final = Corners_Collection
     Corners_Collection = []
+
+    if (Tools_Radios_SelectedValue === "Add Point" || Tools_Radios_SelectedValue === "Move Point") {
+        ctx.beginPath();
+        ctx.moveTo(GradientStartHandle.x, GradientStartHandle.y);
+        ctx.lineTo(GradientEndHandle.x, GradientEndHandle.y);
+        ctx.stroke();
+        extraPoints.forEach(extraPoints => {
+            let x = GradientStartHandle.x + extraPoints.t * (GradientEndHandle.x - GradientStartHandle.x);
+            let y = GradientStartHandle.y + extraPoints.t * (GradientEndHandle.y - GradientStartHandle.y);
+            ctx.beginPath();
+            ctx.arc(x, y, 6, 0, Math.PI * 2);
+            ctx.fillStyle = "red";
+            ctx.fill();
+        });
+    }
+
+    drawPoint(GradientStartHandle);
+    drawPoint(GradientEndHandle);
 }
 
 DrawPixels();
