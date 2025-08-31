@@ -116,23 +116,19 @@
     display: none;
 }
 
-#Pattern_Radios_Tab_1:checked+label[for="Pattern_Radios_Tab_1"],
-#Pattern_Radios_Tab_2:checked+label[for="Pattern_Radios_Tab_2"],
-#Pattern_Radios_Tab_3:checked+label[for="Pattern_Radios_Tab_3"],
-#Canvas_Size_Radios_Tab_1:checked+label[for="Canvas_Size_Radios_Tab_1"],
-#Canvas_Size_Radios_Tab_2:checked+label[for="Canvas_Size_Radios_Tab_2"],
-#Gradient_Pattern_Radio_1:checked+label[for="Gradient_Pattern_Radio_1"],
-#Gradient_Pattern_Radio_2:checked+label[for="Gradient_Pattern_Radio_2"],
-#Gradient_Pattern_Radio_3:checked+label[for="Gradient_Pattern_Radio_3"],
-#Pattern_Type_Tab_1:checked+label[for="Pattern_Type_Tab_1"],
-#Pattern_Type_Tab_2:checked+label[for="Pattern_Type_Tab_2"],
-#Pattern_Type_Tab_3:checked+label[for="Pattern_Type_Tab_3"],
-#Pattern_Type_Tab_4:checked+label[for="Pattern_Type_Tab_4"],
-#Tools_Radios_Tab_1:checked+label[for="Tools_Radios_Tab_1"],
-#Tools_Radios_Tab_2:checked+label[for="Tools_Radios_Tab_2"] {
+input[type="radio"]:checked + label[for*="Pattern_Radios_Tab_"],
+input[type="radio"]:checked + label[for*="Canvas_Size_Radios_Tab_"],
+input[type="radio"]:checked + label[for*="Gradient_Pattern_Radio_"],
+input[type="radio"]:checked + label[for*="Pattern_Type_Tab_"],
+input[type="radio"]:checked + label[for*="Tools_Radios_Tab_"] {
     background: #070709;
-    box-shadow: 0px 17px 5px rgba(36, 36, 49, 0), 0px 11px 4px rgba(36, 36, 49, 0.01), 0px 6px 4px rgba(36, 36, 49, 0.05), 0px 3px 3px rgba(36, 36, 49, 0.09), 0px 1px 2px rgba(36, 36, 49, 0.1);
-    color: #ffffff;
+    box-shadow:
+        0px 17px 5px rgba(36, 36, 49, 0),
+        0px 11px 4px rgba(36, 36, 49, 0.01),
+        0px 6px 4px rgba(36, 36, 49, 0.05),
+        0px 3px 3px rgba(36, 36, 49, 0.09),
+        0px 1px 2px rgba(36, 36, 49, 0.1);
+    color: #ffffff !important;
 }
 
 #Canvas_Size_Radios_Tab_1:checked+label[for="Canvas_Size_Radios_Tab_1"] svg path,
