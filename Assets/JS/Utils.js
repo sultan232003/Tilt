@@ -784,6 +784,37 @@ function interpolate2DGrid(rows, cols, start, end) {
     return grid;
 }
 
+function scaleArray(arr, start, end) {
+    return arr.map(row => row.map(v => start + v * (end - start)));
+}
+
+function mergeArraysPiecewise(arrays) {
+    let result = arrays[0].map(row => row.slice()); // clone first
+    for (let k = 1; k < arrays.length; k++) {
+        result = result.map((row, i) =>
+            row.map((_, j) => arrays[k][i][j] !== 0 ? arrays[k][i][j] : row[j])
+        );
+    }
+    return result;
+}
+
+function interpolatePiecewise(rows, cols, points) {
+    if (points.length < 2) throw new Error("Need at least 2 points");
+
+    const nSeg = points.length - 1; 
+    const segmentSize = 1 / nSeg; // equal share of [0,1]
+
+    const grids = [];
+    for (let i = 0; i < nSeg; i++) {
+        const arr = interpolate2DGrid(rows, cols, points[i], points[i + 1]);
+        const scaled = scaleArray(arr, i * segmentSize, (i + 1) * segmentSize);
+        grids.push(scaled);
+    }
+
+    return mergeArraysPiecewise(grids);
+}
+
+
 function generateRadialGradient(rows, cols, center, edge) {
     const grid = [];
     const dx = edge.x - center.x;
@@ -909,4 +940,28 @@ function drawPoint(p) {
     ctx.arc(p.x, p.y, 10, 0, Math.PI * 2, false);
     ctx.fill();
     // ctx.closePath()
+}
+
+function isOnLine(x, y, p1, p2, tolerance = 6) {
+    const A = x - p1.x;
+    const B = y - p1.y;
+    const C = p2.x - p1.x;
+    const D = p2.y - p1.y;
+    const dot = A * C + B * D;
+    const lenSq = C * C + D * D;
+    const param = lenSq !== 0 ? dot / lenSq : -1;
+    let xx, yy;
+    if (param < 0) {
+        xx = p1.x;
+        yy = p1.y;
+    } else if (param > 1) {
+        xx = p2.x;
+        yy = p2.y;
+    } else {
+        xx = p1.x + param * C;
+        yy = p1.y + param * D;
+    }
+    const dx = x - xx;
+    const dy = y - yy;
+    return { hit: (dx * dx + dy * dy) <= tolerance * tolerance, t: param };
 }
