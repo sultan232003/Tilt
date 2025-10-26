@@ -37,6 +37,7 @@ CellSize_Slider.addEventListener("input", (e) => {
     cols = Math.floor(canvas.width / cellSize);
     rows = Math.floor(canvas.height / cellSize);
     DrawPixels()
+    uploadImage(uploadedFile)
 })
 
 Gradient_Type.addEventListener("input", (e) => {
@@ -715,33 +716,61 @@ function scanCanvas(interval = 25) {
             const isNotWhite = r !== 255 || g !== 255 || b !== 255;
             const isOpaque = a !== 0;
             if (isNotWhite && isOpaque) {
-                results.push({ x, y, r, g, b, a });
+                const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+                results.push({ x, y, r, g, b, a, brightness });
             }
         }
     }
-    console.log(results);
     return results;
 }
 
-document.getElementById('uploadSVG').addEventListener('change', function (event) {
-    const file = event.target.files[0];
-    if (!file || !file.name.endsWith('.svg')) {
-        alert('Please upload a valid .svg file');
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const svgText = e.target.result;
-        const img = new Image();
-        const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(svgBlob);
-        img.onload = function () {
-            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
-            ctx2.drawImage(img, 0, 0);
-            URL.revokeObjectURL(url);
+
+function uploadImage(file) {
+    if (!file) return;
+    const ext = file.name.split('.').pop().toLowerCase();
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    if (ext === 'svg') {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const svgText = e.target.result;
+            const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(svgBlob);
+            img.onload = () => {
+                drawAndScan(img, url);
+            };
+            img.src = url;
         };
-        img.src = url;
-    };
-    reader.readAsText(file);
-    scanCanvas(cellSize)
+        reader.readAsText(file);
+    } else if (['png', 'jpg', 'jpeg'].includes(ext)) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            img.onload = () => drawAndScan(img);
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert('Unsupported file type. Please upload an SVG, PNG, JPG, or JPEG.');
+    }
+}
+
+let uploadedFile = null;
+document.getElementById('uploadSVG').addEventListener('change', function (event) {
+    uploadedFile = event.target.files[0];
+    uploadImage(uploadedFile)
 });
+
+
+function drawAndScan(img, url = null) {
+    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+    ctx2.drawImage(img, 0, 0, canvas2.width, canvas2.height);
+    const results = scanCanvas(Number(cellSize));
+    console.table(results);
+    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+    for (let i = 0; i < results.length; i++) {
+        ctx2.fillStyle = `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`;
+        ctx2.fillRect(results[i].x, results[i].y, Number(cellSize), Number(cellSize));
+    }
+    if (url) URL.revokeObjectURL(url);
+}
+
