@@ -84,6 +84,7 @@ Gradient_Pattern_Radios.forEach(radio => {
         Gradient_Pattern_Radios_SelectedValue = document.querySelector('.Gradient_Pattern:checked').value;
         DrawPixels()
         Fill_Type_Handler()
+        uploadImage(uploadedFile)
     });
 });
 
@@ -263,28 +264,44 @@ function getExtraPointIndex(x, y) {
     return -1;
 }
 
-const Circles_Effect_Creator = (x, y, gradient) => {
-    ctx.beginPath();
-    ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
-    ctx.fill();
-    ctx.fillStyle = Color_Radios_SelectedValue
-    Circles_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: gradient[y][x] * (cellSize / 2) })
+const Circles_Effect_Creator = (x, y, value, ArrayType, ctx, color) => {
+    if (ArrayType === "2D") {
+        ctx.beginPath();
+        ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), value[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
+        ctx.fill();
+        ctx.fillStyle = color
+        Circles_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: value[y][x] * (cellSize / 2) })
+    } else if (ArrayType === "1D") {
+        ctx.beginPath();
+        ctx.arc(x + (cellSize / 2), y + (cellSize / 2), (1 - value) * (cellSize / 2), 0, 2 * Math.PI, true);
+        ctx.fill();
+        ctx.fillStyle = color
+        Circles_Collection.push({ cx: x + (cellSize / 2), cy: y + (cellSize / 2), r: value * (cellSize / 2) })
+    }
 }
 
-const Dithered_Effect_Creator = (x, y, value) => {
-    const baseX = x * cellSize;
-    const baseY = y * cellSize;
-    const q = cellSize / 4;
+const Dithered_Effect_Creator = (x, y, value, ArrayType, ctx, color) => {
+    const baseX = x * Number(cellSize);
+    const baseY = y * Number(cellSize);
+    const q = Number(cellSize) / 4;
     const tq = q * 3;
     const partSize = 1 / 12;
-    const index = Math.ceil(value[y][x] / partSize) - 1;
+    let index
+    if (ArrayType === "2D") {
+        index = Math.ceil(value[y][x] / partSize) - 1;
+    } else if (ArrayType === "1D") {
+        index = Math.ceil(value / partSize);
+        index = 11 - index;
+    }
     if (index < 0 || index >= 12) return;
     switch (index) {
         case 0:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + q, baseY + tq, q, q);
             Dithered_Collection.push({ x: baseX + q, y: baseY + tq, width: q, height: q })
             break;
         case 1:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + q, baseY + tq, q, q);
             ctx.fillRect(baseX + tq, baseY + q, q, q);
             Dithered_Collection.push(
@@ -292,6 +309,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
                 { x: baseX + tq, y: baseY + q, width: q, height: q })
             break;
         case 2:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + q, baseY + tq, q, q);
             ctx.fillRect(baseX + tq, baseY + q, q, q);
             ctx.fillRect(baseX + tq, baseY + tq, q, q);
@@ -301,6 +319,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
                 { x: baseX + tq, y: baseY + tq, width: q, height: q })
             break;
         case 3:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + q, baseY + tq, q, q);
             ctx.fillRect(baseX + tq, baseY + q, q, q);
             ctx.fillRect(baseX + tq, baseY + tq, q, q);
@@ -314,6 +333,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
                 { x: baseX + 2 * q, y: baseY + 2 * q, width: q, height: q })
             break;
         case 4:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + q, baseY + tq, q, q);
             ctx.fillRect(baseX + tq, baseY + q, q, q);
             ctx.fillRect(baseX + tq, baseY + tq, q, q);
@@ -330,6 +350,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
             );
             break;
         case 5:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + q, baseY + tq, q, q);
             ctx.fillRect(baseX + tq, baseY + q, q, q);
             ctx.fillRect(baseX + tq, baseY + tq, q, q);
@@ -350,6 +371,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
             );
             break;
         case 6:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + 0, baseY + 0, q, q);
             ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
             ctx.fillRect(baseX + q, baseY + q, q, q);
@@ -368,6 +390,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
             );
             break;
         case 7:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
             ctx.fillRect(baseX + q, baseY + q, q, q);
             ctx.fillRect(baseX + tq, baseY + q, q, q);
@@ -384,6 +407,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
             );
             break;
         case 8:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + 0, baseY + 0, q, 3 * q);
             ctx.fillRect(baseX + 0, baseY + tq, cellSize, q);
             ctx.fillRect(baseX + q, baseY + q, 3 * q, q);
@@ -396,6 +420,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
             )
             break;
         case 9:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + 0, baseY + 0, q, q);
             ctx.fillRect(baseX + 2 * q, baseY + 0, q, q);
             ctx.fillRect(baseX + tq, baseY + q, q, q);
@@ -410,6 +435,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
             )
             break;
         case 10:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + 0, baseY + 0, q, q);
             ctx.fillRect(baseX + 2 * q, baseY + 0, 2 * q, 2 * q);
             ctx.fillRect(baseX + tq, baseY + tq, q, q);
@@ -422,6 +448,7 @@ const Dithered_Effect_Creator = (x, y, value) => {
             )
             break;
         case 11:
+            ctx.fillStyle = color;
             ctx.fillRect(baseX + 0, baseY + 0, cellSize, cellSize);
             Dithered_Collection.push({ x: baseX + 0, y: baseY + 0, width: cellSize, height: cellSize })
             break;
@@ -431,9 +458,18 @@ const Dithered_Effect_Creator = (x, y, value) => {
     ctx.fillStyle = Color_Radios_SelectedValue
 }
 
-const Square_Effect_Creator = (x, y, gradient) => {
-    drawRoundedRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1, Math.abs(gradient[y][x] - 1) * (cellSize / 2))
-    Squared_Collection.push({ x: x * cellSize, y: y * cellSize, size: cellSize - 1, radius: Math.abs(gradient[y][x] - 1) * (cellSize / 2) })
+const Square_Effect_Creator = (x, y, value, ArrayType, ctx, color) => {
+    if (ArrayType === "2D") {
+        drawRoundedRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1, Math.abs(value[y][x] - 1) * (cellSize / 2), ctx)
+        ctx.fillStyle = color;
+        Squared_Collection.push({ x: x * cellSize, y: y * cellSize, size: cellSize - 1, radius: Math.abs(value[y][x] - 1) * (cellSize / 2) })
+    } else if (ArrayType === "1D") {
+        drawRoundedRect(x, y, cellSize - 1, cellSize - 1, Math.abs(value - 1) * (cellSize / 2), ctx)
+        ctx.fillStyle = color;
+        Squared_Collection.push({ x: x, y: y, size: cellSize - 1, radius: Math.abs(value - 1) * (cellSize / 2) })
+    }
+
+
 }
 
 const Randomizer = () => {
@@ -495,7 +531,7 @@ function DrawPixels() {
                         gradient[random_val.y][random_val.x] = 2;
                         if (random_val.x > 0 && random_val.x !== 2) gradient[random_val.y][random_val.x - 1] = 2;
                     }
-                    Circles_Effect_Creator(x, y, gradient)
+                    Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random" && Pattern_Type_Radios_SelectedValue === "Corners") {
                     gradient[y][x] = { size: gradient[y][x], corner: "CIRCLE" }
                     Corners_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: gradient[y][x].size * (cellSize / 2), corner: "CIRCLE" })
@@ -519,17 +555,17 @@ function DrawPixels() {
                     } else if (random_val && Pattern_Type_Radios_SelectedValue === "Blank") {
                         Multiplier(gradient, 0, random_val.x, random_val.y)
                     }
-                    Circles_Effect_Creator(x, y, gradient)
+                    Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
-                    Circles_Effect_Creator(x, y, gradient)
+                    Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered" && Pattern_Radios_SelectedValue === "Random") {
                     let random_val = Randomizer()
                     if (random_val) {
                         Reducer(gradient, 1 / 12, random_val.x, random_val.y)
                     }
-                    Dithered_Effect_Creator(x, y, gradient)
+                    Dithered_Effect_Creator(x, y, gradient, "2D", ctx, '#000000')
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
-                    Dithered_Effect_Creator(x, y, gradient)
+                    Dithered_Effect_Creator(x, y, gradient, "2D", ctx, '#000000')
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Text") {
                     //ctx.font = `${cellSize}px monospace`;
                     //ctx.fillStyle = 'black';
@@ -544,9 +580,9 @@ function DrawPixels() {
                 if (random_val) {
                     Reducer(gradient, 1 / 3, random_val.x, random_val.y)
                 }
-                Square_Effect_Creator(x, y, gradient)
+                Square_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
             } else if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
-                Square_Effect_Creator(x, y, gradient)
+                Square_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
             }
         }
         if (Pattern_Type_Radios_SelectedValue === "Joined" && gradient[y].includes(2)) {
@@ -716,7 +752,7 @@ function scanCanvas(interval = 25) {
             const isNotWhite = r !== 255 || g !== 255 || b !== 255;
             const isOpaque = a !== 0;
             if (isNotWhite && isOpaque) {
-                const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+                const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
                 results.push({ x, y, r, g, b, a, brightness });
             }
         }
@@ -768,8 +804,13 @@ function drawAndScan(img, url = null) {
     console.table(results);
     ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
     for (let i = 0; i < results.length; i++) {
-        ctx2.fillStyle = `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`;
-        ctx2.fillRect(results[i].x, results[i].y, Number(cellSize), Number(cellSize));
+        if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
+            Dithered_Effect_Creator(results[i].x / Number(cellSize), results[i].y / Number(cellSize), results[i].brightness, "1D", ctx2, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
+        } else if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
+            Square_Effect_Creator(results[i].x, results[i].y, results[i].brightness, "1D", ctx2, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
+        } else if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
+            Circles_Effect_Creator(results[i].x, results[i].y, results[i].brightness, "1D", ctx2, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
+        }
     }
     if (url) URL.revokeObjectURL(url);
 }
