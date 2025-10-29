@@ -894,7 +894,7 @@ function collectOnes(arr, compare, row) {
     return result;
 }
 
-function drawRoundedRect(x, y, width, height, radius) {
+function drawRoundedRect(x, y, width, height, radius, ctx) {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -965,3 +965,4 @@ function isOnLine(x, y, p1, p2, tolerance = 6) {
     const dy = y - yy;
     return { hit: (dx * dx + dy * dy) <= tolerance * tolerance, t: param };
 }
+
