@@ -5,8 +5,14 @@ let height = canvas.height;
 const CanvasXOffset = canvas.getBoundingClientRect().x;
 const CanvasYOffset = canvas.getBoundingClientRect().y;
 const CellSize_Slider = document.getElementById("Cell_Size");
+const Tool_Type = document.getElementById("Tool_Type")
 const Gradient_Type = document.getElementById("Gradient_Type")
 const Download_SVG = document.getElementById("Download_SVG")
+const Pattern_Mode_Wrapper = document.getElementById("Pattern_Mode_Wrapper")
+const Gradient_Type_Wrapper = document.getElementById("Gradient_Type_Wrapper")
+const Tools_Expand_Wrapper = document.getElementById("Tools_Expand_Wrapper")
+const File_Input_Wrapper = document.getElementById("File_Input_Wrapper")
+const Bitmap_Color_Wrapper = document.getElementById("Bitmap_Color_Wrapper")
 //const Handle_Start = document.getElementById("Handle_Start")
 //const Handle_End = document.getElementById("Handle_End")
 const Ramdomness_Intensity = document.getElementById("Ramdomness_Intensity")
@@ -28,6 +34,7 @@ let Tools_Radios_SelectedValue = "Colors";
 const Scale_Bar = document.getElementById("Scale_Bar");
 const Scale_Bar_Markings = document.getElementById("Scale_Bar_Markings");
 let Gradient_Type_State
+let Tool_Type_State = false
 let cellSize = CellSize_Slider.value;
 let cols = Math.floor(canvas.width / cellSize);
 let rows = Math.floor(canvas.height / cellSize);
@@ -38,6 +45,33 @@ CellSize_Slider.addEventListener("input", (e) => {
     rows = Math.floor(canvas.height / cellSize);
     DrawPixels()
     uploadImage(uploadedFile)
+})
+
+Tool_Type.addEventListener("input", (e) => {
+    Tool_Type_State = e.target.checked
+    print(Tool_Type_State)
+    if (Tool_Type_State) {
+        Randomness_Wrapper.classList.add("Hide_Element")
+        Fill_Type_Wrapper.classList.add("Hide_Element")
+        Pattern_Mode_Wrapper.classList.add("Hide_Element")
+        Gradient_Type_Wrapper.classList.add("Hide_Element")
+        Tools_Expand_Wrapper.classList.add("Hide_Element")
+        Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
+        File_Input_Wrapper.classList.remove("Hide_Element")
+        Bitmap_Color_Wrapper.classList.remove("Hide_Element")
+    } else {
+        File_Input_Wrapper.classList.add("Hide_Element")
+        Bitmap_Color_Wrapper.classList.add("Hide_Element")
+        Pattern_Mode_Wrapper.classList.remove("Hide_Element")
+        Gradient_Type_Wrapper.classList.remove("Hide_Element")
+        Tools_Expand_Wrapper.classList.remove("Hide_Element")
+        if (Pattern_Radios_SelectedValue === "Random") {
+            Randomness_Wrapper.classList.remove("Hide_Element")
+            Randomness_Wrapper.previousElementSibling.classList.remove("Hide_Element")
+            Fill_Type_Wrapper.classList.remove("Hide_Element")
+        }
+    }
+    //DrawPixels()
 })
 
 Gradient_Type.addEventListener("input", (e) => {
@@ -791,8 +825,12 @@ function uploadImage(file) {
 }
 
 let uploadedFile = null;
+const fileName = document.getElementById("fileName");
 document.getElementById('uploadSVG').addEventListener('change', function (event) {
     uploadedFile = event.target.files[0];
+    fileName.textContent = document.getElementById('uploadSVG').files.length > 0
+        ? document.getElementById('uploadSVG').files[0].name
+        : "No file chosen";
     uploadImage(uploadedFile)
 });
 
