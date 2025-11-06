@@ -966,3 +966,54 @@ function isOnLine(x, y, p1, p2, tolerance = 6) {
     return { hit: (dx * dx + dy * dy) <= tolerance * tolerance, t: param };
 }
 
+
+
+
+
+
+
+
+function interpolate2DGridDirectional(rows, cols, start, end, startValue, endValue) {
+    const [x0, y0] = start;
+    const [x1, y1] = end;
+    const gx = x1 - x0;
+    const gy = y1 - y0;
+    const gLenSq = gx * gx + gy * gy;
+    const gLen = Math.sqrt(gLenSq);
+    const grid = [];
+
+    // Normalize gradient vector
+    const nx = gx / gLen;
+    const ny = gy / gLen;
+
+    for (let y = 0; y < rows; y++) {
+        const row = [];
+        for (let x = 0; x < cols; x++) {
+            const dx = x - x0;
+            const dy = y - y0;
+
+            // projection of point onto the gradient line
+            const proj = dx * nx + dy * ny;
+
+            if (proj < 0 || proj > gLen) {
+                // Before start or after end along the direction → 0
+                row.push(0);
+            } else {
+                // Interpolation factor along the gradient line
+                const t = proj / gLen;
+                const value = startValue + t * (endValue - startValue);
+                row.push(Number(value.toFixed(2)));
+            }
+        }
+        grid.push(row);
+    }
+
+    return grid;
+}
+
+const grid = interpolate2DGridDirectional(
+    20, 20,
+    [2, 2], [10, 10],
+    0.5, 0.75
+);
+console.log(grid);
