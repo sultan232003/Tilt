@@ -1,5 +1,5 @@
 const canvas = document.getElementById('gridCanvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
 let width = canvas.width;
 let height = canvas.height;
 const CanvasXOffset = canvas.getBoundingClientRect().x;
@@ -51,7 +51,6 @@ CellSize_Slider.addEventListener("input", (e) => {
 
 Tool_Type.addEventListener("input", (e) => {
     Tool_Type_State = e.target.checked
-    print(Tool_Type_State)
     if (Tool_Type_State) {
         [Randomness_Wrapper, Fill_Type_Wrapper, Pattern_Mode_Wrapper, Gradient_Type_Wrapper, Tools_Expand_Wrapper, Randomness_Wrapper.previousElementSibling].forEach(el => el.classList.add("Hide_Element"));
         [File_Input_Wrapper, Bitmap_Color_Wrapper].forEach(el => el.classList.remove("Hide_Element"));
@@ -104,6 +103,9 @@ Pattern_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Pattern_Radios_SelectedValue = document.querySelector('.Pattern_Radios:checked').value;
         DrawPixels()
+        if (Tool_Type_State) {
+            uploadImage(uploadedFile)
+        }
         Fill_Type_Handler()
     });
 });
@@ -113,7 +115,9 @@ Gradient_Pattern_Radios.forEach(radio => {
         Gradient_Pattern_Radios_SelectedValue = document.querySelector('.Gradient_Pattern:checked').value;
         DrawPixels()
         Fill_Type_Handler()
-        uploadImage(uploadedFile)
+        if (Tool_Type_State) {
+            uploadImage(uploadedFile)
+        }
     });
 });
 
@@ -221,7 +225,7 @@ function onMouseDown(e) {
     } else if (Tools_Radios_SelectedValue === "Add Point") {
         let check = isOnLine(e.clientX - CanvasXOffset, e.clientY - CanvasYOffset, GradientStartHandle, GradientEndHandle);
         if (check.hit) {
-            extraPoints.push({ x: e.clientX - CanvasXOffset, y: e.clientY - CanvasYOffset, t: check.t });
+            extraPoints.push({ x: e.clientX - CanvasXOffset, y: e.clientY - CanvasYOffset, t: check.t, gradient_t: Math.round(check.t * 10) / 10 });
             DrawPixels();
         }
     } else if (Tools_Radios_SelectedValue === "Move Point") {
@@ -299,13 +303,13 @@ const Circles_Effect_Creator = (x, y, value, ArrayType, ctx, color) => {
         ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), value[y][x] * (cellSize / 2), 0, 2 * Math.PI, true);
         ctx.fill();
         ctx.fillStyle = color
-        Circles_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: value[y][x] * (cellSize / 2) })
+        Circles_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: value[y][x] * (cellSize / 2), color: color })
     } else if (ArrayType === "1D") {
         ctx.beginPath();
         ctx.arc(x + (cellSize / 2), y + (cellSize / 2), (1 - value) * (cellSize / 2), 0, 2 * Math.PI, true);
         ctx.fill();
         ctx.fillStyle = color
-        Circles_Collection.push({ cx: x + (cellSize / 2), cy: y + (cellSize / 2), r: value * (cellSize / 2) })
+        Circles_Collection.push({ cx: x + (cellSize / 2), cy: y + (cellSize / 2), r: (1 - value) * (cellSize / 2), color: color })
     }
 }
 
@@ -491,14 +495,12 @@ const Square_Effect_Creator = (x, y, value, ArrayType, ctx, color) => {
     if (ArrayType === "2D") {
         drawRoundedRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1, Math.abs(value[y][x] - 1) * (cellSize / 2), ctx)
         ctx.fillStyle = color;
-        Squared_Collection.push({ x: x * cellSize, y: y * cellSize, size: cellSize - 1, radius: Math.abs(value[y][x] - 1) * (cellSize / 2) })
+        Squared_Collection.push({ x: x * cellSize, y: y * cellSize, size: cellSize - 1, radius: Math.abs(value[y][x] - 1) * (cellSize / 2), color: color })
     } else if (ArrayType === "1D") {
         drawRoundedRect(x, y, cellSize - 1, cellSize - 1, Math.abs(value - 1) * (cellSize / 2), ctx)
         ctx.fillStyle = color;
-        Squared_Collection.push({ x: x, y: y, size: cellSize - 1, radius: Math.abs(value - 1) * (cellSize / 2) })
+        Squared_Collection.push({ x: x, y: y, size: cellSize - 1, radius: Math.abs(value - 1) * (cellSize / 2), color: color })
     }
-
-
 }
 
 const Randomizer = () => {
@@ -533,6 +535,45 @@ let Corners_Collection = []
 let Corners_Collection_Final = []
 const asciiChars = [" ", ".", "-", ":", "+", "c", "o", "e", "K", "Q", "D", "H", "B", "&", "8", "M", "W", "#", "%", "@"];
 
+
+
+
+
+
+
+let extrapoint_gradient = () => {
+    const start = [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y];
+    const end = [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y];
+
+    // Helper to get floored grid coordinates
+    const gridPos = p => [Math.floor(p.x / cellSize), Math.floor(p.y / cellSize)];
+
+    // No extra points
+    if (extraPoints.length === 0) {
+        interpolate2DGridDirectional(rows, cols, start, end, 0, 1);
+        return;
+    }
+
+    // Build a list of all key positions (start → extra points → end)
+    const points = [start, ...extraPoints.map(gridPos), end];
+    const gradients = [0, ...extraPoints.map(p => p.gradient_t), 1];
+
+    // Interpolate between consecutive points
+    for (let i = 0; i < points.length - 1; i++) {
+        interpolate2DGridDirectional(rows, cols, points[i], points[i + 1], gradients[i], gradients[i + 1]);
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
 function DrawPixels() {
     ctx.clearRect(0, 0, width, height);
 
@@ -547,9 +588,12 @@ function DrawPixels() {
         maxDX = Math.max(Final_Gradient_Start_Handle_X, cols - Final_Gradient_Start_Handle_X);
         maxDY = Math.max(Final_Gradient_Start_Handle_Y, rows - Final_Gradient_Start_Handle_Y);
         Radial_Gradient_MaxRadius = Math.sqrt(maxDX * maxDX + maxDY * maxDY);
+
+
+        extrapoint_gradient()
         if (!Gradient_Type_State) {
-            gradient = interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]);
-            // gradient = interpolatePiecewise(rows, cols, [[Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [10, 10], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]]);
+            //gradient = interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]);
+            gradient = interpolate2DGridDirectional(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y], 0, 1);
         } else {
             gradient = generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y });
         }
@@ -688,7 +732,7 @@ function downloadSVG() {
             circle.setAttribute("cx", Circles.cx);
             circle.setAttribute("cy", Circles.cy);
             circle.setAttribute("r", Circles.r);
-            circle.setAttribute("fill", Color_Radios_SelectedValue);
+            circle.setAttribute("fill", Circles.color);
             svg.appendChild(circle);
         });
     }
@@ -748,7 +792,7 @@ function downloadSVG() {
             rect.setAttribute("ry", Squares.radius)
             rect.setAttribute("width", Squares.size)
             rect.setAttribute("height", Squares.size)
-            rect.setAttribute("fill", Color_Radios_SelectedValue);
+            rect.setAttribute("fill", Squares.color);
             svg.appendChild(rect);
         })
     }
@@ -769,8 +813,6 @@ Download_SVG.addEventListener("click", () => {
     downloadSVG()
 })
 
-let canvas2 = document.getElementById('canvas2');
-let ctx2 = canvas2.getContext('2d');
 function scanCanvas(interval = 25) {
     const width = canvas.width;
     const height = canvas.height;
@@ -795,7 +837,7 @@ function scanCanvas(interval = 25) {
     return results;
 }
 
-
+let Loaded_Image_Width, Loaded_Image_Height
 function uploadImage(file) {
     if (!file) return;
     const ext = file.name.split('.').pop().toLowerCase();
@@ -817,8 +859,8 @@ function uploadImage(file) {
         const reader = new FileReader();
         reader.onload = function (e) {
             img.onload = () => {
-                console.log("Width:", img.width);
-                console.log("Height:", img.height);
+                Loaded_Image_Width = img.width;
+                Loaded_Image_Height = img.height;
                 drawAndScan(img);
             };
             img.src = e.target.result;
@@ -842,7 +884,16 @@ document.getElementById('uploadSVG').addEventListener('change', function (event)
 
 function drawAndScan(img, url = null) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    let Image_Ratio = Loaded_Image_Width / Loaded_Image_Height
+    if (Loaded_Image_Height > Loaded_Image_Width) {
+        ctx.drawImage(img, 0, 0, canvas.height * Image_Ratio, canvas.height);
+    } else {
+        if (canvas.width === canvas.height) {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.width / Image_Ratio);
+        } else {
+            ctx.drawImage(img, 0, 0, canvas.height * Image_Ratio, canvas.height);
+        }
+    }
     const results = scanCanvas(Number(cellSize));
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < results.length; i++) {
