@@ -7,16 +7,20 @@ const CanvasYOffset = canvas.getBoundingClientRect().y;
 const CellSize_Slider = document.getElementById("Cell_Size");
 const Tool_Type = document.getElementById("Tool_Type")
 const Gradient_Type = document.getElementById("Gradient_Type")
+const Bitmap_Mask = document.getElementById("Bitmap_Mask")
 const Download_SVG = document.getElementById("Download_SVG")
 const Pattern_Mode_Wrapper = document.getElementById("Pattern_Mode_Wrapper")
-const Gradient_Type_Wrapper = document.getElementById("Gradient_Type_Wrapper")
+const Tools_Expand_Button = document.getElementById("Tools_Expand_Button")
+const Gradient_Radios_Options = document.getElementById("Gradient_Radios_Options")
 const Tools_Expand_Wrapper = document.getElementById("Tools_Expand_Wrapper")
 const File_Input_Wrapper = document.getElementById("File_Input_Wrapper")
-const Bitmap_Color_Wrapper = document.getElementById("Bitmap_Color_Wrapper")
+const Bitmap_Color_Radios_Options = document.getElementById("Bitmap_Color_Radios_Options")
+const Bitmap_Mask_Wrapper = document.getElementById("Bitmap_Mask_Wrapper")
 //const Handle_Start = document.getElementById("Handle_Start")
 //const Handle_End = document.getElementById("Handle_End")
 const Ramdomness_Intensity = document.getElementById("Ramdomness_Intensity")
 const Pattern_Radios = document.querySelectorAll('.Pattern_Radios');
+const Gradient_Radios = document.querySelectorAll('.Gradient_Radios');
 const Gradient_Pattern_Radios = document.querySelectorAll('.Gradient_Pattern');
 const Pattern_Type_Radios = document.querySelectorAll('.Pattern_Type');
 const Canvas_Size_Radios = document.querySelectorAll('.Canvas_Size_Radios');
@@ -26,25 +30,47 @@ const Randomness_Wrapper = document.getElementById("Randomness_Wrapper")
 const Pixels_Canvas_Wrapper = document.getElementById("Pixels_Canvas_Wrapper")
 const Color_Box = document.getElementById("Color_Box")
 let Pattern_Radios_SelectedValue = "Flat";
+let Gradient_Radios_SelectedValue = "Linear Gradient";
 let Gradient_Pattern_Radios_SelectedValue = "Circles";
 let Pattern_Type_Radios_SelectedValue = "Resize";
 let Canvas_Size_Radios_SelectedValue = "Minimize";
-let Color_Radios_SelectedValue = "Black";
+let Color_Radios_SelectedValue = "#777773";
 let Tools_Radios_SelectedValue = "Colors";
 const Scale_Bar = document.getElementById("Scale_Bar");
 const Scale_Bar_Markings = document.getElementById("Scale_Bar_Markings");
 let Gradient_Type_State
 let Tool_Type_State = false
+let Bitmap_Mask_State = false
 let cellSize = CellSize_Slider.value;
 let cols = Math.floor(canvas.width / cellSize);
 let rows = Math.floor(canvas.height / cellSize);
+
+Tools_Expand_Button.addEventListener("click", (e) => {
+    Tools_Expand_Button.classList.toggle("opened")
+    Tools_Expand_Button.querySelector("span").textContent = Tools_Expand_Button.classList.contains("opened") ? "Close" : "Tools";
+    Tools_Radios.forEach(radio => { radio.checked = false });
+    Tools_Radios_SelectedValue = "Colors";
+})
 
 CellSize_Slider.addEventListener("input", (e) => {
     cellSize = e.target.value;
     cols = Math.floor(canvas.width / cellSize);
     rows = Math.floor(canvas.height / cellSize);
+    if (Tool_Type_State && Bitmap_Mask_State) {
+        imageOpaqueData_Update()
+        uploadImage(uploadedFile)
+        DrawPixels()
+    } else if (Tool_Type_State) {
+        uploadImage(uploadedFile)
+    } else{DrawPixels()}
+})
+
+Bitmap_Mask.addEventListener("input", (e) => {
+    Bitmap_Mask_State = e.target.checked
     DrawPixels()
-    if (Tool_Type_State) {
+    if (Tool_Type_State && Bitmap_Mask_State) {
+        DrawPixels()
+    } else if (Tool_Type_State) {
         uploadImage(uploadedFile)
     }
 })
@@ -52,26 +78,35 @@ CellSize_Slider.addEventListener("input", (e) => {
 Tool_Type.addEventListener("input", (e) => {
     Tool_Type_State = e.target.checked
     if (Tool_Type_State) {
-        [Randomness_Wrapper, Fill_Type_Wrapper, Pattern_Mode_Wrapper, Gradient_Type_Wrapper, Tools_Expand_Wrapper, Randomness_Wrapper.previousElementSibling].forEach(el => el.classList.add("Hide_Element"));
-        [File_Input_Wrapper, Bitmap_Color_Wrapper].forEach(el => el.classList.remove("Hide_Element"));
+        [Randomness_Wrapper, Fill_Type_Wrapper, Pattern_Mode_Wrapper, Gradient_Radios_Options, Tools_Expand_Wrapper].forEach(el => el.classList.add("Hide_Element"));
+        [File_Input_Wrapper, Bitmap_Color_Radios_Options, Bitmap_Mask_Wrapper].forEach(el => el.classList.remove("Hide_Element"));
 
     } else {
-        [File_Input_Wrapper, Bitmap_Color_Wrapper].forEach(el => el.classList.add("Hide_Element"));
-        [Pattern_Mode_Wrapper, Gradient_Type_Wrapper, Tools_Expand_Wrapper].forEach(el => el.classList.remove("Hide_Element"));
+        [File_Input_Wrapper, Bitmap_Color_Radios_Options, Bitmap_Mask_Wrapper].forEach(el => el.classList.add("Hide_Element"));
+        [Pattern_Mode_Wrapper, Gradient_Radios_Options, Tools_Expand_Wrapper].forEach(el => el.classList.remove("Hide_Element"));
         if (Pattern_Radios_SelectedValue === "Random") {
-            [Randomness_Wrapper, Randomness_Wrapper.previousElementSibling, Fill_Type_Wrapper].forEach(el => el.classList.remove("Hide_Element"));
+            [Randomness_Wrapper, Fill_Type_Wrapper].forEach(el => el.classList.remove("Hide_Element"));
         }
     }
     DrawPixels()
-    if (Tool_Type_State) {
+    if (Tool_Type_State && Bitmap_Mask_State) {
+        DrawPixels()
+    } else if (Tool_Type_State) {
         uploadImage(uploadedFile)
     }
 })
 
-Gradient_Type.addEventListener("input", (e) => {
-    Gradient_Type_State = e.target.checked
-    DrawPixels()
-})
+Gradient_Radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        Gradient_Radios_SelectedValue = document.querySelector('.Gradient_Radios:checked').value;
+        if (Gradient_Radios_SelectedValue == "Linear Gradient") {
+            Gradient_Type_State = false
+        } else {
+            Gradient_Type_State = true
+        }
+        DrawPixels()
+    });
+});
 
 let Randomness_Intensity_Value = 5
 Ramdomness_Intensity.addEventListener("input", (e) => {
@@ -81,21 +116,21 @@ Ramdomness_Intensity.addEventListener("input", (e) => {
 
 Fill_Type_Wrapper.classList.add("Hide_Element")
 Randomness_Wrapper.classList.add("Hide_Element")
-Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
 
 const Fill_Type_Handler = () => {
     if (Pattern_Radios_SelectedValue === "Random") {
         Randomness_Wrapper.classList.remove("Hide_Element")
-        Randomness_Wrapper.previousElementSibling.classList.remove("Hide_Element")
         if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
             Fill_Type_Wrapper.classList.remove("Hide_Element")
+            Fill_Type_Wrapper.nextElementSibling.classList.remove("Hide_Element")
         } else {
             Fill_Type_Wrapper.classList.add("Hide_Element")
+            Fill_Type_Wrapper.nextElementSibling.classList.add("Hide_Element")
         }
     } else {
         Fill_Type_Wrapper.classList.add("Hide_Element")
+        Fill_Type_Wrapper.nextElementSibling.classList.add("Hide_Element")
         Randomness_Wrapper.classList.add("Hide_Element")
-        Randomness_Wrapper.previousElementSibling.classList.add("Hide_Element")
     }
 }
 
@@ -103,7 +138,9 @@ Pattern_Radios.forEach(radio => {
     radio.addEventListener('change', () => {
         Pattern_Radios_SelectedValue = document.querySelector('.Pattern_Radios:checked').value;
         DrawPixels()
-        if (Tool_Type_State) {
+        if (Tool_Type_State && Bitmap_Mask_State) {
+            DrawPixels()
+        } else if (Tool_Type_State) {
             uploadImage(uploadedFile)
         }
         Fill_Type_Handler()
@@ -115,7 +152,9 @@ Gradient_Pattern_Radios.forEach(radio => {
         Gradient_Pattern_Radios_SelectedValue = document.querySelector('.Gradient_Pattern:checked').value;
         DrawPixels()
         Fill_Type_Handler()
-        if (Tool_Type_State) {
+        if (Tool_Type_State && Bitmap_Mask_State) {
+            DrawPixels()
+        } else if (Tool_Type_State) {
             uploadImage(uploadedFile)
         }
     });
@@ -533,6 +572,18 @@ let Squared_Collection = []
 let Squared_Collection_Final = []
 let Corners_Collection = []
 let Corners_Collection_Final = []
+let imageOpaqueData = []
+const imageOpaqueData_Update = () => {
+    imageOpaqueData = []
+    for (let y = 0; y < rows; y++) {
+        const row = [];
+        for (let x = 0; x < cols; x++) {
+            row.push(1);
+        }
+        imageOpaqueData.push(row);
+    }
+}
+imageOpaqueData_Update()
 const asciiChars = [" ", ".", "-", ":", "+", "c", "o", "e", "K", "Q", "D", "H", "B", "&", "8", "M", "W", "#", "%", "@"];
 
 
@@ -550,21 +601,131 @@ let extrapoint_gradient = () => {
 
     // No extra points
     if (extraPoints.length === 0) {
-        interpolate2DGridDirectional(rows, cols, start, end, 0, 1);
-        return;
+        return interpolate2DGridDirectional(rows, cols, start, end, 0, 1);
     }
 
     // Build a list of all key positions (start → extra points → end)
     const points = [start, ...extraPoints.map(gridPos), end];
     const gradients = [0, ...extraPoints.map(p => p.gradient_t), 1];
 
-    // Interpolate between consecutive points
+    // Collect all interpolated grids
+    const grids = [];
     for (let i = 0; i < points.length - 1; i++) {
-        interpolate2DGridDirectional(rows, cols, points[i], points[i + 1], gradients[i], gradients[i + 1]);
+        const grid = interpolate2DGridDirectional(
+            rows,
+            cols,
+            points[i],
+            points[i + 1],
+            gradients[i],
+            gradients[i + 1]
+        );
+        grids.push(grid);
     }
+
+    // Merge all grids into one
+    const finalGrid = merge2DArraysSmart(...grids);
+
+    return finalGrid;
 };
 
 
+const MAIN_DRAW_FUNCTION = () => {
+    Final_Gradient_Start_Handle_X = Math.floor(GradientStartHandle.x / cellSize);
+    Final_Gradient_Start_Handle_Y = Math.floor(GradientStartHandle.y / cellSize);
+    Final_Gradient_End_Handle_X = Math.floor(GradientEndHandle.x / cellSize);
+    Final_Gradient_End_Handle_Y = Math.floor(GradientEndHandle.y / cellSize);
+    Gradient_Handle_Distance_X = Final_Gradient_End_Handle_X - Final_Gradient_Start_Handle_X;
+    Gradient_Handle_Distance_Y = Final_Gradient_End_Handle_Y - Final_Gradient_Start_Handle_Y;
+    maxDX = Math.max(Final_Gradient_Start_Handle_X, cols - Final_Gradient_Start_Handle_X);
+    maxDY = Math.max(Final_Gradient_Start_Handle_Y, rows - Final_Gradient_Start_Handle_Y);
+    Radial_Gradient_MaxRadius = Math.sqrt(maxDX * maxDX + maxDY * maxDY);
+
+
+    //console.log(extrapoint_gradient())
+    if (!Gradient_Type_State) {
+        if (Bitmap_Mask_State && Tool_Type_State) {
+            gradient = multiply2DArrays(imageOpaqueData, interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]))
+        } else {
+            gradient = interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]);
+            //gradient = interpolate2DGridDirectional(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y], 0, 1);
+            //gradient = extrapoint_gradient();
+        }
+    } else {
+        if (Bitmap_Mask_State && Tool_Type_State) {
+            gradient = multiply2DArrays(imageOpaqueData, generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y }))
+        } else {
+            gradient = generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y });
+        }
+    }
+
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            if (gradient[y][x] > 0 && gradient[y][x] < 2) {
+                if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random" && Pattern_Type_Radios_SelectedValue === "Joined") {
+                    let random_val = Randomizer()
+                    if (random_val && gradient[random_val.y][random_val.x] === 1) {
+                        gradient[random_val.y][random_val.x] = 2;
+                        if (random_val.x > 0 && random_val.x !== 2) gradient[random_val.y][random_val.x - 1] = 2;
+                    }
+                    Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random" && Pattern_Type_Radios_SelectedValue === "Corners") {
+                    gradient[y][x] = { size: gradient[y][x], corner: "CIRCLE" }
+                    Corners_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: gradient[y][x].size * (cellSize / 2), corner: "CIRCLE" })
+                    let random_val = Randomizer()
+                    if (random_val && gradient[random_val.y][random_val.x] === 1) {
+                        const corners = ["TR", "TL", "BR", "BL"];
+                        gradient[random_val.y][random_val.x] = { size: gradient[random_val.y][random_val.x], corner: corners[Math.floor(Math.random() * 4)] }
+                        Corners_Collection.push({ x: random_val.x * cellSize, y: random_val.y * cellSize, size: gradient[random_val.y][random_val.x].size, corner: gradient[random_val.y][random_val.x].corner })
+                        drawQuarterCircle(ctx, random_val.x * cellSize, random_val.y * cellSize, gradient[random_val.y][random_val.x].size * cellSize, gradient[random_val.y][random_val.x].corner, cellSize)
+                    }
+                    if (gradient[y][x].corner === "CIRCLE") {
+                        ctx.beginPath();
+                        ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x].size * (cellSize / 2), 0, 2 * Math.PI, true);
+                        ctx.fill();
+                        ctx.fillStyle = Color_Radios_SelectedValue
+                    }
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random") {
+                    let random_val = Randomizer()
+                    if (random_val && Pattern_Type_Radios_SelectedValue === "Resize") {
+                        Reducer(gradient, 1 / 2, random_val.x, random_val.y)
+                    } else if (random_val && Pattern_Type_Radios_SelectedValue === "Blank") {
+                        Multiplier(gradient, 0, random_val.x, random_val.y)
+                    }
+                    Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
+                    Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered" && Pattern_Radios_SelectedValue === "Random") {
+                    let random_val = Randomizer()
+                    if (random_val) {
+                        Reducer(gradient, 1 / 12, random_val.x, random_val.y)
+                    }
+                    Dithered_Effect_Creator(x, y, gradient, "2D", ctx, '#777773')
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
+                    Dithered_Effect_Creator(x, y, gradient, "2D", ctx, '#777773')
+                } else if (Gradient_Pattern_Radios_SelectedValue === "Text") {
+                    //ctx.font = `${cellSize}px monospace`;
+                    //ctx.fillStyle = 'black';
+                    //ctx.textAlign = 'left';
+                    //ctx.textBaseline = 'top';
+                    //const index = Math.min(Math.floor(value * asciiChars.length), asciiChars.length - 1);
+                    //ctx.fillText(asciiChars[index], x * cellSize, y * cellSize);
+                }
+            }
+            if (Gradient_Pattern_Radios_SelectedValue === "Squares" && Pattern_Radios_SelectedValue === "Random") {
+                let random_val = Randomizer()
+                if (random_val) {
+                    Reducer(gradient, 1 / 3, random_val.x, random_val.y)
+                }
+                Square_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
+            } else if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
+                Square_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
+            }
+        }
+        if (Pattern_Type_Radios_SelectedValue === "Joined" && gradient[y].includes(2)) {
+            Collected_Ones.push(collectOnes(gradient[y], 2, y));
+        }
+    }
+}
 
 
 
@@ -578,95 +739,12 @@ function DrawPixels() {
     ctx.clearRect(0, 0, width, height);
 
     if (!Tool_Type_State) {
-
-        Final_Gradient_Start_Handle_X = Math.floor(GradientStartHandle.x / cellSize);
-        Final_Gradient_Start_Handle_Y = Math.floor(GradientStartHandle.y / cellSize);
-        Final_Gradient_End_Handle_X = Math.floor(GradientEndHandle.x / cellSize);
-        Final_Gradient_End_Handle_Y = Math.floor(GradientEndHandle.y / cellSize);
-        Gradient_Handle_Distance_X = Final_Gradient_End_Handle_X - Final_Gradient_Start_Handle_X;
-        Gradient_Handle_Distance_Y = Final_Gradient_End_Handle_Y - Final_Gradient_Start_Handle_Y;
-        maxDX = Math.max(Final_Gradient_Start_Handle_X, cols - Final_Gradient_Start_Handle_X);
-        maxDY = Math.max(Final_Gradient_Start_Handle_Y, rows - Final_Gradient_Start_Handle_Y);
-        Radial_Gradient_MaxRadius = Math.sqrt(maxDX * maxDX + maxDY * maxDY);
-
-
-        extrapoint_gradient()
-        if (!Gradient_Type_State) {
-            //gradient = interpolate2DGrid(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y]);
-            gradient = interpolate2DGridDirectional(rows, cols, [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y], [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y], 0, 1);
-        } else {
-            gradient = generateRadialGradient(rows, cols, { x: Final_Gradient_Start_Handle_X, y: Final_Gradient_Start_Handle_Y }, { x: Final_Gradient_End_Handle_X, y: Final_Gradient_End_Handle_Y });
-        }
-
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                if (gradient[y][x] > 0 && gradient[y][x] < 2) {
-                    if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random" && Pattern_Type_Radios_SelectedValue === "Joined") {
-                        let random_val = Randomizer()
-                        if (random_val && gradient[random_val.y][random_val.x] === 1) {
-                            gradient[random_val.y][random_val.x] = 2;
-                            if (random_val.x > 0 && random_val.x !== 2) gradient[random_val.y][random_val.x - 1] = 2;
-                        }
-                        Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
-                    } else if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random" && Pattern_Type_Radios_SelectedValue === "Corners") {
-                        gradient[y][x] = { size: gradient[y][x], corner: "CIRCLE" }
-                        Corners_Collection.push({ cx: x * cellSize + (cellSize / 2), cy: y * cellSize + (cellSize / 2), r: gradient[y][x].size * (cellSize / 2), corner: "CIRCLE" })
-                        let random_val = Randomizer()
-                        if (random_val && gradient[random_val.y][random_val.x] === 1) {
-                            const corners = ["TR", "TL", "BR", "BL"];
-                            gradient[random_val.y][random_val.x] = { size: gradient[random_val.y][random_val.x], corner: corners[Math.floor(Math.random() * 4)] }
-                            Corners_Collection.push({ x: random_val.x * cellSize, y: random_val.y * cellSize, size: gradient[random_val.y][random_val.x].size, corner: gradient[random_val.y][random_val.x].corner })
-                            drawQuarterCircle(ctx, random_val.x * cellSize, random_val.y * cellSize, gradient[random_val.y][random_val.x].size * cellSize, gradient[random_val.y][random_val.x].corner, cellSize)
-                        }
-                        if (gradient[y][x].corner === "CIRCLE") {
-                            ctx.beginPath();
-                            ctx.arc(x * cellSize + (cellSize / 2), y * cellSize + (cellSize / 2), gradient[y][x].size * (cellSize / 2), 0, 2 * Math.PI, true);
-                            ctx.fill();
-                            ctx.fillStyle = Color_Radios_SelectedValue
-                        }
-                    } else if (Gradient_Pattern_Radios_SelectedValue === "Circles" && Pattern_Radios_SelectedValue === "Random") {
-                        let random_val = Randomizer()
-                        if (random_val && Pattern_Type_Radios_SelectedValue === "Resize") {
-                            Reducer(gradient, 1 / 2, random_val.x, random_val.y)
-                        } else if (random_val && Pattern_Type_Radios_SelectedValue === "Blank") {
-                            Multiplier(gradient, 0, random_val.x, random_val.y)
-                        }
-                        Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
-                    } else if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
-                        Circles_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
-                    } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered" && Pattern_Radios_SelectedValue === "Random") {
-                        let random_val = Randomizer()
-                        if (random_val) {
-                            Reducer(gradient, 1 / 12, random_val.x, random_val.y)
-                        }
-                        Dithered_Effect_Creator(x, y, gradient, "2D", ctx, '#000000')
-                    } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
-                        Dithered_Effect_Creator(x, y, gradient, "2D", ctx, '#000000')
-                    } else if (Gradient_Pattern_Radios_SelectedValue === "Text") {
-                        //ctx.font = `${cellSize}px monospace`;
-                        //ctx.fillStyle = 'black';
-                        //ctx.textAlign = 'left';
-                        //ctx.textBaseline = 'top';
-                        //const index = Math.min(Math.floor(value * asciiChars.length), asciiChars.length - 1);
-                        //ctx.fillText(asciiChars[index], x * cellSize, y * cellSize);
-                    }
-                }
-                if (Gradient_Pattern_Radios_SelectedValue === "Squares" && Pattern_Radios_SelectedValue === "Random") {
-                    let random_val = Randomizer()
-                    if (random_val) {
-                        Reducer(gradient, 1 / 3, random_val.x, random_val.y)
-                    }
-                    Square_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
-                } else if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
-                    Square_Effect_Creator(x, y, gradient, "2D", ctx, Color_Radios_SelectedValue)
-                }
-            }
-            if (Pattern_Type_Radios_SelectedValue === "Joined" && gradient[y].includes(2)) {
-                Collected_Ones.push(collectOnes(gradient[y], 2, y));
-            }
-        }
-
-    } else { uploadImage(uploadedFile) }
+        MAIN_DRAW_FUNCTION()
+    } else if (Tool_Type_State && Bitmap_Mask_State) {
+        MAIN_DRAW_FUNCTION()
+    } else if (Tool_Type_State) {
+        uploadImage(uploadedFile)
+    }
 
     Collected_Ones.forEach(rowData => {
         rowData.forEach(cell => {
@@ -819,7 +897,9 @@ function scanCanvas(interval = 25) {
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
     const results = [];
+    imageOpaqueData = []
     for (let y = 0; y < height; y += interval) {
+        let imageOpaqueData_Row = []
         for (let x = 0; x < width; x += interval) {
             const index = (y * width + x) * 4;
             const r = data[index];
@@ -828,11 +908,13 @@ function scanCanvas(interval = 25) {
             const a = data[index + 3];
             const isNotWhite = r !== 255 || g !== 255 || b !== 255;
             const isOpaque = a !== 0;
+            if (isNotWhite && isOpaque) { imageOpaqueData_Row.push(1) } else if (!isOpaque) { imageOpaqueData_Row.push(0) }
             if (isNotWhite && isOpaque) {
                 const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
                 results.push({ x, y, r, g, b, a, brightness });
             }
         }
+        imageOpaqueData.push(imageOpaqueData_Row)
     }
     return results;
 }
@@ -850,6 +932,8 @@ function uploadImage(file) {
             const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
             const url = URL.createObjectURL(svgBlob);
             img.onload = () => {
+                Loaded_Image_Width = img.width;
+                Loaded_Image_Height = img.height;
                 drawAndScan(img, url);
             };
             img.src = url;
@@ -881,7 +965,7 @@ document.getElementById('uploadSVG').addEventListener('change', function (event)
     uploadImage(uploadedFile)
 });
 
-
+let results
 function drawAndScan(img, url = null) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let Image_Ratio = Loaded_Image_Width / Loaded_Image_Height
@@ -894,17 +978,19 @@ function drawAndScan(img, url = null) {
             ctx.drawImage(img, 0, 0, canvas.height * Image_Ratio, canvas.height);
         }
     }
-    const results = scanCanvas(Number(cellSize));
+    results = scanCanvas(Number(cellSize));
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < results.length; i++) {
-        if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
-            Dithered_Effect_Creator(results[i].x / Number(cellSize), results[i].y / Number(cellSize), results[i].brightness, "1D", ctx, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
-        } else if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
-            Square_Effect_Creator(results[i].x, results[i].y, results[i].brightness, "1D", ctx, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
-        } else if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
-            Circles_Effect_Creator(results[i].x, results[i].y, results[i].brightness, "1D", ctx, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
+    if (!Bitmap_Mask_State) {
+        for (let i = 0; i < results.length; i++) {
+            if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
+                Dithered_Effect_Creator(results[i].x / Number(cellSize), results[i].y / Number(cellSize), results[i].brightness, "1D", ctx, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
+            } else if (Gradient_Pattern_Radios_SelectedValue === "Squares") {
+                Square_Effect_Creator(results[i].x, results[i].y, results[i].brightness, "1D", ctx, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
+            } else if (Gradient_Pattern_Radios_SelectedValue === "Circles") {
+                Circles_Effect_Creator(results[i].x, results[i].y, results[i].brightness, "1D", ctx, `rgba(${results[i].r}, ${results[i].g}, ${results[i].b}, ${results[i].a / 255})`)
+            }
         }
-    }
+    } else { DrawPixels() }
     if (url) URL.revokeObjectURL(url);
 }
 
