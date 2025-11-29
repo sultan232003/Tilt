@@ -1011,9 +1011,57 @@ function interpolate2DGridDirectional(rows, cols, start, end, startValue, endVal
     return grid;
 }
 
-const grid = interpolate2DGridDirectional(
-    20, 20,
-    [2, 2], [10, 10],
-    0.5, 0.75
-);
-console.log(grid);
+
+
+// WORK ON THIS IT PRODUCES RANDOM GAPS BETWEEN ARRAYS
+
+function merge2DArraysSmart(...arrays) {
+    if (arrays.length === 0) return [];
+
+    const rows = arrays[0].length;
+    const cols = arrays[0][0].length;
+    const result = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            const values = arrays
+                .map(arr => arr[y]?.[x] ?? 0)
+                .filter(v => v !== 0);
+
+            if (values.length === 0) {
+                result[y][x] = 0;
+            } else {
+                // Keep as-is if all are same, otherwise first non-zero
+                const allSame = values.every(v => v === values[0]);
+                result[y][x] = allSame ? values[0] : values[0];
+            }
+        }
+    }
+
+    return result;
+}
+
+function multiply2DArrays(...arrays) {
+    if (arrays.length === 0) return [];
+    
+    const rows = arrays[0].length;
+    const cols = arrays[0][0].length;
+
+    const result = Array.from({ length: rows }, () => Array(cols).fill(1));
+
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            let product = 1;
+            for (const arr of arrays) {
+                const val = arr[y]?.[x];
+                // If any array is missing a value here, treat it as 1
+                if (typeof val === "number" && !isNaN(val)) {
+                    product *= val;
+                }
+            }
+            result[y][x] = product;
+        }
+    }
+
+    return result;
+}
