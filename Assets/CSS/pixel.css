@@ -1,70 +1,71 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Bricolage Grotesque", sans-serif;
+}
+
 #Pixels_Box {
-    background: #ffffff;
-    box-shadow: 0px 1px 3px #D2D6D9;
+    background: #EFEEEA;
     padding: 16px;
-    border-radius: 20px;
+    border-radius: 16px;
     gap: 16px;
+    border: 1px solid #B2B2AF;
 }
 
 #Pixels_Box p {
     font-size: 14px;
-    color: var(--Muted_Text);
-    font-weight: 500;
+    color: #777773;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    font-optical-sizing: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-#Gradient_Type_Toggle,
-#Tool_Type_Toggle,
-#Bitmap_Color_Toggle {
+.Toggle {
     position: relative;
-    width: 54px;
+    width: 48px;
     height: 30px;
-    border-radius: 15px;
-    background: #F6F6F6;
-    box-shadow: inset 0px 1.5px 1.5px #0000000a, inset 0px 3px 6px #0000000a, inset 0px 0px 0px 0.75px #0000000f, inset 0px 0px 12px #00000005, 0px 1.5px 0px #ffffff, 0px 3px 6px #0000000a;
+    border-radius: 8px;
+    background: #E5E4E0;
 }
 
-#Gradient_Type_Toggle_Slider,
-#Tool_Type_Toggle_Slider,
-#Bitmap_Color_Toggle_Slider {
+.Toggle_Slider {
     position: relative;
 }
 
-#Gradient_Type_Toggle_Slider::before,
-#Tool_Type_Toggle_Slider::before,
-#Bitmap_Color_Toggle_Slider::before {
+.Toggle_Slider::before {
     content: '';
     position: absolute;
     width: 24px;
     height: 24px;
-    border-radius: 50%;
-    background: #070709;
-    box-shadow: 0px 17px 5px rgba(36, 36, 49, 0), 0px 11px 4px rgba(36, 36, 49, 0.01), 0px 6px 4px rgba(36, 36, 49, 0.05), 0px 3px 3px rgba(36, 36, 49, 0.09), 0px 1px 2px rgba(36, 36, 49, 0.1);
-    top: 3px;
-    left: 3px;
+    border-radius: 6px;
+    background: #EFEEEA;
+    border: 1px solid #B0AFAC;
+    top: 2px;
+    left: 2px;
+    box-shadow: inset 0px -4px #D1D0CD;
     transition: all linear 50ms;
 }
 
-#Gradient_Type,
-#Tool_Type,
-#Bitmap_Color {
+.Toggle_Input {
     width: 0px;
     height: 0px;
     opacity: 0;
 }
 
-#Gradient_Type:checked+#Gradient_Type_Toggle_Slider::before,
-#Tool_Type:checked+#Tool_Type_Toggle_Slider::before,
-#Bitmap_Color:checked+#Bitmap_Color_Toggle_Slider::before {
-    left: 27px;
+.Toggle_Input:checked+.Toggle_Slider::before {
+    left: 20px;
 }
 
 #Cell_Size,
 #Ramdomness_Intensity {
     -webkit-appearance: none;
-    width: 150px;
+    width: 120px;
     height: 6px;
-    background: #F6F6F6;
-    box-shadow: inset 0px 1.5px 1.5px #0000000a, inset 0px 3px 6px #0000000a, inset 0px 0px 0px 0.75px #0000000f, inset 0px 0px 12px #00000005, 0px 1.5px 0px #ffffff, 0px 3px 6px #0000000a;
+    background: #E5E4E0 url("../Image/Shading_Grid.png") repeat;
+    background-size: 5%;
     border-radius: 3px;
 }
 
@@ -74,47 +75,68 @@
     appearance: none;
     width: 20px;
     height: 20px;
-    background: #070709;
+    background: #EFEEEA;
+    border: 1px solid #B0AFAC;
     cursor: pointer;
     border-radius: 10px;
-    box-shadow: 0px 17px 5px rgba(36, 36, 49, 0), 0px 11px 4px rgba(36, 36, 49, 0.01), 0px 6px 4px rgba(36, 36, 49, 0.05), 0px 3px 3px rgba(36, 36, 49, 0.09), 0px 1px 2px rgba(36, 36, 49, 0.1);
+    box-shadow: inset 0px -4px #D1D0CD;
     z-index: 10;
 }
 
 #Pattern_Radios_Options,
 #Canvas_Size_Radios_Options,
 #Tools_Expand_Box {
-    background: #F2F4F5;
-    padding: 4px;
-    display: flex;
-    gap: 4px;
-    border-radius: 23px;
     height: fit-content;
 }
 
 #Pattern_Radios_Options label,
 #Canvas_Size_Radios_Options label,
-#Tools_Expand_Box>label {
-    height: 38px;
-    padding: 0px 14px;
-    border-radius: 19px;
+#Gradient_Radios_Options label,
+#Bitmap_Color_Radios_Options label {
+    height: 30px;
+    padding: 0px 10px;
+    border-radius: 6px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     font-size: 14px;
-    color: #021526;
-    font-weight: 500;
+    color: #ABAAA7;
+    background: #EFEEEA;
+    font-weight: 400;
+    border: 1px solid #CAC9C6;
+    box-shadow: inset 0px -4px #E4E3DF;
+    padding-bottom: 2px;
     transition: all linear 50ms;
 }
 
+#Tools_Expand_Box>label {
+    height: 30px;
+    width: 30px;
+    border-radius: 6px;
+    background: #EFEEEA;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+    flex-shrink: 0;
+    transition: all linear 50ms;
+}
+
+#Tools_Expand_Box>label:hover {
+    border: 1px solid #CAC9C6;
+    box-shadow: inset 0px -4px #E4E3DF;
+    padding-bottom: 4px;
+}
+
 #Canvas_Size_Radios_Options label {
-    width: 38px;
+    width: 30px;
     box-sizing: border-box;
-    padding: 0px 9px;
+    padding: 0px 2px;
+    padding-bottom: 2px;
 }
 
 #Canvas_Size_Radios_Options label svg path {
-    fill: #6D7784;
+    stroke: #ABAAA7;
 }
 
 .Pattern_Radios,
@@ -122,7 +144,9 @@
 .Gradient_Pattern,
 .Pattern_Type,
 .Tools_Radios,
-.Color_Radios {
+.Color_Radios,
+.Gradient_Radios,
+.Bitmap_Color_Radios {
     display: none;
 }
 
@@ -130,45 +154,56 @@ input[type="radio"]:checked+label[for*="Pattern_Radios_Tab_"],
 input[type="radio"]:checked+label[for*="Canvas_Size_Radios_Tab_"],
 input[type="radio"]:checked+label[for*="Gradient_Pattern_Radio_"],
 input[type="radio"]:checked+label[for*="Pattern_Type_Tab_"],
-input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] {
-    background: #070709;
-    box-shadow:
-        0px 17px 5px rgba(36, 36, 49, 0),
-        0px 11px 4px rgba(36, 36, 49, 0.01),
-        0px 6px 4px rgba(36, 36, 49, 0.05),
-        0px 3px 3px rgba(36, 36, 49, 0.09),
-        0px 1px 2px rgba(36, 36, 49, 0.1);
-    color: #ffffff !important;
+input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"],
+input[type="radio"]:checked+label[for*="Gradient_Radios_Tab_"],
+input[type="radio"]:checked+label[for*="Bitmap_Color_Radios_Tab_"] {
+    box-shadow: inset 0px 4px #D1D0CD !important;
+    color: #777773 !important;
+    border: 1px solid #B0AFAC !important;
+    padding-bottom: 0px !important;
+    padding-top: 2px !important;
 }
 
 #Canvas_Size_Radios_Tab_1:checked+label[for="Canvas_Size_Radios_Tab_1"] svg path,
-#Canvas_Size_Radios_Tab_2:checked+label[for="Canvas_Size_Radios_Tab_2"] svg path {
-    fill: #ffffff;
+#Canvas_Size_Radios_Tab_2:checked+label[for="Canvas_Size_Radios_Tab_2"] svg path,
+input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] svg path {
+    stroke: #777773;
 }
 
-#Download_SVG {
-    height: 54px;
-    padding: 0px 24px;
-    border-radius: 27px;
-    box-shadow: inset 0px 0px 0px 2px #ffffff, 0px 17px 5px rgba(36, 36, 49, 0), 0px 11px 4px rgba(36, 36, 49, 0.01), 0px 6px 4px rgba(36, 36, 49, 0.05), 0px 3px 3px rgba(36, 36, 49, 0.09), 0px 1px 2px rgba(36, 36, 49, 0.1);
-    background: url(../Image/Button_BG.png);
-    outline: none;
-    border: none;
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: bold;
+.button {
+    height: 30px;
+    padding: 0px 10px 2px 10px;
+    border-radius: 6px;
+    box-shadow: inset 0px -4px #E4E3DF;
+    background: #EFEEEA;
+    border: 1px solid #CAC9C6;
+    color: #ABAAA7;
+    font-size: 14px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+}
+
+.button_left-icon {
+    padding: 0px 10px 2px 4px;
+}
+
+.button_right-icon {
+    padding: 0px 4px 2px 10px;
 }
 
 .Verticle_separator {
     width: 1px;
-    height: 16px;
-    background-color: #D2D6D9;
+    height: 22px;
+    background: url(../Image/Verticle_Separator.png);
 }
 
 #gridCanvas {
-    background: #FAFAFA;
-    border: 0.5px solid #D2D6D9;
-    border-radius: 15px;
+    background-image: linear-gradient(rgba(229, 228, 224, 0.3), rgba(229, 228, 224, 0.3)), url(../Image/Canvas_BG.png);
+    background-size: cover;
+  background-position: center;
+  background-blend-mode: multiply;
+    border-radius: 8px;
 }
 
 .Hide_Element {
@@ -178,7 +213,7 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] {
 }
 
 #Scale_Bar {
-    background: #EBEBEB;
+    background: #CFCFCB;
     height: 1px;
     width: 100%;
 }
@@ -187,7 +222,7 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] {
 .Scale_Bar_Measurement_Short {
     width: 1px;
     height: 8px;
-    background: #EBEBEB;
+    background: #CFCFCB;
 }
 
 .Scale_Bar_Measurement_Short {
@@ -196,9 +231,9 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] {
 }
 
 .Scale_Bar_Measurement_Value {
-    color: #D2DADF;
+    color: #ABAAA7;
     font-size: 8px;
-    line-height: 8px;
+    line-height: 5px;
 }
 
 .Scale_Bar_Measurement_Wrapper {
@@ -214,16 +249,38 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] {
     gap: 9px;
 }
 
-#Tools_Expand_Button {
-    width: 34px;
-    height: 34px;
-    background: #ffffff;
-    border-radius: 50%;
-    box-shadow: 0px 1px 3px #D2D6D9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-right: 1px;
+#Tools_Expand_Box {
+    width: 0px;
+    overflow: hidden;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 500ms;
+}
+
+#Tools_Expand_Button>svg:last-child {
+    display: none;
+}
+
+#Tools_Expand_Button.opened>svg:last-child {
+    display: block;
+}
+
+#Tools_Expand_Button.opened>svg:first-child {
+    display: none;
+}
+
+#Tools_Expand_Button.opened {
+    padding: 0px 4px 0px 10px;
+    border: none;
+    box-shadow: none;
+}
+
+#Tools_Expand_Button.opened+#Tools_Expand_Box {
+    margin-left: 4px;
+    width: 98px;
+    opacity: 1;
+    visibility: visible;
 }
 
 #Tools_Radios_Tab_1:checked~#Color_Box {
@@ -260,7 +317,10 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] {
     line-height: 0.8;
 }
 
-
+#Download_SVG:active{
+    padding-bottom: 0;
+    box-shadow: none;
+}
 
 
 
@@ -272,18 +332,27 @@ input[type="file"] {
 .file-label {
     position: relative;
     width: fit-content;
-    border-radius: 15px;
-    background: #F6F6F6;
-    box-shadow: inset 0px 1.5px 1.5px #0000000a, inset 0px 3px 6px #0000000a, inset 0px 0px 0px 0.75px #0000000f, inset 0px 0px 12px #00000005, 0px 1.5px 0px #ffffff, 0px 3px 6px #0000000a;
-    padding: 10px 18px;
+    height: 30px;
+    border-radius: 6px;
+    background: #EFEEEA;
+    border: 1px solid #CAC9C6;
+    box-shadow: inset 0px -4px #E4E3DF;
+    padding: 0px 10px;
     cursor: pointer;
     font-size: 14px;
-    color: var(--Muted_Text);
-    font-weight: 500;
+    color: #ABAAA7;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    padding-bottom: 2px;
 }
 
 .file-name {
-    font-size: 14px;
-    color: var(--Muted_Text);
-    font-weight: 500;
+    font-size: 12px;
+    color: #ABAAA7;
+    font-weight: 300;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 120px;
 }
