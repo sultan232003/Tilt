@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Pathway+Extreme:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap"
+    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grape+Nuts&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Pathway+Extreme:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap"
+    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&family=Manrope:wght@200..800&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/798c43ac30.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="Assets/CSS/style.css" />
+  <link rel="stylesheet" href="Assets/CSS/pixel.css" />
+  <link rel="stylesheet" href="Assets/CSS/portfolio.css" />
+  <link rel="stylesheet" href="Assets/CSS/vector.css" />
+</head>
+
+<body class="">
+
+  <nav class="Main_Nav">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tilt.html">Tilt</a></li>
+      <li><a href="shadow.html">Shadow</a></li>
+      <li><a href="pixels.html">Pixels</a></li>
+      <li><a class="active" href="Vector.html">Vector</a></li>
+    </ul>
+  </nav>
+
+
+
+
+  <section id="Vectors_Area" class="m-t-72">
+    <div class="container_2">
+      <div id="Vectors_Box" class="row row-col pd-16 gap-16 br-16">
+        <div id="Vectors_Top_Row" class="row space-between">
+          <div class="row align-center gap-32" id="Vectors_Top_Row_Left">
+            <div class="row gap-16 align-center">
+              <div id="File_Input_Wrapper">
+                <label class="file-label" for="uploadFile">Choose File</label>
+                <input type="file" id="uploadFile" accept=".png,.jpeg,.jpg">
+              </div>
+              <div class="Verticle_separator"></div>
+              <div class="row gap-2" id="Fill_Type_Radios_Options">
+                <input type="radio" class="Fill_Type_Radios" id="Fill_Type_Radios_Tab_1" name="fill_type" value="Fill"
+                  checked="true">
+                <label for="Fill_Type_Radios_Tab_1">Fill</label>
+                <input type="radio" class="Fill_Type_Radios" id="Fill_Type_Radios_Tab_2" name="fill_type"
+                  value="Stroke">
+                <label for="Fill_Type_Radios_Tab_2">Stroke</label>
+              </div>
+            </div>
+            <div id="Details_Wrapper" class="row align-center gap-8">
+              <p>Details</p>
+              <div class="row gap-2" id="Details_Radios_Options">
+                <input type="radio" class="Details_Radios" id="Details_Radios_Tab_1" name="detail" value="Low"
+                  checked="true">
+                <label for="Details_Radios_Tab_1">Low</label>
+                <input type="radio" class="Details_Radios" id="Details_Radios_Tab_2" name="detail" value="Medium">
+                <label for="Details_Radios_Tab_2">Medium</label>
+                <input type="radio" class="Details_Radios" id="Details_Radios_Tab_3" name="detail" value="High">
+                <label for="Details_Radios_Tab_3">High</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="Pixels_Middle_Row">
+          <div id="Pixels_Canvas_Wrapper">
+            <canvas id="gridCanvas" width="800" height="800"></canvas>
+          </div>
+        </div>
+
+        <div id="Pixels_Bottom_Row" class="row space-between gap-16 align-center">
+          <div class="row gap-16 align-center w-100">
+            <div class="row align-center gap-4 width-100">
+              <div class="Toggle flex-grow row align-center pd-10">
+                <p id="SVG_Code" class="ellipsis no-wrap overflow-hide">example.svg_code</p>
+              </div>
+              <button id="Copy_SVG" class="button button_left-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                  height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M10.0996 13.9003C10.0996 12.1085 10.0996 11.2126 10.6563 10.6559C11.2129 10.0993 12.1088 10.0993 13.9006 10.0993H14.5341C16.3259 10.0993 17.2218 10.0993 17.7785 10.6559C18.3351 11.2126 18.3351 12.1085 18.3351 13.9003V14.5338C18.3351 16.3256 18.3351 17.2215 17.7785 17.7782C17.2218 18.3348 16.3259 18.3348 14.5341 18.3348H13.9006C12.1088 18.3348 11.2129 18.3348 10.6563 17.7782C10.0996 17.2215 10.0996 16.3256 10.0996 14.5338V13.9003Z"
+                    stroke="#ABAAA7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path
+                    d="M15.1665 10.0994C15.165 8.22604 15.1367 7.25571 14.5914 6.59131C14.4861 6.463 14.3684 6.34535 14.2401 6.24005C13.5392 5.66486 12.498 5.66486 10.4153 5.66486C8.3327 5.66486 7.29139 5.66486 6.59051 6.24005C6.4622 6.34534 6.34456 6.463 6.23926 6.59131C5.66406 7.29218 5.66406 8.33349 5.66406 10.4161C5.66406 12.4987 5.66406 13.54 6.23926 14.2409C6.34455 14.3692 6.4622 14.4869 6.59051 14.5921C7.25492 15.1375 8.22525 15.1658 10.0986 15.1673"
+                    stroke="#ABAAA7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>Copy</button>
+            </div>
+            <div class="Verticle_separator"></div>
+            <button id="Download_SVG" class="button button_left-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M9.48552 11.4943C10.0159 12.0256 11.3078 14.0041 12.0532 13.9942C12.791 13.9142 13.969 11.993 14.4893 11.4883M11.9692 6.99566L11.9775 13.9888M15.996 16.9944L8.00391 17.0039"
+                  stroke="#ABAAA7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>Download</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+
+  <script src="Assets/JS/Utils.js"></script>
+  <script src="Assets/JS/Vector.js"></script>
+</body>
+
+</html>
