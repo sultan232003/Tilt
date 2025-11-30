@@ -34,7 +34,7 @@ let Gradient_Radios_SelectedValue = "Linear Gradient";
 let Gradient_Pattern_Radios_SelectedValue = "Circles";
 let Pattern_Type_Radios_SelectedValue = "Resize";
 let Canvas_Size_Radios_SelectedValue = "Minimize";
-let Color_Radios_SelectedValue = "#777773";
+let Color_Radios_SelectedValue = document.body.classList.contains("Dark_Mode") ? "#696966" : "#777773";
 let Tools_Radios_SelectedValue = "Colors";
 const Scale_Bar = document.getElementById("Scale_Bar");
 const Scale_Bar_Markings = document.getElementById("Scale_Bar_Markings");
@@ -586,28 +586,18 @@ const imageOpaqueData_Update = () => {
 imageOpaqueData_Update()
 const asciiChars = [" ", ".", "-", ":", "+", "c", "o", "e", "K", "Q", "D", "H", "B", "&", "8", "M", "W", "#", "%", "@"];
 
-
-
-
-
-
-
 let extrapoint_gradient = () => {
     const start = [Final_Gradient_Start_Handle_X, Final_Gradient_Start_Handle_Y];
     const end = [Final_Gradient_End_Handle_X, Final_Gradient_End_Handle_Y];
-
     // Helper to get floored grid coordinates
     const gridPos = p => [Math.floor(p.x / cellSize), Math.floor(p.y / cellSize)];
-
     // No extra points
     if (extraPoints.length === 0) {
         return interpolate2DGridDirectional(rows, cols, start, end, 0, 1);
     }
-
     // Build a list of all key positions (start → extra points → end)
     const points = [start, ...extraPoints.map(gridPos), end];
     const gradients = [0, ...extraPoints.map(p => p.gradient_t), 1];
-
     // Collect all interpolated grids
     const grids = [];
     for (let i = 0; i < points.length - 1; i++) {
@@ -621,13 +611,10 @@ let extrapoint_gradient = () => {
         );
         grids.push(grid);
     }
-
     // Merge all grids into one
     const finalGrid = merge2DArraysSmart(...grids);
-
     return finalGrid;
 };
-
 
 const MAIN_DRAW_FUNCTION = () => {
     Final_Gradient_Start_Handle_X = Math.floor(GradientStartHandle.x / cellSize);
@@ -639,7 +626,6 @@ const MAIN_DRAW_FUNCTION = () => {
     maxDX = Math.max(Final_Gradient_Start_Handle_X, cols - Final_Gradient_Start_Handle_X);
     maxDY = Math.max(Final_Gradient_Start_Handle_Y, rows - Final_Gradient_Start_Handle_Y);
     Radial_Gradient_MaxRadius = Math.sqrt(maxDX * maxDX + maxDY * maxDY);
-
 
     //console.log(extrapoint_gradient())
     if (!Gradient_Type_State) {
@@ -699,9 +685,11 @@ const MAIN_DRAW_FUNCTION = () => {
                     if (random_val) {
                         Reducer(gradient, 1 / 12, random_val.x, random_val.y)
                     }
-                    Dithered_Effect_Creator(x, y, gradient, "2D", ctx, '#777773')
+                    const color = document.body.classList.contains("Dark_Mode") ? "#696966" : "#777773";
+                    Dithered_Effect_Creator(x, y, gradient, "2D", ctx, color)
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Dithered") {
-                    Dithered_Effect_Creator(x, y, gradient, "2D", ctx, '#777773')
+                    const color = document.body.classList.contains("Dark_Mode") ? "#696966" : "#777773";
+                    Dithered_Effect_Creator(x, y, gradient, "2D", ctx, color)
                 } else if (Gradient_Pattern_Radios_SelectedValue === "Text") {
                     //ctx.font = `${cellSize}px monospace`;
                     //ctx.fillStyle = 'black';
@@ -726,14 +714,6 @@ const MAIN_DRAW_FUNCTION = () => {
         }
     }
 }
-
-
-
-
-
-
-
-
 
 function DrawPixels() {
     ctx.clearRect(0, 0, width, height);
@@ -993,4 +973,3 @@ function drawAndScan(img, url = null) {
     } else { DrawPixels() }
     if (url) URL.revokeObjectURL(url);
 }
-
