@@ -7818,6 +7818,22 @@ body {
     flex-shrink: 1;
 }
 
+.flex-grow{
+    flex-grow: 1;
+}
+
+.no-grow{
+    flex-grow: 0;
+}
+
+.no-wrap{
+    white-space: nowrap;
+}
+
+.ellipsis{
+    text-overflow: ellipsis;
+}
+
 .no-repeat {
     background-repeat: no-repeat;
 }
