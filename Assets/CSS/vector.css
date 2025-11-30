@@ -1,0 +1,55 @@
+
+
+
+
+
+
+
+
+
+#Vectors_Box {
+    background: var(--Primary_Element_BG-Light);
+    border: 1px solid var(--Primary_Tool_Stroke-Light);
+}
+
+#Vectors_Box p {
+    font-size: 14px;
+    color: var(--Primary_Text-Light);
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    font-optical-sizing: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#Fill_Type_Radios_Options label,
+#Details_Radios_Options label {
+    height: 30px;
+    padding: 0px 10px;
+    border-radius: 6px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: var(--Muted_Text-Light);
+    background: var(--Primary_Element_BG-Light);
+    font-weight: 400;
+    border: 1px solid var(--Muted_Stroke-Light);
+    box-shadow: inset 0px -4px var(--Unclicked_Tab_Shadow-Light);
+    padding-bottom: 2px;
+    transition: all linear 50ms;
+}
+
+.Fill_Type_Radios,
+.Details_Radios {
+    display: none;
+}
+
+input[type="radio"]:checked+label[for*="Fill_Type_Radios_Tab_"],
+input[type="radio"]:checked+label[for*="Details_Radios_Tab_"] {
+    box-shadow: inset 0px 4px var(--Clicked_Tab_Shadow-Light) !important;
+    color: var(--Primary_Text-Light) !important;
+    border: 1px solid var(--Primary_Stroke-Light) !important;
+    padding-bottom: 0px !important;
+    padding-top: 2px !important;
+}
