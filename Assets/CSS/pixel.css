@@ -5,17 +5,74 @@
     font-family: "Bricolage Grotesque", sans-serif;
 }
 
+:root {
+    --Measure_Scale_Marker-Light: #CFCFCB;
+    --Primary_Element_BG-Light: #EFEEEA;
+    --Muted_Text-Light: #ABAAA7;
+    --Muted_Stroke-Light: #CAC9C6;
+    --Primary_Text-Light: #777773;
+    --Primary_Stroke-Light: #B0AFAC;
+    --Separator_1-Light: #CECECA;
+    --Separator_2-Light: #E4E3DF;
+    --Separator_3-Light: #AFAEAB;
+    --UI_Element_BG-Light: #E5E4E0;
+    --Primary_Tool_Stroke-Light: #B2B2AF;
+    --Primary_BG-Light: #F6F5F1;
+    --Canvas_BG-Light: linear-gradient(rgba(229, 228, 224, 0.3), rgba(229, 228, 224, 0.3)), url(../Image/Canvas_BG.png);
+    --Clicked_Tab_Shadow-Light: #D1D0CD;
+    --Unclicked_Tab_Shadow-Light: #E4E3DF;
+    --Grid_BG-Light: var(--UI_Element_BG-Light) url("../Image/Shading_Grid.png") repeat;
+    --Verticle_Separator-Light: url(../Image/Verticle_Separator.png);
+
+    --Measure_Scale_Marker-Dark: #3A3A38;
+    --Primary_Element_BG-Dark: #2A2A28;
+    --Muted_Text-Dark: #4A4A48;
+    --Muted_Stroke-Dark: #3C3C3A;
+    --Primary_Text-Dark: #D8D8D4;
+    --Primary_Stroke-Dark: #50504E;
+    --Separator_1-Dark: #363634;
+    --Separator_2-Dark: #1F1F1D;
+    --Separator_3-Dark: #4C4C49;
+    --UI_Element_BG-Dark: #1D1D1B;
+    --Primary_Tool_Stroke-Dark: #4A4A47;
+    --Primary_BG-Dark: #171716;
+    --Canvas_BG-Dark: #1D1D1B4d;
+    --Clicked_Tab_Shadow-Dark: #1F1F1D;
+    --Unclicked_Tab_Shadow-Dark: #1F1F1D;
+}
+
+body {
+    background: var(--Primary_BG-Light);
+}
+
+body.Dark_Mode {
+    --Measure_Scale_Marker-Light: #3A3A38;
+    --Primary_Element_BG-Light: #2A2A28;
+    --Muted_Text-Light: #696966;
+    --Muted_Stroke-Light: #3C3C3A;
+    --Primary_Text-Light: #ACACA3;
+    --Primary_Stroke-Light: #50504E;
+    --Separator_1-Light: #363634;
+    --Separator_2-Light: #1F1F1D;
+    --Separator_3-Light: #4C4C49;
+    --UI_Element_BG-Light: #1D1D1B;
+    --Primary_Tool_Stroke-Light: #4A4A47;
+    --Primary_BG-Light: #171716;
+    --Canvas_BG-Light: linear-gradient(rgba(29, 29, 27, 0.4), rgba(29, 29, 27, 0.4)), url(../Image/Canvas_BG.png);
+    --Clicked_Tab_Shadow-Light: #1F1F1D;
+    --Unclicked_Tab_Shadow-Light: #1F1F1D;
+    --Grid_BG-Light: var(--UI_Element_BG-Light) url("../Image/Grid2.png") repeat;
+    --Verticle_Separator-Light: url(../Image/Verticle_Separator2.png);
+}
+
 #Pixels_Box {
-    background: #EFEEEA;
-    padding: 16px;
-    border-radius: 16px;
-    gap: 16px;
-    border: 1px solid #B2B2AF;
+    background: var(--Primary_Element_BG-Light);
+    border: 1px solid var(--Primary_Tool_Stroke-Light);
 }
 
 #Pixels_Box p {
     font-size: 14px;
-    color: #777773;
+    color: var(--Primary_Text-Light);
     font-weight: 400;
     letter-spacing: -0.3px;
     font-optical-sizing: none;
@@ -28,7 +85,7 @@
     width: 48px;
     height: 30px;
     border-radius: 8px;
-    background: #E5E4E0;
+    background: var(--UI_Element_BG-Light);
 }
 
 .Toggle_Slider {
@@ -41,11 +98,11 @@
     width: 24px;
     height: 24px;
     border-radius: 6px;
-    background: #EFEEEA;
-    border: 1px solid #B0AFAC;
+    background: var(--Primary_Element_BG-Light);
+    border: 1px solid var(--Primary_Stroke-Light);
     top: 2px;
     left: 2px;
-    box-shadow: inset 0px -4px #D1D0CD;
+    box-shadow: inset 0px -4px var(--Clicked_Tab_Shadow-Light);
     transition: all linear 50ms;
 }
 
@@ -64,7 +121,7 @@
     -webkit-appearance: none;
     width: 120px;
     height: 6px;
-    background: #E5E4E0 url("../Image/Shading_Grid.png") repeat;
+    background: var(--Grid_BG-Light);
     background-size: 5%;
     border-radius: 3px;
 }
@@ -75,11 +132,11 @@
     appearance: none;
     width: 20px;
     height: 20px;
-    background: #EFEEEA;
-    border: 1px solid #B0AFAC;
+    background: var(--Primary_Element_BG-Light);
+    border: 1px solid var(--Primary_Stroke-Light);
     cursor: pointer;
     border-radius: 10px;
-    box-shadow: inset 0px -4px #D1D0CD;
+    box-shadow: inset 0px -4px var(--Clicked_Tab_Shadow-Light);
     z-index: 10;
 }
 
@@ -100,11 +157,11 @@
     display: flex;
     align-items: center;
     font-size: 14px;
-    color: #ABAAA7;
-    background: #EFEEEA;
+    color: var(--Muted_Text-Light);
+    background: var(--Primary_Element_BG-Light);
     font-weight: 400;
-    border: 1px solid #CAC9C6;
-    box-shadow: inset 0px -4px #E4E3DF;
+    border: 1px solid var(--Muted_Stroke-Light);
+    box-shadow: inset 0px -4px var(--Unclicked_Tab_Shadow-Light);
     padding-bottom: 2px;
     transition: all linear 50ms;
 }
@@ -113,7 +170,7 @@
     height: 30px;
     width: 30px;
     border-radius: 6px;
-    background: #EFEEEA;
+    background: var(--Primary_Element_BG-Light);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -122,9 +179,13 @@
     transition: all linear 50ms;
 }
 
+#Tools_Expand_Box>label path {
+    stroke: var(--Muted_Text-Light);
+}
+
 #Tools_Expand_Box>label:hover {
-    border: 1px solid #CAC9C6;
-    box-shadow: inset 0px -4px #E4E3DF;
+    border: 1px solid var(--Muted_Stroke-Light);
+    box-shadow: inset 0px -4px var(--Unclicked_Tab_Shadow-Light);
     padding-bottom: 4px;
 }
 
@@ -136,7 +197,7 @@
 }
 
 #Canvas_Size_Radios_Options label svg path {
-    stroke: #ABAAA7;
+    stroke: var(--Muted_Text-Light);
 }
 
 .Pattern_Radios,
@@ -157,9 +218,9 @@ input[type="radio"]:checked+label[for*="Pattern_Type_Tab_"],
 input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"],
 input[type="radio"]:checked+label[for*="Gradient_Radios_Tab_"],
 input[type="radio"]:checked+label[for*="Bitmap_Color_Radios_Tab_"] {
-    box-shadow: inset 0px 4px #D1D0CD !important;
-    color: #777773 !important;
-    border: 1px solid #B0AFAC !important;
+    box-shadow: inset 0px 4px var(--Clicked_Tab_Shadow-Light) !important;
+    color: var(--Primary_Text-Light) !important;
+    border: 1px solid var(--Primary_Stroke-Light) !important;
     padding-bottom: 0px !important;
     padding-top: 2px !important;
 }
@@ -167,21 +228,25 @@ input[type="radio"]:checked+label[for*="Bitmap_Color_Radios_Tab_"] {
 #Canvas_Size_Radios_Tab_1:checked+label[for="Canvas_Size_Radios_Tab_1"] svg path,
 #Canvas_Size_Radios_Tab_2:checked+label[for="Canvas_Size_Radios_Tab_2"] svg path,
 input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] svg path {
-    stroke: #777773;
+    stroke: var(--Primary_Text-Light) !important;
 }
 
 .button {
     height: 30px;
     padding: 0px 10px 2px 10px;
     border-radius: 6px;
-    box-shadow: inset 0px -4px #E4E3DF;
-    background: #EFEEEA;
-    border: 1px solid #CAC9C6;
-    color: #ABAAA7;
+    box-shadow: inset 0px -4px var(--Unclicked_Tab_Shadow-Light);
+    background: var(--Primary_Element_BG-Light);
+    border: 1px solid var(--Muted_Stroke-Light);
+    color: var(--Muted_Text-Light);
     font-size: 14px;
     font-weight: 400;
     display: flex;
     align-items: center;
+}
+
+.button path {
+    stroke: var(--Muted_Text-Light);
 }
 
 .button_left-icon {
@@ -195,14 +260,14 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] svg path {
 .Verticle_separator {
     width: 1px;
     height: 22px;
-    background: url(../Image/Verticle_Separator.png);
+    background: var(--Verticle_Separator-Light);
 }
 
 #gridCanvas {
-    background-image: linear-gradient(rgba(229, 228, 224, 0.3), rgba(229, 228, 224, 0.3)), url(../Image/Canvas_BG.png);
+    background-image: var(--Canvas_BG-Light);
     background-size: cover;
-  background-position: center;
-  background-blend-mode: multiply;
+    background-position: center;
+    background-blend-mode: multiply;
     border-radius: 8px;
 }
 
@@ -213,7 +278,7 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] svg path {
 }
 
 #Scale_Bar {
-    background: #CFCFCB;
+    background: var(--Measure_Scale_Marker-Light);
     height: 1px;
     width: 100%;
 }
@@ -222,7 +287,7 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] svg path {
 .Scale_Bar_Measurement_Short {
     width: 1px;
     height: 8px;
-    background: #CFCFCB;
+    background: var(--Measure_Scale_Marker-Light);
 }
 
 .Scale_Bar_Measurement_Short {
@@ -231,7 +296,7 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] svg path {
 }
 
 .Scale_Bar_Measurement_Value {
-    color: #ABAAA7;
+    color: var(--Muted_Text-Light);
     font-size: 8px;
     line-height: 5px;
 }
@@ -317,7 +382,7 @@ input[type="radio"]:checked+label[for*="Tools_Radios_Tab_"] svg path {
     line-height: 0.8;
 }
 
-#Download_SVG:active{
+#Download_SVG:active {
     padding-bottom: 0;
     box-shadow: none;
 }
@@ -334,13 +399,13 @@ input[type="file"] {
     width: fit-content;
     height: 30px;
     border-radius: 6px;
-    background: #EFEEEA;
-    border: 1px solid #CAC9C6;
-    box-shadow: inset 0px -4px #E4E3DF;
+    background: var(--Primary_Element_BG-Light);
+    border: 1px solid var(--Muted_Stroke-Light);
+    box-shadow: inset 0px -4px var(--Unclicked_Tab_Shadow-Light);
     padding: 0px 10px;
     cursor: pointer;
     font-size: 14px;
-    color: #ABAAA7;
+    color: var(--Muted_Text-Light);
     font-weight: 400;
     display: flex;
     align-items: center;
@@ -349,7 +414,7 @@ input[type="file"] {
 
 .file-name {
     font-size: 12px;
-    color: #ABAAA7;
+    color: var(--Muted_Text-Light);
     font-weight: 300;
     white-space: nowrap;
     overflow: hidden;
